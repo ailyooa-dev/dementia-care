@@ -130,19 +130,67 @@
 
     <header class="bg-brand text-white shadow-md sticky top-0 z-50">
         <div class="max-w-6xl mx-auto px-4 py-4 md:py-5 flex flex-wrap items-center justify-between gap-4">
-            <div>
-                <h1 class="text-2xl md:text-4xl font-black tracking-wider flex items-center gap-3">
-                    <span class="text-3xl md:text-4xl">🌻</span>
-                    失智症家屬照護指南
-                </h1>
-                <p class="text-sm md:text-base text-sky-100 mt-1 ml-1 font-semibold">
-                    台北市立聯合醫院 仁愛院區失智共照中心 製作關心
-                </p>
+            <div class="flex flex-wrap items-center gap-4">
+                <!-- 臺北市立聯合醫院 仁愛院區 專屬識別 Logo (SVG) -->
+                <div class="bg-white px-3.5 py-2 rounded-2xl shadow-sm flex items-center justify-center shrink-0">
+                    <svg class="h-12 md:h-14 w-auto" viewBox="0 0 460 112" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="臺北市立聯合醫院 仁愛院區 TAIPEI CITY HOSPITAL Renai Branch">
+                        <!-- 左側 H 標誌 -->
+                        <g transform="translate(8, 12)">
+                            <!-- H 垂直與橫槓主體 -->
+                            <rect x="14" y="18" width="16" height="64" rx="4" fill="#15803d"/>
+                            <rect x="46" y="18" width="16" height="64" rx="4" fill="#15803d"/>
+                            <rect x="26" y="42" width="24" height="14" fill="#15803d"/>
+                            <!-- 動態環繞彩帶 -->
+                            <path d="M4 54 C 12 22, 64 8, 76 18 C 62 14, 18 28, 8 56 Z" fill="#ea580c"/>
+                            <path d="M74 22 C 84 44, 48 76, 12 72 C 44 70, 76 42, 70 20 Z" fill="#0284c7"/>
+                            <path d="M6 48 C 12 78, 56 88, 78 68 C 56 82, 16 74, 10 46 Z" fill="#eab308"/>
+                            <path d="M18 18 C 38 6, 68 12, 76 24 C 66 16, 40 12, 20 22 Z" fill="#f59e0b"/>
+                        </g>
+
+                        <!-- 上方綠黃漸層弧線與科技電路紋飾 -->
+                        <path d="M162 46 Q 270 6, 336 32 Q 346 36, 344 46 L 336 46 Q 338 38, 326 34 Q 268 14, 162 48 Z" fill="#15803d"/>
+                        <path d="M172 44 Q 266 10, 324 28 Q 268 14, 174 46 Z" fill="#eab308"/>
+
+                        <!-- 右上方藍色電路節點圖形 -->
+                        <g stroke="#2898b0" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="332" cy="14" r="4.5" fill="white"/>
+                            <path d="M337 14 H 362 L 378 28 H 404"/>
+                            <circle cx="358" cy="27" r="4.5" fill="white"/>
+                            <path d="M363 27 H 374 L 390 38 H 426"/>
+                            <circle cx="430" cy="38" r="4.5" fill="white"/>
+                            <circle cx="358" cy="44" r="4.5" fill="white"/>
+                            <path d="M363 44 L 378 34 H 396"/>
+                        </g>
+
+                        <!-- 院名文字：臺北市立聯合醫院 -->
+                        <text x="104" y="64" fill="#334155" font-family="'Noto Sans TC', sans-serif" font-size="25" font-weight="700" letter-spacing="1.5">臺北市立聯合醫院</text>
+                        <text x="105" y="79" fill="#475569" font-family="'Noto Sans TC', sans-serif" font-size="11.5" font-weight="700" letter-spacing="1.2">TAIPEI CITY HOSPITAL</text>
+
+                        <!-- 院區名稱：仁愛院區 Renai Branch -->
+                        <text x="312" y="75" fill="#1e293b" font-family="'Noto Sans TC', sans-serif" font-size="40" font-weight="900">仁愛</text>
+                        <text x="396" y="67" fill="#334155" font-family="'Noto Sans TC', sans-serif" font-size="22" font-weight="700">院區</text>
+                        <text x="396" y="80" fill="#475569" font-family="'Noto Sans TC', sans-serif" font-size="9.5" font-weight="600" font-style="italic">Renai Branch</text>
+
+                        <!-- 下方醫療十字、心電圖波紋與綠色底弧 -->
+                        <g transform="translate(114, 83)">
+                            <rect x="6" y="0" width="7" height="19" rx="1" fill="#0e7490"/>
+                            <rect x="0" y="6" width="19" height="7" rx="1" fill="#0e7490"/>
+                            <path d="M21 10 H 33 L 37 5 L 42 16 L 47 1 L 52 17 L 56 7 L 60 12 L 64 10 H 112" stroke="#0e7490" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M112 10 Q 195 10, 238 -4 L 241 -1 Q 196 13, 112 12 Z" fill="#16a34a"/>
+                        </g>
+                    </svg>
+                </div>
+
+                <div>
+                    <h1 class="text-2xl md:text-4xl font-black tracking-wider flex items-center gap-3">
+                        <span class="text-3xl md:text-4xl">🌻</span>
+                        失智症家屬照護指南
+                    </h1>
+                    <p class="text-sm md:text-base text-sky-100 mt-1 ml-1 font-semibold">
+                        臺北市立聯合醫院 仁愛院區失智共照中心 製作關心
+                    </p>
+                </div>
             </div>
-            <!-- 新增頂部捷徑按鈕 -->
-            <button onclick="openDetail(13)" class="bg-amber-400 hover:bg-amber-300 text-slate-900 font-extrabold text-lg md:text-xl px-5 py-2.5 rounded-2xl shadow-lg hover:shadow-xl transition-all flex items-center gap-2 border-2 border-amber-200 shrink-0">
-                <span>🗺️</span> 台北市據點地圖
-            </button>
         </div>
     </header>
 
@@ -211,8 +259,44 @@
     </main>
 
     <footer class="bg-slate-800 text-slate-200 py-8 mt-12 text-center">
-        <div class="max-w-6xl mx-auto px-4">
-            <p class="text-2xl font-bold mb-2">台北市立聯合醫院 仁愛院區失智共照中心</p>
+        <div class="max-w-6xl mx-auto px-4 flex flex-col items-center">
+            <!-- 頁尾同步展示白色底卡 Logo -->
+            <div class="bg-white px-4 py-2 rounded-2xl shadow-md mb-4 inline-flex items-center justify-center">
+                <svg class="h-12 w-auto" viewBox="0 0 460 112" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="臺北市立聯合醫院 仁愛院區 TAIPEI CITY HOSPITAL Renai Branch">
+                    <g transform="translate(8, 12)">
+                        <rect x="14" y="18" width="16" height="64" rx="4" fill="#15803d"/>
+                        <rect x="46" y="18" width="16" height="64" rx="4" fill="#15803d"/>
+                        <rect x="26" y="42" width="24" height="14" fill="#15803d"/>
+                        <path d="M4 54 C 12 22, 64 8, 76 18 C 62 14, 18 28, 8 56 Z" fill="#ea580c"/>
+                        <path d="M74 22 C 84 44, 48 76, 12 72 C 44 70, 76 42, 70 20 Z" fill="#0284c7"/>
+                        <path d="M6 48 C 12 78, 56 88, 78 68 C 56 82, 16 74, 10 46 Z" fill="#eab308"/>
+                        <path d="M18 18 C 38 6, 68 12, 76 24 C 66 16, 40 12, 20 22 Z" fill="#f59e0b"/>
+                    </g>
+                    <path d="M162 46 Q 270 6, 336 32 Q 346 36, 344 46 L 336 46 Q 338 38, 326 34 Q 268 14, 162 48 Z" fill="#15803d"/>
+                    <path d="M172 44 Q 266 10, 324 28 Q 268 14, 174 46 Z" fill="#eab308"/>
+                    <g stroke="#2898b0" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="332" cy="14" r="4.5" fill="white"/>
+                        <path d="M337 14 H 362 L 378 28 H 404"/>
+                        <circle cx="358" cy="27" r="4.5" fill="white"/>
+                        <path d="M363 27 H 374 L 390 38 H 426"/>
+                        <circle cx="430" cy="38" r="4.5" fill="white"/>
+                        <circle cx="358" cy="44" r="4.5" fill="white"/>
+                        <path d="M363 44 L 378 34 H 396"/>
+                    </g>
+                    <text x="104" y="64" fill="#334155" font-family="'Noto Sans TC', sans-serif" font-size="25" font-weight="700" letter-spacing="1.5">臺北市立聯合醫院</text>
+                    <text x="105" y="79" fill="#475569" font-family="'Noto Sans TC', sans-serif" font-size="11.5" font-weight="700" letter-spacing="1.2">TAIPEI CITY HOSPITAL</text>
+                    <text x="312" y="75" fill="#1e293b" font-family="'Noto Sans TC', sans-serif" font-size="40" font-weight="900">仁愛</text>
+                    <text x="396" y="67" fill="#334155" font-family="'Noto Sans TC', sans-serif" font-size="22" font-weight="700">院區</text>
+                    <text x="396" y="80" fill="#475569" font-family="'Noto Sans TC', sans-serif" font-size="9.5" font-weight="600" font-style="italic">Renai Branch</text>
+                    <g transform="translate(114, 83)">
+                        <rect x="6" y="0" width="7" height="19" rx="1" fill="#0e7490"/>
+                        <rect x="0" y="6" width="19" height="7" rx="1" fill="#0e7490"/>
+                        <path d="M21 10 H 33 L 37 5 L 42 16 L 47 1 L 52 17 L 56 7 L 60 12 L 64 10 H 112" stroke="#0e7490" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M112 10 Q 195 10, 238 -4 L 241 -1 Q 196 13, 112 12 Z" fill="#16a34a"/>
+                    </g>
+                </svg>
+            </div>
+            <p class="text-2xl font-bold mb-2">臺北市立聯合醫院 仁愛院區失智共照中心</p>
             <p class="text-lg text-slate-300">關心失智症長輩與照顧家屬的身心健康</p>
             <p class="text-base text-slate-400 mt-3">本網站資訊僅供衛教與照護參考，如有醫療或個別診斷需求，請至本院神經內科或精神科門診諮詢專業醫師。</p>
         </div>
@@ -327,7 +411,7 @@
                 id: 4,
                 title: '4. 日常生活照顧',
                 icon: '🏠',
-                desc: '環境安全、個人衛生、作息安排與溝通技巧。',
+                desc: '環境安全、個人衛生、作息安排、溝通技巧與實用照護影音教學。',
                 content: `
                     <h3>照顧原則：尊嚴、規律與安全</h3>
                     
@@ -348,6 +432,56 @@
                     <ul>
                         <li>保持固定起床與入睡時間，白天多接觸陽光，避免白天睡太多導致夜間遊走。</li>
                     </ul>
+
+                    <h3>🎬 失智照護小技巧：實用影音教學</h3>
+                    <p>以下精選自「愛長照」專欄與「天主教中華聖母基金會」製作的失智照護短片，用輕鬆易懂的示範，幫家屬解決日常照顧難題：</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6 no-print">
+                        <!-- 影片 1：不愛喝水 -->
+                        <div class="bg-sky-50 border-2 border-sky-200 rounded-2xl p-4 shadow-sm flex flex-col">
+                            <h4 class="text-xl font-bold text-brand-dark mt-0 mb-2">💧 1. 如何讓失智長輩多喝水？</h4>
+                            <p class="text-base text-gray-700 mb-3">長輩喝水易嗆咳、不愛喝水，教你用小技巧輕鬆補充每日所需水分。</p>
+                            <div class="aspect-video w-full rounded-xl overflow-hidden shadow bg-black mt-auto">
+                                <iframe class="w-full h-full" src="https://www.youtube.com/embed/vTmQ_Y7mDGg" title="失智照護小技巧 如何讓失智老人多喝水？" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            </div>
+                        </div>
+
+                        <!-- 影片 2：作息混亂 -->
+                        <div class="bg-sky-50 border-2 border-sky-200 rounded-2xl p-4 shadow-sm flex flex-col">
+                            <h4 class="text-xl font-bold text-brand-dark mt-0 mb-2">🌙 2. 作息混亂、半夜睡不著怎麼辦？</h4>
+                            <p class="text-base text-gray-700 mb-3">長輩日夜顛倒、半夜精神好到處走動，掌握白天活動與光線調整秘訣。</p>
+                            <div class="aspect-video w-full rounded-xl overflow-hidden shadow bg-black mt-auto">
+                                <iframe class="w-full h-full" src="https://www.youtube.com/embed/p-iHC71PAbI" title="失智照護小技巧-作息混亂怎麼辦？" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            </div>
+                        </div>
+
+                        <!-- 影片 3：不喜歡洗澡 -->
+                        <div class="bg-sky-50 border-2 border-sky-200 rounded-2xl p-4 shadow-sm flex flex-col">
+                            <h4 class="text-xl font-bold text-brand-dark mt-0 mb-2">🛁 3. 長輩不喜歡洗澡怎麼辦？</h4>
+                            <p class="text-base text-gray-700 mb-3">減少抗拒與衝突，透過保暖、尊重隱私與溫和引導讓洗澡變輕鬆。</p>
+                            <div class="aspect-video w-full rounded-xl overflow-hidden shadow bg-black mt-auto">
+                                <iframe class="w-full h-full" src="https://www.youtube.com/embed/MzeHh5X3ZIs" title="失智照護小技巧 長輩不喜歡洗澡怎麼辦" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            </div>
+                        </div>
+
+                        <!-- 影片 4：被偷妄想 -->
+                        <div class="bg-sky-50 border-2 border-sky-200 rounded-2xl p-4 shadow-sm flex flex-col">
+                            <h4 class="text-xl font-bold text-brand-dark mt-0 mb-2">🔐 4. 長輩有被偷妄想怎麼辦？</h4>
+                            <p class="text-base text-gray-700 mb-3">被懷疑偷東西好委屈？學會同理安撫與轉移注意力，化解緊張關係。</p>
+                            <div class="aspect-video w-full rounded-xl overflow-hidden shadow bg-black mt-auto">
+                                <iframe class="w-full h-full" src="https://www.youtube.com/embed/vd75S2dn6ZI" title="失智照顧小技巧-長輩有被偷妄想怎麼辦？" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-amber-50 border-2 border-amber-300 p-4 rounded-2xl my-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <p class="text-lg text-amber-950 font-medium m-0">
+                            📖 <strong>文章與影音出處：</strong>愛長照《【失智照護小技巧】不愛洗澡、不愛喝水、作息混亂、懷疑家人偷東西？中華聖母基金會幫你找方法》
+                        </p>
+                        <a href="https://www.ilong-termcare.com/articles/pYYV" target="_blank" rel="noopener noreferrer" class="bg-amber-500 hover:bg-amber-600 text-white font-bold text-lg px-5 py-2.5 rounded-xl shadow transition-colors shrink-0">
+                            前往愛長照原文 ↗
+                        </a>
+                    </div>
                 `
             },
             {
@@ -748,14 +882,78 @@
                 title: '11. 照護系統與機構選擇',
                 icon: '🏥',
                 desc: '社區據點、日間照顧中心、團體家屋與住宿型機構比較。',
-                content: `... existing content ...`
+                content: `
+                    <h3>社區與機構照護資源選擇指南</h3>
+                    <p>隨著失智症病程進展，家屬可以依長輩的失能程度與家庭照顧人力，選擇合適的社區或住宿資源：</p>
+
+                    <h4>1. 失智社區服務據點（適合極輕度至輕度）</h4>
+                    <ul>
+                        <li><strong>服務內容：</strong> 提供認知促進、緩和失智課程、共餐活動及家屬支持團體。</li>
+                        <li><strong>特色：</strong> 讓長輩白天走出家門與鄰里互動，延緩退化速度。</li>
+                    </ul>
+
+                    <h4>2. 日間照顧中心（適合輕度至中重度）</h4>
+                    <ul>
+                        <li><strong>服務內容：</strong> 類似「長輩的托兒所」，白天由專業照服員與護理師照顧、協助午餐與午休，傍晚由家人接回或交通車接送。</li>
+                        <li><strong>特色：</strong> 減輕上班族家屬白天的照顧壓力，長輩晚上仍可享受家庭天倫之樂。</li>
+                    </ul>
+
+                    <h4>3. 團體家屋 Group Home（適合中度以上具行動能力者）</h4>
+                    <ul>
+                        <li><strong>服務內容：</strong> 小規模（每單元約 9 人）、家庭化環境的 24 小時住宿照護，讓長輩在類似一般住家的環境中生活並參與簡單家務。</li>
+                    </ul>
+
+                    <h4>4. 住宿型長照機構 / 失智專區（適合重度或全天候照護需求）</h4>
+                    <ul>
+                        <li><strong>選擇建議：</strong> 參觀機構時請留意環境是否無異味、空間是否有防走失門禁設計、照護人力比是否充足，以及活動空間是否明亮友善。</li>
+                    </ul>
+                `
             },
             {
                 id: 12,
                 title: '12. 健腦認知活動學習單下載列印',
                 icon: '🖨️',
                 desc: '提供可直接列印或下載 PDF 的 A4 健腦學習單（不含失智字眼）。',
-                content: `... existing content ...`
+                content: `
+                    <h3>🏠 居家健腦認知活動學習單（A4 列印專區）</h3>
+                    <p>為保護長輩自尊心，所有學習單標題均設計為<strong>「健腦認知活動學習單」</strong>（不含任何「失智」字眼）。請選擇主題後直接列印或下載 PDF 檔案陪同長輩練習：</p>
+
+                    <div class="bg-sky-50 border-2 border-brand p-5 rounded-2xl my-6 space-y-4 no-print">
+                        <div>
+                            <label for="worksheet-select" class="block text-xl font-bold text-brand-dark mb-2">📌 請選擇要練習的學習單主題（共 14 款）：</label>
+                            <select id="worksheet-select" onchange="renderWorksheet()" class="w-full p-3.5 text-xl font-bold text-gray-800 bg-white border-2 border-sky-300 rounded-xl focus:outline-none focus:border-brand">
+                                <option value="ws1">1. 時間定向感與畫時鐘練習</option>
+                                <option value="ws2">2. 懷舊水果找找看與數量計算</option>
+                                <option value="ws3">3. 吉祥話數字順序連連看</option>
+                                <option value="ws4">4. 菜市場生活買菜好算術</option>
+                                <option value="ws5">5. 傳統節慶與習俗美食連連看</option>
+                                <option value="ws6">6. 台灣常用俗語與成語缺字填空</option>
+                                <option value="ws7">7. 蔬菜與水果生活分類大挑戰</option>
+                                <option value="ws8">8. 溫馨短文閱讀與小隨堂回想</option>
+                                <option value="ws9">9. 台灣懷舊名產與產地連連看</option>
+                                <option value="ws10">10. 家常菜「番茄炒蛋」步驟排序</option>
+                                <option value="ws11">11. 符號視覺搜尋與專注力計算</option>
+                                <option value="ws12">12. 四季天氣與生活穿搭常識</option>
+                                <option value="ws13">13. 數字規律填空（數感邏輯）</option>
+                                <option value="ws14">14. 懷舊童謠歌詞缺字回想</option>
+                            </select>
+                        </div>
+
+                        <div class="flex flex-wrap gap-3 pt-2">
+                            <button onclick="printCurrentWorksheet()" class="bg-brand hover:bg-brand-dark text-white font-bold text-xl px-6 py-3 rounded-xl shadow transition-colors flex items-center gap-2">
+                                🖨️ 直接列印此頁 (A4)
+                            </button>
+                            <button id="pdf-btn" onclick="downloadPDF(event)" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xl px-6 py-3 rounded-xl shadow transition-colors flex items-center gap-2">
+                                📥 下載 PDF 檔案
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 可列印與匯出 PDF 的 A4 預覽區 -->
+                    <div id="printable-worksheet" class="bg-white border-2 border-gray-300 rounded-2xl p-6 md:p-10 shadow-inner">
+                        <!-- 由 JavaScript 動態產生學習單內容 -->
+                    </div>
+                `
             },
             {
                 id: 13,
@@ -856,8 +1054,8 @@
                     </a>
                 </div>
             `
-        }
-    ];
+            }
+        ];
 
         // 頁面初始化與卡片生成
         window.onload = function() {
@@ -1392,7 +1590,7 @@
                         </div>
 
                         <div class="p-4 border-2 border-dashed border-gray-400 rounded-xl space-y-4">
-                            <p class="font-bold text-2xl text-emerald-900">家常菜「番茄炒蛋」烹稔步驟排序：</p>
+                            <p class="font-bold text-2xl text-emerald-900">家常菜「番茄炒蛋」烹飪步驟排序：</p>
                             <p>請看下面的炒菜步驟，在括號【 】中寫出正確的順序（1、2、3、4）：</p>
 
                             <div class="space-y-4 bg-emerald-50 p-6 rounded-2xl border border-emerald-200 text-2xl leading-relaxed">
