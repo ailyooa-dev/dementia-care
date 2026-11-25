@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>失智症家屬照護資源網 - 台北市立聯合醫院仁愛院區失智共照中心</title>
+    
+    <!-- 引入 Google Fonts: Noto Sans TC 提供高辨識度的繁體中文字體 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- 引入 html2pdf.js 套件以支援直接產生與下載 PDF 檔案 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <!-- 引入 Tailwind CSS 進行快速且具彈性的排版 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Noto Sans TC"', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            light: '#e0f2fe',
+                            DEFAULT: '#0284c7', // 溫和且具醫療感的藍色
+                            dark: '#0369a1',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            /* 設定較溫柔的背景色，減少視覺疲勞 */
+            background-color: #f8fafc;
+            /* 預設字體加大，符合高齡友善需求 */
+            font-size: 1.125rem; 
+            line-height: 1.75;
+            color: #1e293b;
+        }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* 淡入動畫 */
+        .fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 內文列表與段落樣式 */
+        .content-body h3 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #0284c7;
+            margin-top: 1.75rem;
+            margin-bottom: 0.85rem;
+            border-bottom: 2px solid #e0f2fe;
+            padding-bottom: 0.5rem;
+        }
+        .content-body h4 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-top: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+        .content-body p {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            letter-spacing: 0.03em;
+            line-height: 1.8;
+        }
+        .content-body ul {
+            list-style-type: disc;
+            margin-left: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        .content-body li {
+            font-size: 1.2rem;
+            margin-bottom: 0.6rem;
+            letter-spacing: 0.02em;
+            line-height: 1.7;
+        }
+        .content-body strong {
+            color: #b91c1c; /* 強調顏色 */
+        }
+        .content-body .step-box {
+            background-color: #f0f9ff;
+            border-left: 5px solid #0284c7;
+            padding: 1rem 1.25rem;
+            margin: 1rem 0;
+            border-radius: 0.5rem;
+        }
+
+        /* 列印專用樣式 */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #printable-worksheet, #printable-worksheet * {
+                visibility: visible;
+            }
+            #printable-worksheet {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                background: white;
+                color: black;
+                padding: 10px;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header class="bg-brand text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-4 md:py-5 flex flex-wrap items-center justify-between gap-4">
+            <div>
+                <h1 class="text-2xl md:text-4xl font-black tracking-wider flex items-center gap-3">
+                    <span class="text-3xl md:text-4xl">🌻</span>
+                    失智症家屬照護指南
+                </h1>
+                <p class="text-sm md:text-base text-sky-100 mt-1 ml-1 font-semibold">
+                    台北市立聯合醫院 仁愛院區失智共照中心 製作關心
+                </p>
+            </div>
+            <!-- 新增頂部捷徑按鈕 -->
+            <button onclick="openDetail(13)" class="bg-amber-400 hover:bg-amber-300 text-slate-900 font-extrabold text-lg md:text-xl px-5 py-2.5 rounded-2xl shadow-lg hover:shadow-xl transition-all flex items-center gap-2 border-2 border-amber-200 shrink-0">
+                <span>🗺️</span> 台北市據點地圖
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-8 relative">
+        
+        <!-- 首頁：主題卡片網格 -->
+        <div id="home-view" class="fade-in">
+            <div class="mb-8 bg-white p-6 rounded-2xl shadow-sm border-l-8 border-brand-dark">
+                <p class="text-xl md:text-2xl font-medium text-gray-700 leading-relaxed">
+                    親愛的家屬您好，照顧失智症長輩是一條需要耐心的道路。本網站由<strong>台北市立聯合醫院 仁愛院區失智共照中心</strong>為您整理常見的照護主題與資源。字體特別放大，請直接點選下方的主題卡片查看詳細內容：
+                </p>
+            </div>
+
+            <!-- 新增首頁頂部超顯眼地圖快速進入橫幅 -->
+            <div onclick="openDetail(13)" class="mb-8 bg-gradient-to-r from-teal-600 to-sky-700 text-white p-6 md:p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all cursor-pointer border-4 border-teal-200 flex flex-col md:flex-row items-center justify-between gap-6 group hover:-translate-y-1">
+                <div class="flex items-center gap-5">
+                    <span class="text-6xl bg-white/20 p-4 rounded-2xl group-hover:scale-110 transition-transform">🗺️</span>
+                    <div>
+                        <span class="bg-amber-400 text-slate-900 font-bold px-3 py-1 rounded-full text-sm uppercase tracking-wide">家屬必看資源</span>
+                        <h2 class="text-2xl md:text-4xl font-black mt-1">台北市失智據點與共照中心地圖專區</h2>
+                        <p class="text-lg md:text-xl text-teal-100 mt-2 font-medium">快速查詢台北市 12 行政區據點、仁愛院區共照中心聯繫電話與導航資訊！</p>
+                    </div>
+                </div>
+                <button class="bg-white text-teal-800 font-black text-xl px-8 py-4 rounded-2xl shadow-md group-hover:bg-amber-300 group-hover:text-slate-900 transition-colors shrink-0">
+                    立即查詢地圖 →
+                </button>
+            </div>
+
+            <!-- 卡片網格：手機單排，平板雙排，電腦三排 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="card-container">
+                <!-- 卡片由 JavaScript 動態生成 -->
+            </div>
+        </div>
+
+        <!-- 詳細內容頁面 (預設隱藏) -->
+        <div id="detail-view" class="hidden fade-in bg-white rounded-3xl shadow-xl overflow-hidden min-h-[60vh]">
+            
+            <!-- 返回按鈕固定在頂部 -->
+            <div class="bg-brand-light p-4 flex items-center justify-between border-b border-blue-200">
+                <button onclick="goBack()" class="flex items-center gap-2 bg-white text-brand-dark hover:bg-blue-50 focus:ring-4 focus:ring-blue-300 font-bold rounded-xl text-xl px-6 py-3 transition-colors shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    返回主題列表
+                </button>
+            </div>
+
+            <div class="p-6 md:p-10 text-gray-800">
+                <div class="flex items-center gap-4 mb-8">
+                    <span id="detail-icon" class="text-5xl md:text-6xl bg-brand-light w-20 h-20 md:w-24 md:h-24 flex items-center justify-center rounded-2xl shadow-inner shrink-0"></span>
+                    <h2 id="detail-title" class="text-3xl md:text-5xl font-black text-brand-dark leading-tight"></h2>
+                </div>
+                
+                <div id="detail-content" class="content-body">
+                    <!-- 詳細內容由 JavaScript 動態寫入 -->
+                </div>
+            </div>
+            
+            <!-- 底部返回按鈕 -->
+            <div class="bg-gray-50 p-6 flex justify-center border-t border-gray-200">
+                 <button onclick="goBack()" class="flex items-center gap-2 bg-brand text-white hover:bg-brand-dark focus:ring-4 focus:ring-blue-300 font-bold rounded-xl text-2xl px-10 py-4 transition-colors shadow-lg">
+                    ← 回到首頁列表
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-slate-800 text-slate-200 py-8 mt-12 text-center">
+        <div class="max-w-6xl mx-auto px-4">
+            <p class="text-2xl font-bold mb-2">台北市立聯合醫院 仁愛院區失智共照中心</p>
+            <p class="text-lg text-slate-300">關心失智症長輩與照顧家屬的身心健康</p>
+            <p class="text-base text-slate-400 mt-3">本網站資訊僅供衛教與照護參考，如有醫療或個別診斷需求，請至本院神經內科或精神科門診諮詢專業醫師。</p>
+        </div>
+    </footer>
+
+    <!-- 自訂訊息彈窗 (代替原生 alert) -->
+    <div id="custom-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 fade-in">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 md:p-8 shadow-2xl border border-gray-100">
+            <div class="flex items-center gap-3 mb-4">
+                <span class="text-4xl">💡</span>
+                <h3 id="modal-title" class="text-2xl font-bold text-gray-900">提示訊息</h3>
+            </div>
+            <p id="modal-message" class="text-xl text-gray-700 leading-relaxed mb-6"></p>
+            <div class="flex justify-end">
+                <button onclick="closeModal()" class="bg-brand hover:bg-brand-dark text-white font-bold text-xl px-8 py-3 rounded-xl transition-colors shadow">
+                    我知道了
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 核心主題資料庫
+        const topics = [
+            {
+                id: 1,
+                title: '1. 認識失智症',
+                icon: '🧠',
+                desc: '失智症不是正常老化，了解早期十大警訊與核心症狀。',
+                content: `
+                    <h3>什麼是失智症？</h3>
+                    <p>失智症（Dementia）不是單一的一種疾病，而是一群症狀的組合（症候群）。它的主要特徵是大腦功能逐漸退化，導致記憶力、思考能力、語言能力、定向感與判斷力等認知功能減退，並嚴重影響到日常獨立生活能力。</p>
+                    
+                    <h3>失智症與正常老化的區別</h3>
+                    <ul>
+                        <li><strong>正常老化：</strong> 可能偶爾忘記某個人的名字，但過一陣子會想起來；做記憶測試時，經提示能想起來。</li>
+                        <li><strong>失智症：</strong> 對於剛發生的事情完全忘記，無法回想；甚至會連帶忘記自己剛剛問過的問題或做過的事，經提示也無法想起。</li>
+                    </ul>
+
+                    <h3>失智症的十大早期警訊</h3>
+                    <ul>
+                        <li>1. 記憶力減退影響到生活（重複詢問相同問題）。</li>
+                        <li>2. 計劃事情或解決問題有困難（如搞不清楚食譜或帳單步驟）。</li>
+                        <li>3. 無法勝任原本熟悉的事務（如不會開微波爐或開車迷路）。</li>
+                        <li>4. 對時間或地點感到混淆（搞不清年份、季節或身在何處）。</li>
+                        <li>5. 理解視覺影像和空間關係有困難（不認識鏡中的自己或常絆倒）。</li>
+                        <li>6. 言語表達或書寫出現困難（找不到合適的詞彙描述事物）。</li>
+                        <li>7. 物件擺放錯亂且失去回溯能力（把遙控器放進冰箱）。</li>
+                        <li>8. 判斷力變差或減弱（穿著不合時宜、容易上當受騙）。</li>
+                        <li>9. 退出職場或社交活動（變得孤僻、不願參與以往興趣）。</li>
+                        <li>10. 情緒和個性改變（變得疑心重、焦慮、憂鬱或易怒）。</li>
+                    </ul>
+                `
+            },
+            {
+                id: 2,
+                title: '2. 失智症類型',
+                icon: '🔍',
+                desc: '阿茲海默症、血管性失智症、路易氏體失智症等介紹。',
+                content: `
+                    <h3>失智症的主要分類與特徵</h3>
+                    <p>失智症主要分為「退化性」與「血管性」兩大類，也有部分患者屬於混合型：</p>
+                    
+                    <h4>1. 阿茲海默症 (Alzheimer's Disease)</h4>
+                    <p>最常見的退化性失智症，約佔所有失智症病例的 60% 至 70%。主要因大腦異常蛋白質（β-類澱粉蛋白與Tau蛋白質）堆積導致神經細胞死亡。早期主要表現為近期記憶衰退、時間與空間定向感喪失。</p>
+
+                    <h4>2. 血管性失智症 (Vascular Dementia)</h4>
+                    <p>第二常見類型，因腦中風或腦血管微病變導致大腦血液循環不良，造成腦細胞壞死。退化常呈現「階梯式」變化，即每次中風或血管事件發生後，功能突然下降一段，情緒轉變大、常有半身麻痺或步態不穩。</p>
+
+                    <h4>3. 路易氏體失智症 (Dementia with Lewy Bodies, DLB)</h4>
+                    <p>除了記憶力減退外，特性為：容易出現清晰的生動視覺幻覺、認知功能起伏不定、伴隨帕金森氏症狀（手震、肌肉僵硬、走路步態緩慢僵硬）。</p>
+
+                    <h4>4. 額顳葉型失智症 (Frontotemporal Dementia, FTD)</h4>
+                    <p>發病年齡通常較早（50-60歲）。早期記憶力可能尚可，但人格特質變化劇烈、出現不合宜社交行為、語言表達能力顯著退化或缺乏同理心。</p>
+                `
+            },
+            {
+                id: 3,
+                title: '3. 失智症病程發展',
+                icon: '📈',
+                desc: '從輕度知能障礙、輕度、中度到重度的照顧重點變化。',
+                content: `
+                    <h3>失智症的病程階段與照護重點</h3>
+                    <p>失智症是一種持續進行的退化性疾病，瞭解各階段病程能幫助家屬預先做好照顧準備與心理建設：</p>
+
+                    <h4>第一階段：輕度知能障礙 (MCI)</h4>
+                    <ul>
+                        <li><strong>表現：</strong> 記憶力比同齡者差，但基本日常生活（購物、煮飯）仍能獨立完成。</li>
+                        <li><strong>照護重點：</strong> 保持社交活動、進行健腦運動，定期至門診追蹤。</li>
+                    </ul>
+
+                    <h4>第二階段：輕度失智症（初期）</h4>
+                    <ul>
+                        <li><strong>表現：</strong> 對近期發生的事嚴重遺忘、常常迷路、處理金錢財務出錯、情緒易緊張焦慮。</li>
+                        <li><strong>照護重點：</strong> 協助建立常規生活，安全評估（防走失），避免單獨處理財務。</li>
+                    </ul>
+
+                    <h4>第三階段：中度失智症（中期）</h4>
+                    <ul>
+                        <li><strong>表現：</strong> 遠期記憶開始減退，穿衣穿鞋困難，出現情緒行為異常（如被偷妄想、日落症候群），無法獨自生活。</li>
+                        <li><strong>照護重點：</strong> 簡化指示步驟，提供生活協助，安排日照中心或社區據點活動。</li>
+                    </ul>
+
+                    <h4>第四階段：重度失智症（晚期）</h4>
+                    <ul>
+                        <li><strong>表現：</strong> 喪失語言溝通能力、無法認出親人、大小便失禁、吞嚥困難、長期臥床。</li>
+                        <li><strong>照護重點：</strong> 著重舒適照顧、皮膚壓瘡預防、吞嚥安全及營養維護。</li>
+                    </ul>
+                `
+            },
+            {
+                id: 4,
+                title: '4. 日常生活照顧',
+                icon: '🏠',
+                desc: '環境安全、個人衛生、作息安排與溝通技巧。',
+                content: `
+                    <h3>照顧原則：尊嚴、規律與安全</h3>
+                    
+                    <h4>1. 友善且安全家居環境</h4>
+                    <ul>
+                        <li><strong>防跌措施：</strong> 保持地面乾爽，移除地毯，走廊與浴室加裝扶手與夜燈。</li>
+                        <li><strong>物品標籤：</strong> 在廁所、房間門口貼上清晰大圖示，幫助長輩辨識地點。</li>
+                    </ul>
+
+                    <h4>2. 正確的溝通互動技巧</h4>
+                    <ul>
+                        <li><strong>眼對眼專注溝通：</strong> 說話時站在長輩前方，維持眼神接觸，表情溫和。</li>
+                        <li><strong>一句話只包含一個指令：</strong> 避免複雜語句（如：「先洗手再拿碗來吃飯」改為「我們來洗手」）。</li>
+                        <li><strong>不爭辯、多肯定：</strong> 當長輩說錯事情時，切勿面紅耳赤地糾正，應順著回應並溫柔轉移話題。</li>
+                    </ul>
+
+                    <h4>3. 作息與睡眠管理</h4>
+                    <ul>
+                        <li>保持固定起床與入睡時間，白天多接觸陽光，避免白天睡太多導致夜間遊走。</li>
+                    </ul>
+                `
+            },
+            {
+                id: 5,
+                title: '5. 在家可以做的活動',
+                icon: '🎨',
+                desc: '懷舊互動、簡單家務、手藝創作與認知健腦活動。',
+                content: `
+                    <h3>適當的活動能延緩退化，增進長輩成就感！</h3>
+                    <p>活動設計應以「長輩過去熟悉且喜歡的事」為原則，過程比結果重要，讓長輩感到自信與快樂最關鍵：</p>
+
+                    <h4>1. 懷舊回憶分享</h4>
+                    <ul>
+                        <li><strong>看老照片/聽老歌：</strong> 拿出舊相簿討論過去的旅遊經歷、節慶活動，播放長輩年輕時喜歡的流行歌或戲曲，引導開口哼唱。</li>
+                    </ul>
+
+                    <h4>2. 參與簡單安全家務</h4>
+                    <ul>
+                        <li>讓長輩感受自己「仍對家庭有貢獻」，可安排：摺衣服、擦桌子、挑菜葉、剝水煮蛋皮、整理毛巾等。</li>
+                    </ul>
+
+                    <h4>3. 手眼協調與手藝創作</h4>
+                    <ul>
+                        <li><strong>圖案著色與剪貼：</strong> 使用粗筆芯蠟筆著色，或是將舊報紙雜誌圖片剪下貼成懷舊圖畫。</li>
+                        <li><strong>搓黏土/積木拼貼：</strong> 訓練手指精細動作與空間概念。</li>
+                    </ul>
+
+                    <h4>4. 溫和肢體伸展與感官刺激</h4>
+                    <ul>
+                        <li>拍手操、椅子伸展運動、收聽廣播，或者進行簡單的香氛手部按摩，刺激觸覺與嗅覺。</li>
+                    </ul>
+                `
+            },
+            {
+                id: 6,
+                title: '6. 精神行為異常 (BPSD) 處理步驟',
+                icon: '🛡️',
+                desc: '被偷妄想、關係妄想、幻覺、不洗澡、重複行為處理指南。',
+                content: `
+                    <h3>精神行為症狀（BPSD）查詢與應對指南</h3>
+                    <p>失智症長輩出現精神行為異常並非故意挑釁，而是因為腦部病變導致認知與表達受阻。點選下方症狀查看詳細處理步驟：</p>
+
+                    <div class="space-y-4 my-6 no-print">
+                        
+                        <!-- 1. 被偷妄想 -->
+                        <details class="bg-sky-50 border-2 border-brand rounded-2xl p-4 cursor-pointer hover:bg-sky-100 transition-colors">
+                            <summary class="text-2xl font-bold text-brand-dark flex items-center justify-between">
+                                <span>🔐 1. 被偷妄想（堅信錢財或物品被家人、移工偷走）</span>
+                                <span class="text-sm bg-brand text-white px-3 py-1 rounded-full font-normal">點擊展開步驟</span>
+                            </summary>
+                            <div class="mt-4 pt-4 border-t border-sky-200 text-gray-800 space-y-2">
+                                <p><strong>原因分析：</strong> 因記憶力退化忘記物品放哪裡，為了給「東西不見」一個合理的解釋而產生妄想。</p>
+                                <div class="step-box">
+                                    <p class="font-bold text-sky-900">👉 處理三步驟：</p>
+                                    <ol class="list-decimal ml-6 space-y-1">
+                                        <li><strong>同理情緒不爭辯：</strong> 溫和回應：「找不到錢包你一定很著急對不對？我們一起找找看。」切勿大聲自清或責備其胡說八道。</li>
+                                        <li><strong>協助尋找並準備備份：</strong> 家屬平時可觀察長輩常藏東西的地點（如床墊下、衣櫃底），平時多準備一份相同的皮包或存摺備用。</li>
+                                        <li><strong>轉移注意力：</strong> 找到物品後，順勢請長輩幫忙做其他事（如喝杯溫水、吃餅乾）。</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </details>
+
+                        <!-- 2. 關係妄想與嫉妒妄想 -->
+                        <details class="bg-sky-50 border-2 border-brand rounded-2xl p-4 cursor-pointer hover:bg-sky-100 transition-colors">
+                            <summary class="text-2xl font-bold text-brand-dark flex items-center justify-between">
+                                <span>💔 2. 關係妄想（懷疑配偶外遇、家人要害自己）</span>
+                                <span class="text-sm bg-brand text-white px-3 py-1 rounded-full font-normal">點擊展開步驟</span>
+                            </summary>
+                            <div class="mt-4 pt-4 border-t border-sky-200 text-gray-800 space-y-2">
+                                <p><strong>原因分析：</strong> 安全感喪失、對環境變化感到極度不安與孤單。</p>
+                                <div class="step-box">
+                                    <p class="font-bold text-sky-900">👉 處理三步驟：</p>
+                                    <ol class="list-decimal ml-6 space-y-1">
+                                        <li><strong>給予高度安全感：</strong> 握住長輩的手，用溫柔眼神告訴他：「我是最關心你的人，我會一直陪伴你，不用擔心。」</li>
+                                        <li><strong>避免正面衝突：</strong> 被指責的照顧者可暫時離開現場，換其他親友協助安撫情緒。</li>
+                                        <li><strong>尋求醫師評估：</strong> 若妄想嚴重影響家庭關係或造成暴力，可請門診醫師評估藥物調整。</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </details>
+
+                        <!-- 3. 幻覺 -->
+                        <details class="bg-sky-50 border-2 border-brand rounded-2xl p-4 cursor-pointer hover:bg-sky-100 transition-colors">
+                            <summary class="text-2xl font-bold text-brand-dark flex items-center justify-between">
+                                <span>👁️ 3. 視幻覺或聽幻覺（看到過世親人、屋裡有陌生人）</span>
+                                <span class="text-sm bg-brand text-white px-3 py-1 rounded-full font-normal">點擊展開步驟</span>
+                            </summary>
+                            <div class="mt-4 pt-4 border-t border-sky-200 text-gray-800 space-y-2">
+                                <p><strong>原因分析：</strong> 腦部功能退化、視力或聽力模糊、室內光線太暗產生陰影。</p>
+                                <div class="step-box">
+                                    <p class="font-bold text-sky-900">👉 處理三步驟：</p>
+                                    <ol class="list-decimal ml-6 space-y-1">
+                                        <li><strong>接納感受不否定：</strong> 不要硬說「根本沒有人，你亂講」，可回應：「你覺得有人在那裡會害怕嗎？別擔心，我保護你。」</li>
+                                        <li><strong>改善環境光源：</strong> 保持室內明亮，移除容易產生陰影的窗簾或大型擺飾。</li>
+                                        <li><strong>引導離開現場：</strong> 帶長輩到另一個房間散步或聽音樂，轉移專注力。</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </details>
+
+                        <!-- 4. 抗拒洗澡與清潔 -->
+                        <details class="bg-sky-50 border-2 border-brand rounded-2xl p-4 cursor-pointer hover:bg-sky-100 transition-colors">
+                            <summary class="text-2xl font-bold text-brand-dark flex items-center justify-between">
+                                <span>🛁 4. 抗拒洗澡或換衣服</span>
+                                <span class="text-sm bg-brand text-white px-3 py-1 rounded-full font-normal">點擊展開步驟</span>
+                            </summary>
+                            <div class="mt-4 pt-4 border-t border-sky-200 text-gray-800 space-y-2">
+                                <p><strong>原因分析：</strong> 怕水、怕冷、喪失洗澡的步驟認知、或因褪去衣服感到害羞與缺乏安全感。</p>
+                                <div class="step-box">
+                                    <p class="font-bold text-sky-900">👉 處理三步驟：</p>
+                                    <ol class="list-decimal ml-6 space-y-1">
+                                        <li><strong>保持環境溫暖：</strong> 提前開暖氣、確認水溫舒適，浴室使用防滑墊，維持隱私。</li>
+                                        <li><strong>彈性拆解洗澡時間：</strong> 不強迫一次洗全身，可先洗腳或先用溫熱毛巾擦洗身體，降低排斥感。</li>
+                                        <li><strong>改變說法：</strong> 避免喊「去洗澡！」，改為「水放好了，我們去泡個熱水腳舒緩一下」。</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </details>
+
+                        <!-- 5. 重複行為與重複詢問 -->
+                        <details class="bg-sky-50 border-2 border-brand rounded-2xl p-4 cursor-pointer hover:bg-sky-100 transition-colors">
+                            <summary class="text-2xl font-bold text-brand-dark flex items-center justify-between">
+                                <span>🔄 5. 重複詢問相同的問題或重複做同一個動作</span>
+                                <span class="text-sm bg-brand text-white px-3 py-1 rounded-full font-normal">點擊展開步驟</span>
+                            </summary>
+                            <div class="mt-4 pt-4 border-t border-sky-200 text-gray-800 space-y-2">
+                                <p><strong>原因分析：</strong> 即時記憶喪失，剛問完就忘記答案，或是感到無聊與焦慮。</p>
+                                <div class="step-box">
+                                    <p class="font-bold text-sky-900">👉 處理三步驟：</p>
+                                    <ol class="list-decimal ml-6 space-y-1">
+                                        <li><strong>平心靜氣簡短回答：</strong> 每次回答保持語氣溫和一致，不顯露不耐煩。</li>
+                                        <li><strong>視覺提示輔助：</strong> 若重複問「幾點吃飯？」，可以在桌上放置清晰的大時鐘與標示文字（如：「12點吃飯」）。</li>
+                                        <li><strong>安排簡單任務轉移注意力：</strong> 請長輩幫忙擦桌子、挑菜或聽音樂。</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </details>
+
+                        <!-- 6. 日落症候群與夜間遊走 -->
+                        <details class="bg-sky-50 border-2 border-brand rounded-2xl p-4 cursor-pointer hover:bg-sky-100 transition-colors">
+                            <summary class="text-2xl font-bold text-brand-dark flex items-center justify-between">
+                                <span>🌅 6. 日落症候群（黃昏時變得情緒躁動、吵著要回家）</span>
+                                <span class="text-sm bg-brand text-white px-3 py-1 rounded-full font-normal">點擊展開步驟</span>
+                            </summary>
+                            <div class="mt-4 pt-4 border-t border-sky-200 text-gray-800 space-y-2">
+                                <p><strong>原因分析：</strong> 傍晚光線變暗引發空間不安感、大腦疲勞或生理時鐘混淆。</p>
+                                <div class="step-box">
+                                    <p class="font-bold text-sky-900">👉 處理三步驟：</p>
+                                    <ol class="list-decimal ml-6 space-y-1">
+                                        <li><strong>提早點亮室內燈光：</strong> 在傍晚天黑前，將客廳與房間大燈拉上窗簾並點亮，避免陰影產生。</li>
+                                        <li><strong>安排放鬆活動：</strong> 傍晚時播放舒緩音樂、提供熱奶茶或點心，安排長輩喜歡的活動。</li>
+                                        <li><strong>順應語氣安撫：</strong> 若吵著回老家，可回應：「現在外面天黑沒有公車了，我們明天一早再出發，今天先在這裡休息。」</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </details>
+
+                    </div>
+                `
+            },
+            {
+                id: 7,
+                title: '7. 進食問題與營養照護',
+                icon: '🍚',
+                desc: '食慾改變、忘記吃過飯、吞嚥困難與進食技巧。',
+                content: `
+                    <h3>常見進食問題與實用解決方案</h3>
+                    
+                    <h4>1. 剛吃飽又吵著要吃飯</h4>
+                    <ul>
+                        <li><strong>應對策略：</strong> 切勿正面爭辯「你剛剛才吃過！」。可提供低卡熱量的少量食物（如軟質水果片、幾顆蘇打餅乾），或透過陪同散步轉移注意力。</li>
+                    </ul>
+
+                    <h4>2. 忘記如何使用餐具或集中注意力</h4>
+                    <ul>
+                        <li><strong>應對策略：</strong> 簡化餐具，一次桌上只放一個碗和一把湯匙；將食物切成方便用手拿取的「手抓食物」（如飯糰、蒸蛋塊、地瓜塊）。</li>
+                    </ul>
+
+                    <h4>3. 吞嚥困難與嗆咳預防</h4>
+                    <ul>
+                        <li><strong>應對策略：</strong> 進食時維持 90 度坐姿，進食後保持坐姿至少 30 分鐘。食物質地調整為軟質、泥狀，液體可加入食物凝固劑（快凝寶）增加濃稠度防止嗆咳。</li>
+                    </ul>
+                `
+            },
+            {
+                id: 8,
+                title: '8. 安寧照顧與預立醫療',
+                icon: '🕊️',
+                desc: '尊嚴與舒適照顧、預立醫療照護諮商（ACP）與臨終關懷。',
+                content: `
+                    <h3>失智症晚期的尊嚴與舒適照護</h3>
+                    <p>失智症屬於不可逆的慢性退化疾病。在病程中早期，家屬即可與長輩討論預立醫療意願，確保末期照護尊嚴：</p>
+
+                    <h4>1. 預立醫療照護諮商 (ACP)</h4>
+                    <ul>
+                        <li>建議在長輩處於<strong>輕度失智、尚有心智表達能力時</strong>，至醫院進行預立醫療照護諮商，預先簽署「預立醫療決定 (AD)」，明確表達未來末期時是否接受鼻胃管、插管或胸外按壓等急救措施。</li>
+                    </ul>
+
+                    <h4>2. 晚期舒適照護重點</h4>
+                    <ul>
+                        <li><strong>疼痛與症狀控制：</strong> 觀察身體語言（表情皺眉、呻吟），適時給予疼痛緩解與皮膚照護。</li>
+                        <li><strong>非侵入性餵食：</strong> 重度晚期吞嚥困難時，以舒適餵食為主，避免過度勉強插鼻胃管造成痛苦。</li>
+                    </ul>
+                `
+            },
+            {
+                id: 9,
+                title: '9. 走失預防策略',
+                icon: '📍',
+                desc: '防走失手鍊、指紋捺印、GPS定位與社區防護網。',
+                content: `
+                    <h3>多重預防，守護長輩安全</h3>
+                    <p>失智長輩由於定向感喪失，極易在熟悉的環境中迷路。建議採取「多重防護機制」：</p>
+
+                    <h4>1. 身分標示與愛心手鍊</h4>
+                    <ul>
+                        <li><strong>申請防走失愛心手鍊：</strong> 可向台北市民政局或失智症協會申請，刻有服務專線與個人編號。</li>
+                        <li><strong>衣物標籤與卡片：</strong> 在長輩常用外衣、背包內縫上姓名與緊急聯絡電話。</li>
+                    </ul>
+
+                    <h4>2. 科技輔助與指紋捺印</h4>
+                    <ul>
+                        <li><strong>警察局指紋捺印：</strong> 帶長輩至各警察分局進行指紋捺印建檔，萬一走失能快速確認身分。</li>
+                        <li><strong>GPS 定位裝置：</strong> 使用具備 GPS 定位功能的手錶或定位器，家人可透過手機 App 即時掌握位置。</li>
+                    </ul>
+
+                    <h4>3. 鄰里社區防護網</h4>
+                    <ul>
+                        <li>與家附近的超商、里長、經常光顧的店家打招呼，告知長輩狀況，請大家幫忙多加留意。</li>
+                    </ul>
+                `
+            },
+            {
+                id: 10,
+                title: '10. 福利資源與申請管道',
+                icon: '📋',
+                desc: '長照3.0專線1966、身心障礙證明、喘息服務與輔具補助。',
+                content: `
+                    <h3>政府照顧資源與補助管道</h3>
+
+                    <h4>1. 長照 3.0 專線：1966</h4>
+                    <p>長照 3.0 已全面擴大服務對象至<strong>全年齡失智症者</strong>（涵蓋未滿 50 歲之年輕型失智症者）。只要經醫師診斷確診失智症，即可撥打 <strong>1966</strong> 專線，由照管專員到府評估失能等級，協助提供居家照顧、日間照顧或喘息服務。</p>
+
+                    <h4>2. 身心障礙證明申請</h4>
+                    <p>至醫院神經內科或精神科門診進行臨床評估與鑑定，取得身心障礙證明後，可享有輔具補助、稅捐減免與復康巴士等服務。</p>
+
+                    <h4>3. 家屬喘息服務 (Respite Care)</h4>
+                    <p>照顧者也是需要休息的！長照專線可申請「喘息服務」，讓照服員到府照顧長輩，或讓長輩至機構住宿數日，給家屬喘息空間。</p>
+                `
+            },
+            {
+                id: 11,
+                title: '11. 照護系統與機構選擇',
+                icon: '🏥',
+                desc: '社區據點、日間照顧中心、團體家屋與住宿型機構比較。',
+                content: `... existing content ...`
+            },
+            {
+                id: 12,
+                title: '12. 健腦認知活動學習單下載列印',
+                icon: '🖨️',
+                desc: '提供可直接列印或下載 PDF 的 A4 健腦學習單（不含失智字眼）。',
+                content: `... existing content ...`
+            },
+            {
+                id: 13,
+                title: '13. 台北市失智據點與醫療地圖',
+                icon: '🗺️',
+                desc: '仁愛院區共照中心聯絡資訊、台北市 12 行政區據點快速導航與資源地圖。',
+                content: `
+                    <h3>台北市失智症服務資源與據點地圖指南</h3>
+                    <p>為了方便照顧家屬就近尋求醫療診斷、照護諮詢與社區據點活動，本區提供台北市失智服務據點與醫療地圖連結：</p>
+
+                    <!-- 仁愛院區失智共照中心卡片 -->
+                    <div class="bg-sky-50 border-3 border-brand p-6 rounded-2xl my-6 shadow-sm">
+                        <div class="flex items-center gap-4 mb-3">
+                            <span class="text-4xl">🏥</span>
+                            <div>
+                                <h4 class="text-2xl font-bold text-brand-dark m-0">台北市立聯合醫院 仁愛院區 失智共照中心</h4>
+                                <p class="text-lg text-gray-600 m-0">專業神經內科/精神科診斷、照護諮詢、個案管理服務</p>
+                            </div>
+                        </div>
+                        <ul class="space-y-2 text-xl text-gray-800 mt-4 border-t border-sky-200 pt-4">
+                            <li>📍 <strong>地址：</strong>106 台北市大安區仁愛路四段 10 號</li>
+                            <li>📞 <strong>諮詢電話：</strong>(02) 2709-3600</li>
+                            <li>⏰ <strong>服務時間：</strong>星期一至星期五 08:00 - 16:00</li>
+                        </ul>
+                        <div class="mt-4 flex flex-wrap gap-3">
+                        <a href="https://www.google.com/maps/search/?api=1&query=台北市立聯合醫院仁愛院區" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 bg-brand text-white font-bold text-lg px-5 py-2.5 rounded-xl hover:bg-brand-dark transition-colors shadow">
+                            🧭 開啟 Google 地圖導航
+                        </a>
+                        <a href="tel:0227093600" class="inline-flex items-center gap-2 bg-emerald-600 text-white font-bold text-lg px-5 py-2.5 rounded-xl hover:bg-emerald-700 transition-colors shadow">
+                            📞 直接撥打電話諮詢
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 台北市失智據點完整通訊錄 PDF 下載專區 -->
+                <div class="bg-gradient-to-r from-amber-50 to-orange-50 border-3 border-amber-400 p-6 rounded-2xl my-6 shadow-md flex flex-col md:flex-row items-center justify-between gap-5 border-l-8 border-l-amber-500">
+                    <div class="flex items-center gap-4">
+                        <span class="text-5xl bg-white p-3 rounded-2xl shadow-sm shrink-0">📄</span>
+                        <div>
+                            <span class="bg-amber-200 text-amber-900 font-bold px-3 py-0.5 rounded-full text-sm">官方文件</span>
+                            <h4 class="text-2xl font-bold text-amber-950 m-0 mt-1">台北市失智服務據點完整通訊錄 (PDF)</h4>
+                            <p class="text-lg text-amber-900 m-0 mt-1">彙整全台北市各行政區失智社區服務據點之名稱、地址與聯絡電話，方便下載儲存與列印。</p>
+                        </div>
+                    </div>
+                    <a href="https://www-ws.gov.taipei/Download.ashx?u=LzAwMS9VcGxvYWQvNjk0L3JlbGZpbGUvMC84NjcyNC80YzMxNWM3YS1mODJhLTRjNGUtOWFkMC02YTI0NjA3ZmMwZTUucGRm&n=6Ie65YyX5biC5aSx5pm65pyN5YuZ5pOa6bue5biD6YGU6YCa6KiK6YyEKDExNTA4MDPkv64pLnBkZg%3d%3d&icon=..pdf" target="_blank" rel="noopener noreferrer" class="bg-amber-500 hover:bg-amber-600 text-white font-black text-xl px-7 py-3.5 rounded-2xl shadow-md hover:shadow-lg transition-all shrink-0 flex items-center gap-2">
+                        📥 下載據點通訊錄 PDF
+                    </a>
+                </div>
+
+                <h3>台北市 12 行政區失智據點快速查詢</h3>
+                <p>點選下方您居住的行政區，可快速在 Google 地圖上尋找當區的失智社區服務據點、瑞智學堂與日照中心：</p>
+
+                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 my-6 no-print">
+                    <a href="https://www.google.com/maps/search/台北市+大安區+失智據點" target="_blank" rel="noopener noreferrer" class="bg-white border-2 border-slate-200 hover:border-brand hover:bg-sky-50 text-slate-800 font-bold p-3 rounded-xl text-center text-lg transition-colors shadow-sm flex items-center justify-center gap-1">📍 大安區據點</a>
+                    <a href="https://www.google.com/maps/search/台北市+信義區+失智據點" target="_blank" rel="noopener noreferrer" class="bg-white border-2 border-slate-200 hover:border-brand hover:bg-sky-50 text-slate-800 font-bold p-3 rounded-xl text-center text-lg transition-colors shadow-sm flex items-center justify-center gap-1">📍 信義區據點</a>
+                    <a href="https://www.google.com/maps/search/台北市+中正區+失智據點" target="_blank" rel="noopener noreferrer" class="bg-white border-2 border-slate-200 hover:border-brand hover:bg-sky-50 text-slate-800 font-bold p-3 rounded-xl text-center text-lg transition-colors shadow-sm flex items-center justify-center gap-1">📍 中正區據點</a>
+                    <a href="https://www.google.com/maps/search/台北市+中山區+失智據點" target="_blank" rel="noopener noreferrer" class="bg-white border-2 border-slate-200 hover:border-brand hover:bg-sky-50 text-slate-800 font-bold p-3 rounded-xl text-center text-lg transition-colors shadow-sm flex items-center justify-center gap-1">📍 中山區據點</a>
+                    <a href="https://www.google.com/maps/search/台北市+松山區+失智據點" target="_blank" rel="noopener noreferrer" class="bg-white border-2 border-slate-200 hover:border-brand hover:bg-sky-50 text-slate-800 font-bold p-3 rounded-xl text-center text-lg transition-colors shadow-sm flex items-center justify-center gap-1">📍 松山區據點</a>
+                    <a href="https://www.google.com/maps/search/台北市+萬華區+失智據點" target="_blank" rel="noopener noreferrer" class="bg-white border-2 border-slate-200 hover:border-brand hover:bg-sky-50 text-slate-800 font-bold p-3 rounded-xl text-center text-lg transition-colors shadow-sm flex items-center justify-center gap-1">📍 萬華區據點</a>
+                    <a href="https://www.google.com/maps/search/台北市+文山區+失智據點" target="_blank" rel="noopener noreferrer" class="bg-white border-2 border-slate-200 hover:border-brand hover:bg-sky-50 text-slate-800 font-bold p-3 rounded-xl text-center text-lg transition-colors shadow-sm flex items-center justify-center gap-1">📍 文山區據點</a>
+                    <a href="https://www.google.com/maps/search/台北市+內湖區+失智據點" target="_blank" rel="noopener noreferrer" class="bg-white border-2 border-slate-200 hover:border-brand hover:bg-sky-50 text-slate-800 font-bold p-3 rounded-xl text-center text-lg transition-colors shadow-sm flex items-center justify-center gap-1">📍 內湖區據點</a>
+                    <a href="https://www.google.com/maps/search/台北市+南港區+失智據點" target="_blank" rel="noopener noreferrer" class="bg-white border-2 border-slate-200 hover:border-brand hover:bg-sky-50 text-slate-800 font-bold p-3 rounded-xl text-center text-lg transition-colors shadow-sm flex items-center justify-center gap-1">📍 南港區據點</a>
+                    <a href="https://www.google.com/maps/search/台北市+士林區+失智據點" target="_blank" rel="noopener noreferrer" class="bg-white border-2 border-slate-200 hover:border-brand hover:bg-sky-50 text-slate-800 font-bold p-3 rounded-xl text-center text-lg transition-colors shadow-sm flex items-center justify-center gap-1">📍 士林區據點</a>
+                    <a href="https://www.google.com/maps/d/u/0/edit?hl=zh-TW&mid=1HvbwaaQxn7jhOwZDqv6aTjT_Q0_V7l0&ll=25.126450503840672%2C121.50398355665779&z=18" target="_blank" rel="noopener noreferrer" class="bg-white border-2 border-slate-200 hover:border-brand hover:bg-sky-50 text-slate-800 font-bold p-3 rounded-xl text-center text-lg transition-colors shadow-sm flex items-center justify-center gap-1">📍 北投區據點</a>
+                    <a href="https://www.google.com/maps/search/台北市+大同區+失智據點" target="_blank" rel="noopener noreferrer" class="bg-white border-2 border-slate-200 hover:border-brand hover:bg-sky-50 text-slate-800 font-bold p-3 rounded-xl text-center text-lg transition-colors shadow-sm flex items-center justify-center gap-1">📍 大同區據點</a>
+                </div>
+
+                <h3>官方地圖與資源系統入口</h3>
+                <div class="space-y-3 my-4">
+                    <a href="https://dementia.gov.taipei/" target="_blank" rel="noopener noreferrer" class="block bg-amber-50 border-2 border-amber-300 p-5 rounded-2xl hover:bg-amber-100 transition-colors shadow-sm">
+                        <div class="flex items-center justify-between">
+                            <p class="font-bold text-amber-900 text-xl m-0">🌐 臺北市政府失智症服務網</p>
+                            <span class="text-sm bg-amber-200 text-amber-900 font-bold px-3 py-1 rounded-lg">開啟網站 ↗</span>
+                        </div>
+                        <p class="text-base text-gray-700 mt-1 m-0">查詢台北市最新失智衛教訊息、共照中心名單與社區照顧據點（網址：dementia.gov.taipei）。</p>
+                    </a>
+                    
+                    <a href="https://ltcpap.mohw.gov.tw/public/index.html" target="_blank" rel="noopener noreferrer" class="block bg-emerald-50 border-2 border-emerald-300 p-5 rounded-2xl hover:bg-emerald-100 transition-colors shadow-sm">
+                        <div class="flex items-center justify-between">
+                            <p class="font-bold text-emerald-900 text-xl m-0">🌐 衛生福利部 長照服務資源地理地圖 ( LTC-GIS )</p>
+                            <span class="text-sm bg-emerald-200 text-emerald-900 font-bold px-3 py-1 rounded-lg">開啟網站 ↗</span>
+                        </div>
+                        <p class="text-base text-gray-700 mt-1 m-0">輸入地址或即時定位，查詢周邊的長照據點、日照中心與喘息服務機構（網址：ltcpap.mohw.gov.tw）。</p>
+                    </a>
+
+                    <a href="https://1966.gov.tw/" target="_blank" rel="noopener noreferrer" class="block bg-sky-50 border-2 border-sky-300 p-5 rounded-2xl hover:bg-sky-100 transition-colors shadow-sm">
+                        <div class="flex items-center justify-between">
+                            <p class="font-bold text-sky-900 text-xl m-0">🌐 衛生福利部 1966 長照專區</p>
+                            <span class="text-sm bg-sky-200 text-sky-900 font-bold px-3 py-1 rounded-lg">開啟網站 ↗</span>
+                        </div>
+                        <p class="text-base text-gray-700 mt-1 m-0">線上申辦長照服務、查詢長照 3.0 服務項目與最新長照補助政策（網址：1966.gov.tw）。</p>
+                    </a>
+                </div>
+            `
+        }
+    ];
+
+        // 頁面初始化與卡片生成
+        window.onload = function() {
+            renderCards();
+        };
+
+        function renderCards() {
+            const container = document.getElementById('card-container');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            topics.forEach(topic => {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all border border-slate-100 flex flex-col justify-between cursor-pointer group hover:-translate-y-1';
+                card.onclick = () => openDetail(topic.id);
+                
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center gap-4 mb-4">
+                            <span class="text-4xl bg-brand-light w-16 h-16 flex items-center justify-center rounded-xl group-hover:scale-110 transition-transform">${topic.icon}</span>
+                            <h3 class="text-2xl font-bold text-gray-800 group-hover:text-brand transition-colors leading-snug">${topic.title}</h3>
+                        </div>
+                        <p class="text-gray-600 text-lg font-normal leading-relaxed mb-4">${topic.desc}</p>
+                    </div>
+                    <div class="flex items-center text-brand font-bold text-xl group-hover:translate-x-1 transition-transform">
+                        查看內容細節 →
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // 切換詳細頁面
+        function openDetail(id) {
+            const topic = topics.find(t => t.id === id);
+            if (!topic) return;
+
+            document.getElementById('detail-icon').innerText = topic.icon;
+            document.getElementById('detail-title').innerText = topic.title;
+            document.getElementById('detail-content').innerHTML = topic.content;
+
+            document.getElementById('home-view').classList.add('hidden');
+            const detailView = document.getElementById('detail-view');
+            detailView.classList.remove('hidden');
+
+            // 觸發淡入動畫
+            detailView.classList.remove('fade-in');
+            void detailView.offsetWidth;
+            detailView.classList.add('fade-in');
+
+            // 若選擇學習單頁面，進行初始化渲染
+            if (id === 12) {
+                renderWorksheet();
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 返回首頁
+        function goBack() {
+            document.getElementById('detail-view').classList.add('hidden');
+            const homeView = document.getElementById('home-view');
+            homeView.classList.remove('hidden');
+
+            homeView.classList.remove('fade-in');
+            void homeView.offsetWidth;
+            homeView.classList.add('fade-in');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 動態生成 A4 學習單（絕不含「失智」字眼）
+        function renderWorksheet() {
+            const select = document.getElementById('worksheet-select');
+            const printable = document.getElementById('printable-worksheet');
+            if (!select || !printable) return;
+
+            const val = select.value;
+            let html = `
+                <div class="text-center border-b-2 border-gray-800 pb-4 mb-6">
+                    <h2 class="text-3xl font-black text-gray-900 tracking-wider">健腦認知活動學習單</h2>
+                    <p class="text-lg text-gray-600 mt-1 font-medium">台北市立聯合醫院 仁愛院區 關心您</p>
+                </div>
+            `;
+
+            if (val === 'ws1') {
+                html += `
+                    <div class="space-y-6 text-gray-800 text-xl">
+                        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
+                            <div><strong>姓名：</strong>____________</div>
+                            <div><strong>日期：</strong>___年___月___日</div>
+                        </div>
+
+                        <div class="p-4 border-2 border-dashed border-gray-400 rounded-xl space-y-3">
+                            <p class="font-bold text-2xl text-indigo-900">一、時間與定向感練習：</p>
+                            <p>1. 今天是星期幾？【 &nbsp; 】</p>
+                            <p>2. 現在是什麼季節？（春 / 夏 / 秋 / 冬）【 &nbsp; 】</p>
+                            <p>3. 今天天氣怎麼樣？（晴天 / 陰天 / 下雨）【 &nbsp; 】</p>
+                        </div>
+
+                        <div class="p-4 border-2 border-dashed border-gray-400 rounded-xl space-y-3 text-center">
+                            <p class="font-bold text-2xl text-indigo-900 text-left">二、請在下方圓圈內畫出時鐘：</p>
+                            <p class="text-lg text-gray-600 text-left">（請標上數字 1 至 12，並畫出指定時間：<strong>10 點 10 分</strong> 的時針與分針）</p>
+                            <div class="w-64 h-64 border-4 border-gray-800 rounded-full mx-auto my-6 flex items-center justify-center">
+                                <span class="text-gray-300 font-bold">在此處畫上數字與指針</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (val === 'ws2') {
+                html += `
+                    <div class="space-y-6 text-gray-800 text-xl">
+                        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
+                            <div><strong>姓名：</strong>____________</div>
+                            <div><strong>日期：</strong>___年___月___日</div>
+                        </div>
+
+                        <div class="p-4 border-2 border-dashed border-gray-400 rounded-xl space-y-4">
+                            <p class="font-bold text-2xl text-emerald-900">懷舊水果找找看與計算：</p>
+                            <p>請仔細算算看下方各種水果共有幾個，並在方格內寫出數字：</p>
+
+                            <div class="bg-amber-50 p-6 rounded-2xl text-4xl leading-loose tracking-widest text-center border border-amber-200">
+                                🍎 🍌 🍎 🍊 🍎 🍌 🍊 🍎 🍌<br>
+                                🍊 🍎 🍌 🍎 🍊 🍎 🍌 🍎 🍊
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-4 text-center mt-4">
+                                <div class="bg-gray-50 p-4 rounded-xl border">
+                                    <span class="text-3xl">🍎 蘋果：</span>
+                                    <span class="text-2xl font-bold">【 &nbsp;&nbsp; 】個</span>
+                                </div>
+                                <div class="bg-gray-50 p-4 rounded-xl border">
+                                    <span class="text-3xl">🍌 香蕉：</span>
+                                    <span class="text-2xl font-bold">【 &nbsp;&nbsp; 】個</span>
+                                </div>
+                                <div class="bg-gray-50 p-4 rounded-xl border">
+                                    <span class="text-3xl">🍊 橘子：</span>
+                                    <span class="text-2xl font-bold">【 &nbsp;&nbsp; 】個</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (val === 'ws3') {
+                html += `
+                    <div class="space-y-6 text-gray-800 text-xl">
+                        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
+                            <div><strong>姓名：</strong>____________</div>
+                            <div><strong>日期：</strong>___年___月___日</div>
+                        </div>
+
+                        <div class="p-4 border-2 border-dashed border-gray-400 rounded-xl space-y-4">
+                            <p class="font-bold text-2xl text-indigo-900">數字連連看（順序練習）：</p>
+                            <p>請用筆按照數字順序（1 → 2 → 3 → 4 → 5 → 6 → 7 → 8）依序連線：</p>
+
+                            <div class="relative w-full h-64 border border-gray-200 rounded-2xl bg-sky-50 my-4 flex justify-between p-8 items-center font-bold text-2xl text-brand-dark">
+                                <div class="space-y-12">
+                                    <div>① 順心</div>
+                                    <div>③ 平安</div>
+                                    <div>⑤ 健康</div>
+                                    <div>⑦ 快樂</div>
+                                </div>
+                                <div class="space-y-12 text-right">
+                                    <div>② 順心</div>
+                                    <div>④ 平安</div>
+                                    <div>⑥ 健康</div>
+                                    <div>⑧ 快樂</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (val === 'ws4') {
+                html += `
+                    <div class="space-y-6 text-gray-800 text-xl">
+                        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
+                            <div><strong>姓名：</strong>____________</div>
+                            <div><strong>日期：</strong>___年___月___日</div>
+                        </div>
+
+                        <div class="p-4 border-2 border-dashed border-gray-400 rounded-xl space-y-4">
+                            <p class="font-bold text-2xl text-amber-900">生活買菜好算術：</p>
+                            <p>假裝我們一起去菜市場買菜：</p>
+                            <ul class="list-disc ml-6 space-y-2 bg-amber-50 p-4 rounded-xl">
+                                <li>高麗菜一顆：<strong>30 元</strong></li>
+                                <li>雞蛋一盒：<strong>60 元</strong></li>
+                                <li>豆腐一塊：<strong>10 元</strong></li>
+                            </ul>
+
+                            <div class="space-y-3 mt-4">
+                                <p>1. 如果買一顆高麗菜和一盒雞蛋，一共要多少錢？</p>
+                                <p class="ml-4 font-bold text-brand-dark">答：30 + 60 = 【 &nbsp;&nbsp;&nbsp;&nbsp; 】元</p>
+
+                                <p>2. 付給老闆 100 元鈔票，應該找回多少錢？</p>
+                                <p class="ml-4 font-bold text-brand-dark">答：100 - 【上一題答案】 = 【 &nbsp;&nbsp;&nbsp;&nbsp; 】元</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (val === 'ws5') {
+                html += `
+                    <div class="space-y-6 text-gray-800 text-xl">
+                        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
+                            <div><strong>姓名：</strong>____________</div>
+                            <div><strong>日期：</strong>___年___月___日</div>
+                        </div>
+
+                        <div class="p-4 border-2 border-dashed border-gray-400 rounded-xl space-y-4">
+                            <p class="font-bold text-2xl text-red-900">傳統節慶與美食連連看：</p>
+                            <p>請用筆將左邊的傳統節慶，與右邊對應的習俗美食畫線連起來：</p>
+
+                            <div class="grid grid-cols-2 gap-8 my-6 p-6 bg-red-50 rounded-2xl border border-red-200 text-2xl font-bold leading-loose">
+                                <div class="space-y-6">
+                                    <div>🧧 1. 農曆春節 (過年)</div>
+                                    <div>🎋 2. 端午節</div>
+                                    <div>🥮 3. 中秋節</div>
+                                    <div>🥣 4. 冬至</div>
+                                </div>
+                                <div class="space-y-6 text-right">
+                                    <div>A. 吃月餅與柚子</div>
+                                    <div>B. 吃湯圓長一歲</div>
+                                    <div>C. 包粽子划龍舟</div>
+                                    <div>D. 吃年夜飯包紅包</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (val === 'ws6') {
+                html += `
+                    <div class="space-y-6 text-gray-800 text-xl">
+                        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
+                            <div><strong>姓名：</strong>____________</div>
+                            <div><strong>日期：</strong>___年___月___日</div>
+                        </div>
+
+                        <div class="p-4 border-2 border-dashed border-gray-400 rounded-xl space-y-4">
+                            <p class="font-bold text-2xl text-blue-900">常用俗語與名言缺字填空：</p>
+                            <p>請根據您熟悉的記憶，在括號【 】中寫出正確的字：</p>
+
+                            <div class="space-y-4 bg-blue-50 p-6 rounded-2xl border border-blue-200 text-2xl leading-relaxed">
+                                <p>1. 種瓜得瓜，種豆得【 &nbsp;&nbsp;&nbsp;&nbsp; 】。</p>
+                                <p>2. 飲水思【 &nbsp;&nbsp;&nbsp;&nbsp; 】，莫忘感恩。</p>
+                                <p>3. 吃得苦中苦，方為人上【 &nbsp;&nbsp;&nbsp;&nbsp; 】。</p>
+                                <p>4. 失敗為【 &nbsp;&nbsp;&nbsp;&nbsp; 】之母。</p>
+                                <p>5. 歡喜做，甘願【 &nbsp;&nbsp;&nbsp;&nbsp; 】。</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (val === 'ws7') {
+                html += `
+                    <div class="space-y-6 text-gray-800 text-xl">
+                        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
+                            <div><strong>姓名：</strong>____________</div>
+                            <div><strong>日期：</strong>___年___月___日</div>
+                        </div>
+
+                        <div class="p-4 border-2 border-dashed border-gray-400 rounded-xl space-y-4">
+                            <p class="font-bold text-2xl text-purple-900">生活物品分類大挑戰：</p>
+                            <p>請看下面的物品名稱，把它們分類寫到正確的框框裡：</p>
+
+                            <div class="bg-purple-50 p-4 rounded-xl border border-purple-200 text-center text-2xl font-bold tracking-widest mb-4">
+                                蘋果、高麗菜、香蕉、蘿蔔、菠菜、木瓜
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-6">
+                                <div class="bg-emerald-50 border-2 border-emerald-400 p-4 rounded-2xl min-h-[140px]">
+                                    <h4 class="font-bold text-emerald-900 text-2xl mb-2 border-b pb-1">🥬 蔬菜類：</h4>
+                                    <p class="text-gray-400 mt-4 text-base">（請寫在下方）</p>
+                                </div>
+                                <div class="bg-amber-50 border-2 border-amber-400 p-4 rounded-2xl min-h-[140px]">
+                                    <h4 class="font-bold text-amber-900 text-2xl mb-2 border-b pb-1">🍎 水果類：</h4>
+                                    <p class="text-gray-400 mt-4 text-base">（請寫在下方）</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (val === 'ws8') {
+                html += `
+                    <div class="space-y-6 text-gray-800 text-xl">
+                        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
+                            <div><strong>姓名：</strong>____________</div>
+                            <div><strong>日期：</strong>___年___月___日</div>
+                        </div>
+
+                        <div class="p-4 border-2 border-dashed border-gray-400 rounded-xl space-y-4">
+                            <p class="font-bold text-2xl text-teal-900">溫馨短文閱讀與小隨堂回想：</p>
+                            
+                            <div class="bg-teal-50 p-6 rounded-2xl border border-teal-200 text-2xl leading-relaxed italic text-teal-950">
+                                「今天是個陽光明媚的好天氣。小明帶著阿公一起去家附近的公園散步，他們在公園裡看到美麗的紅玫瑰，還一起喝了一杯香濃的熱豆漿。」
+                            </div>
+
+                            <p class="font-bold text-xl text-gray-900 mt-4">請根據上面的短文內容回答問題：</p>
+                            <div class="space-y-3 pl-4">
+                                <p>1. 他們今天去哪裡散步？ 【 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 】</p>
+                                <p>2. 他們在公園裡看到什麼花？ 【 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 】</p>
+                                <p>3. 他們一起喝了什麼飲料？ 【 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 】</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (val === 'ws9') {
+                html += `
+                    <div class="space-y-6 text-gray-800 text-xl">
+                        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
+                            <div><strong>姓名：</strong>____________</div>
+                            <div><strong>日期：</strong>___年___月___日</div>
+                        </div>
+
+                        <div class="p-4 border-2 border-dashed border-gray-400 rounded-xl space-y-4">
+                            <p class="font-bold text-2xl text-amber-900">台灣懷舊名產與地名連連看：</p>
+                            <p>請用筆將左邊的台灣知名名產，與右邊對應的著名產地畫線連起來：</p>
+
+                            <div class="grid grid-cols-2 gap-8 my-6 p-6 bg-amber-50 rounded-2xl border border-amber-200 text-2xl font-bold leading-loose">
+                                <div class="space-y-6">
+                                    <div>🥮 1. 太陽餅</div>
+                                    <div>🍍 2. 鳳梨酥</div>
+                                    <div>🐮 3. 牛舌餅</div>
+                                    <div>🍡 4. 手工麻糬</div>
+                                </div>
+                                <div class="space-y-6 text-right">
+                                    <div>A. 宜蘭</div>
+                                    <div>B. 台中</div>
+                                    <div>C. 花蓮</div>
+                                    <div>D. 台北</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (val === 'ws10') {
+                html += `
+                    <div class="space-y-6 text-gray-800 text-xl">
+                        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
+                            <div><strong>姓名：</strong>____________</div>
+                            <div><strong>日期：</strong>___年___月___日</div>
+                        </div>
+
+                        <div class="p-4 border-2 border-dashed border-gray-400 rounded-xl space-y-4">
+                            <p class="font-bold text-2xl text-emerald-900">家常菜「番茄炒蛋」烹稔步驟排序：</p>
+                            <p>請看下面的炒菜步驟，在括號【 】中寫出正確的順序（1、2、3、4）：</p>
+
+                            <div class="space-y-4 bg-emerald-50 p-6 rounded-2xl border border-emerald-200 text-2xl leading-relaxed">
+                                <p>【 &nbsp;&nbsp; 】A. 將番茄切塊，雞蛋打散備用。</p>
+                                <p>【 &nbsp;&nbsp; 】B. 熱鍋下油，先將蛋液炒至七分熟盛起。</p>
+                                <p>【 &nbsp;&nbsp; 】C. 放入番茄翻炒出汁，加入少許鹽與糖。</p>
+                                <p>【 &nbsp;&nbsp; 】D. 倒入炒好的雞蛋一起翻炒均勻即可起鍋。</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (val === 'ws11') {
+                html += `
+                    <div class="space-y-6 text-gray-800 text-xl">
+                        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
+                            <div><strong>姓名：</strong>____________</div>
+                            <div><strong>日期：</strong>___年___月___日</div>
+                        </div>
+
+                        <div class="p-4 border-2 border-dashed border-gray-400 rounded-xl space-y-4">
+                            <p class="font-bold text-2xl text-indigo-900">符號視覺搜尋大挑戰：</p>
+                            <p>請仔細計算下方方格中的符號各有幾個，並填入下方表格中：</p>
+
+                            <div class="bg-indigo-50 p-6 rounded-2xl text-4xl leading-loose tracking-widest text-center border border-indigo-200">
+                                ⭐️ ☀️ 🌙 🍀 ⭐️ 🌙 ☀️ 🍀<br>
+                                ☀️ 🍀 ⭐️ 🌙 ☀️ ⭐️ 🍀 🌙<br>
+                                🌙 ⭐️ 🍀 ☀️ ⭐️ ☀️ 🌙 🍀
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4 text-center mt-4">
+                                <div class="bg-gray-50 p-4 rounded-xl border">
+                                    <span class="text-3xl">⭐️ 星星：</span>
+                                    <span class="text-2xl font-bold">【 &nbsp;&nbsp; 】個</span>
+                                </div>
+                                <div class="bg-gray-50 p-4 rounded-xl border">
+                                    <span class="text-3xl">☀️ 太陽：</span>
+                                    <span class="text-2xl font-bold">【 &nbsp;&nbsp; 】個</span>
+                                </div>
+                                <div class="bg-gray-50 p-4 rounded-xl border">
+                                    <span class="text-3xl">🌙 月亮：</span>
+                                    <span class="text-2xl font-bold">【 &nbsp;&nbsp; 】個</span>
+                                </div>
+                                <div class="bg-gray-50 p-4 rounded-xl border">
+                                    <span class="text-3xl">🍀 幸運草：</span>
+                                    <span class="text-2xl font-bold">【 &nbsp;&nbsp; 】個</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (val === 'ws12') {
+                html += `
+                    <div class="space-y-6 text-gray-800 text-xl">
+                        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
+                            <div><strong>姓名：</strong>____________</div>
+                            <div><strong>日期：</strong>___年___月___日</div>
+                        </div>
+
+                        <div class="p-4 border-2 border-dashed border-gray-400 rounded-xl space-y-4">
+                            <p class="font-bold text-2xl text-rose-900">四季天氣與生活穿搭常識：</p>
+                            <p>請選擇最合適的答案，填入括號【 】中：</p>
+
+                            <div class="space-y-4 bg-rose-50 p-6 rounded-2xl border border-rose-200 text-2xl leading-relaxed">
+                                <p>1. 寒冷的冬天出門，應該穿著什麼比較保暖？<br>【 &nbsp;&nbsp; 】 （A. 羽絨大衣與圍巾 &nbsp; B. 短袖短褲）</p>
+                                <p>2. 炎熱的夏天去戶外，防曬與補充水分應該攜帶？<br>【 &nbsp;&nbsp; 】 （A. 暖暖包 &nbsp; B. 遮陽帽與水壺）</p>
+                                <p>3. 下雨天出門時，應該準備什麼才不會被淋濕？<br>【 &nbsp;&nbsp; 】 （A. 雨傘或雨衣 &nbsp; B. 墨鏡）</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (val === 'ws13') {
+                html += `
+                    <div class="space-y-6 text-gray-800 text-xl">
+                        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
+                            <div><strong>姓名：</strong>____________</div>
+                            <div><strong>日期：</strong>___年___月___日</div>
+                        </div>
+
+                        <div class="p-4 border-2 border-dashed border-gray-400 rounded-xl space-y-4">
+                            <p class="font-bold text-2xl text-cyan-900">數字規律填空（數感邏輯）：</p>
+                            <p>請觀察數字變化的規律，在括號【 】中填入正確的數字：</p>
+
+                            <div class="space-y-4 bg-cyan-50 p-6 rounded-2xl border border-cyan-200 text-2xl leading-relaxed">
+                                <p>1. 2 &nbsp;—&nbsp; 4 &nbsp;—&nbsp; 6 &nbsp;—&nbsp; 【 &nbsp;&nbsp;&nbsp;&nbsp; 】 &nbsp;—&nbsp; 10</p>
+                                <p>2. 5 &nbsp;—&nbsp; 10 &nbsp;—&nbsp; 15 &nbsp;—&nbsp; 20 &nbsp;—&nbsp; 【 &nbsp;&nbsp;&nbsp;&nbsp; 】</p>
+                                <p>3. 10 &nbsp;—&nbsp; 20 &nbsp;—&nbsp; 30 &nbsp;—&nbsp; 【 &nbsp;&nbsp;&nbsp;&nbsp; 】 &nbsp;—&nbsp; 50</p>
+                                <p>4. 9 &nbsp;—&nbsp; 8 &nbsp;—&nbsp; 7 &nbsp;—&nbsp; 【 &nbsp;&nbsp;&nbsp;&nbsp; 】 &nbsp;—&nbsp; 5</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (val === 'ws14') {
+                html += `
+                    <div class="space-y-6 text-gray-800 text-xl">
+                        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
+                            <div><strong>姓名：</strong>____________</div>
+                            <div><strong>日期：</strong>___年___月___日</div>
+                        </div>
+
+                        <div class="p-4 border-2 border-dashed border-gray-400 rounded-xl space-y-4">
+                            <p class="font-bold text-2xl text-purple-900">懷舊童謠歌詞缺字回想：</p>
+                            <p>請回想您熟悉的童謠，在括號【 】中寫出正確的字：</p>
+
+                            <div class="space-y-4 bg-purple-50 p-6 rounded-2xl border border-purple-200 text-2xl leading-relaxed">
+                                <p>1. 一閃一閃亮晶晶，滿天都是小【 &nbsp;&nbsp;&nbsp;&nbsp; 】。</p>
+                                <p>2. 嗡嗡嗡，嗡嗡嗡，飛到西來飛到【 &nbsp;&nbsp;&nbsp;&nbsp; 】。</p>
+                                <p>3. 兩隻老虎，兩隻老虎，跑得【 &nbsp;&nbsp;&nbsp;&nbsp; 】。</p>
+                                <p>4. 桃花開，【 &nbsp;&nbsp;&nbsp;&nbsp; 】紅，大家齊歡喜。</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            printable.innerHTML = html;
+        }
+
+        // 下載 PDF 功能 (使用 html2pdf.js)
+        function downloadPDF(e) {
+            const element = document.getElementById('printable-worksheet');
+            if (!element) return;
+
+            const select = document.getElementById('worksheet-select');
+            let fileName = '健腦認知活動學習單.pdf';
+            if (select) {
+                const selectedText = select.options[select.selectedIndex].text;
+                fileName = selectedText.replace(/^[0-9.]+\s*/, '') + '.pdf';
+            }
+
+            const btn = e ? e.currentTarget : document.getElementById('pdf-btn');
+            const originalText = btn ? btn.innerHTML : '';
+            if (btn) {
+                btn.innerHTML = '⏳ 正在產生 PDF 檔案...';
+                btn.disabled = true;
+            }
+
+            const opt = {
+                margin:       [10, 10, 10, 10],
+                filename:     fileName,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            if (typeof html2pdf !== 'undefined') {
+                html2pdf().set(opt).from(element).save().then(() => {
+                    if (btn) {
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                    }
+                }).catch(err => {
+                    console.error('PDF產生錯誤:', err);
+                    showModal('PDF產生提示', 'PDF產生失敗，請嘗試使用「直接列印此頁」按鈕。');
+                    if (btn) {
+                        btn.innerHTML = originalText;
+                        btn.disabled = false;
+                    }
+                });
+            } else {
+                showModal('套件載入提示', 'PDF 生成元件載入中，請稍候再試或使用「直接列印此頁」。');
+                if (btn) {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
+            }
+        }
+
+        // 直接列印功能
+        function printCurrentWorksheet() {
+            const printContent = document.getElementById('printable-worksheet');
+            if (!printContent) return;
+
+            try {
+                const printWindow = window.open('', '_blank');
+                if (printWindow) {
+                    printWindow.document.write(`
+                        <!DOCTYPE html>
+                        <html lang="zh-Hant-TW">
+                        <head>
+                            <meta charset="UTF-8">
+                            <title>健腦認知活動學習單</title>
+                            <script src="https://cdn.tailwindcss.com"><\/script>
+                            <style>
+                                body { font-family: "Noto Sans TC", sans-serif; padding: 20px; background: white; color: black; }
+                                @media print { body { padding: 0; } }
+                            </style>
+                        </head>
+                        <body>
+                            <div>${printContent.innerHTML}</div>
+                            <script>
+                                window.onload = function() {
+                                    setTimeout(function() {
+                                        window.print();
+                                        window.close();
+                                    }, 400);
+                                };
+                            <\/script>
+                        </body>
+                        </html>
+                    `);
+                    printWindow.document.close();
+                    return;
+                }
+            } catch (e) {
+                console.warn('開啟列印新視窗受阻，嘗試直接觸發列印:', e);
+            }
+
+            try {
+                window.print();
+            } catch (err) {
+                console.error('列印觸發失敗:', err);
+                showModal('列印提示', '如果瀏覽器阻擋了列印視窗，請改為點擊「📥 下載 PDF 檔案」按鈕進行儲存與列印。');
+            }
+        }
+
+        // 自訂提示彈窗
+        function showModal(title, message) {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-message').innerText = message;
+            document.getElementById('custom-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('custom-modal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
