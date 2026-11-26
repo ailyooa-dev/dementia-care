@@ -1,1821 +1,1888 @@
 <!DOCTYPE html>
-<html lang="zh-Hant-TW">
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>失智症家屬照護資源網 - 台北市立聯合醫院仁愛院區失智共照中心</title>
-    
-    <!-- 引入 Google Fonts: Noto Sans TC 提供高辨識度的繁體中文字體 -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
-    
-    <!-- 引入 html2pdf.js 套件以支援直接產生與下載 PDF 檔案 -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
-    <!-- 引入 Tailwind CSS 進行快速且具彈性的排版 -->
+    <title>失智共照中心 - 個案管理與服務紀錄系統 (離線版)</title>
+    <!-- 引入 Tailwind CSS 以提供現代化介面 (離線時亦有內建備援樣式確保版面正常) -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['"Noto Sans TC"', 'sans-serif'],
-                    },
-                    colors: {
-                        brand: {
-                            light: '#e0f2fe',
-                            DEFAULT: '#0284c7', // 溫和且具醫療感的藍色
-                            dark: '#0369a1',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
-
     <style>
+        /* 離線備援與自訂細節樣式，確保無網路環境下依然美觀易用 */
+        :root {
+            --primary: #1e40af;
+            --primary-hover: #1d4ed8;
+            --bg-main: #f1f5f9;
+            --card-bg: #ffffff;
+            --border-color: #cbd5e1;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
+        * {
+            box-sizing: border-box;
+            font-family: "Microsoft JhengHei", "PingFang TC", "Heiti TC", sans-serif;
+        }
         body {
-            /* 設定較溫柔的背景色，減少視覺疲勞 */
-            background-color: #f8fafc;
-            /* 預設字體加大，符合高齡友善需求 */
-            font-size: 1.125rem; 
-            line-height: 1.75;
-            color: #1e293b;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.5;
         }
-        
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-
-        /* 淡入動畫 */
-        .fade-in {
-            animation: fadeIn 0.3s ease-in-out;
+        .app-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            color: white;
+            padding: 1rem 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 50;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
+        .container-grid {
+            max-width: 1440px;
+            margin: 1.5rem auto;
+            padding: 0 1rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
         }
-
-        /* 內文列表與段落樣式 */
-        .content-body h3 {
-            font-size: 1.75rem;
+        @media (max-width: 1024px) {
+            .container-grid {
+            max-width: 960px;
+            margin: 1.5rem auto;
+            padding: 0 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .section-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+            padding: 1.5rem;
+        }
+        .section-title {
+            font-size: 1.25rem;
             font-weight: 700;
-            color: #0284c7;
-            margin-top: 1.75rem;
-            margin-bottom: 0.85rem;
-            border-bottom: 2px solid #e0f2fe;
+            color: #1e3a8a;
+            border-bottom: 2px solid #3b82f6;
             padding-bottom: 0.5rem;
+            margin-bottom: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
-        .content-body h4 {
-            font-size: 1.4rem;
+        .sub-title {
+            font-size: 1.05rem;
             font-weight: 700;
             color: #0f172a;
-            margin-top: 1.25rem;
+            background-color: #eff6ff;
+            border-left: 4px solid #2563eb;
+            padding: 0.4rem 0.75rem;
+            margin: 1.25rem 0 0.75rem 0;
+            border-radius: 0 6px 6px 0;
+        }
+        .form-group {
+            margin-bottom: 0.85rem;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 0.75rem;
+            margin-bottom: 0.85rem;
+        }
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 0.25rem;
+        }
+        input[type="text"], input[type="number"], select, textarea {
+            width: 100%;
+            padding: 0.5rem 0.65rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.925rem;
+            background-color: #fff;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+        textarea {
+            resize: vertical;
+            min-height: 68px;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            padding: 0.55rem 1rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.15s;
+        }
+        .btn-primary {
+            background-color: #10b981;
+            color: white;
+            box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);
+        }
+        .btn-primary:hover {
+            background-color: #059669;
+            transform: translateY(-1px);
+        }
+        .btn-secondary {
+            background-color: rgba(255, 255, 255, 0.18);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+        }
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.28);
+        }
+        .btn-outline {
+            background-color: #f8fafc;
+            color: #334155;
+            border: 1px solid #cbd5e1;
+        }
+        .btn-outline:hover {
+            background-color: #e2e8f0;
+        }
+        .btn-sm {
+            padding: 0.25rem 0.6rem;
+            font-size: 0.8rem;
+            border-radius: 5px;
+        }
+        .need-block {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 0.85rem;
+            margin-bottom: 0.85rem;
+        }
+        .need-block-header {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
             margin-bottom: 0.5rem;
         }
-        .content-body p {
-            font-size: 1.25rem;
-            margin-bottom: 1rem;
-            letter-spacing: 0.03em;
-            line-height: 1.8;
+        /* 多選累加情境組合面板樣式 */
+        .scenario-panel {
+            background-color: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 12px;
+            padding: 1rem 1.15rem;
+            margin-bottom: 1.25rem;
         }
-        .content-body ul {
-            list-style-type: disc;
-            margin-left: 2rem;
-            margin-bottom: 1.5rem;
+        .scenario-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 0.85rem;
+            color: #92400e;
+            font-weight: 700;
+            font-size: 0.95rem;
         }
-        .content-body li {
-            font-size: 1.2rem;
+        .scenario-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
+            gap: 0.65rem;
+        }
+        .scenario-btn {
+            background: #ffffff;
+            border: 1px solid #f3e8d2;
+            border-radius: 8px;
+            padding: 0.6rem 0.85rem;
+            text-align: left;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #334155;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+            transition: all 0.15s ease;
+        }
+        .scenario-btn:hover {
+            border-color: #f59e0b;
+            background-color: #fef3c7;
+            transform: translateY(-1px);
+        }
+        .scenario-btn.active {
+            background-color: #fef3c7;
+            border: 1.5px solid #d97706;
+            color: #92400e;
+            box-shadow: 0 2px 5px rgba(217, 119, 6, 0.15);
+        }
+        .scenario-drawer {
+            margin-top: 0.85rem;
+            background: #ffffff;
+            border: 1px solid #fcd34d;
+            border-radius: 8px;
+            padding: 0.85rem;
+            display: none;
+        }
+        .scenario-drawer.open {
+            display: block;
+        }
+        .preset-option-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 0.7rem 0.85rem;
             margin-bottom: 0.6rem;
-            letter-spacing: 0.02em;
-            line-height: 1.7;
+            background: #f8fafc;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 0.75rem;
         }
-        .content-body strong {
-            color: #b91c1c; /* 強調顏色 */
+        .preset-option-card:last-child {
+            margin-bottom: 0;
         }
-        .content-body .step-box {
-            background-color: #f0f9ff;
-            border-left: 5px solid #0284c7;
-            padding: 1rem 1.25rem;
-            margin: 1rem 0;
-            border-radius: 0.5rem;
+        .toast {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            background: #0f172a;
+            color: white;
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2);
+            z-index: 100;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.25s;
+            pointer-events: none;
         }
-
-        /* 列印專用樣式 */
-        @media print {
-            body * {
-                visibility: hidden;
-            }
-            #printable-worksheet, #printable-worksheet * {
-                visibility: visible;
-            }
-            #printable-worksheet {
-                position: absolute;
-                left: 0;
-                top: 0;
-                width: 100%;
-                background: white;
-                color: black;
-                padding: 10px;
-            }
-            .no-print {
-                display: none !important;
-            }
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* 預覽視窗樣式 */
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 60;
+            padding: 1rem;
+        }
+        .modal-backdrop.active {
+            display: flex;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            max-width: 1000px;
+            width: 100%;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .modal-body {
+            padding: 1.5rem;
+            overflow-y: auto;
+            background: #e2e8f0;
+        }
+        .paper-preview {
+            background: white;
+            padding: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            margin: 0 auto;
+            max-width: 794px;
+            font-family: "標楷體", "DFKai-SB", "Microsoft JhengHei", serif;
+            color: #000;
+            font-size: 11pt;
+            line-height: 1.6;
         }
     </style>
 </head>
-<body class="antialiased">
+<body>
 
-    <header class="bg-brand text-white shadow-md sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto px-4 py-4 md:py-5 flex flex-wrap items-center justify-between gap-4">
-            <div class="flex flex-wrap items-center gap-4">
-                <!-- 臺北市立聯合醫院 仁愛院區 專屬識別 Logo (SVG) -->
-                <div class="bg-white px-3.5 py-2 rounded-2xl shadow-sm flex items-center justify-center shrink-0">
-                    <svg class="h-12 md:h-14 w-auto" viewBox="0 0 460 112" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="臺北市立聯合醫院 仁愛院區 TAIPEI CITY HOSPITAL Renai Branch">
-                        <!-- 左側 H 標誌 -->
-                        <g transform="translate(8, 12)">
-                            <!-- H 垂直與橫槓主體 -->
-                            <rect x="14" y="18" width="16" height="64" rx="4" fill="#15803d"/>
-                            <rect x="46" y="18" width="16" height="64" rx="4" fill="#15803d"/>
-                            <rect x="26" y="42" width="24" height="14" fill="#15803d"/>
-                            <!-- 動態環繞彩帶 -->
-                            <path d="M4 54 C 12 22, 64 8, 76 18 C 62 14, 18 28, 8 56 Z" fill="#ea580c"/>
-                            <path d="M74 22 C 84 44, 48 76, 12 72 C 44 70, 76 42, 70 20 Z" fill="#0284c7"/>
-                            <path d="M6 48 C 12 78, 56 88, 78 68 C 56 82, 16 74, 10 46 Z" fill="#eab308"/>
-                            <path d="M18 18 C 38 6, 68 12, 76 24 C 66 16, 40 12, 20 22 Z" fill="#f59e0b"/>
-                        </g>
-
-                        <!-- 上方綠黃漸層弧線與科技電路紋飾 -->
-                        <path d="M162 46 Q 270 6, 336 32 Q 346 36, 344 46 L 336 46 Q 338 38, 326 34 Q 268 14, 162 48 Z" fill="#15803d"/>
-                        <path d="M172 44 Q 266 10, 324 28 Q 268 14, 174 46 Z" fill="#eab308"/>
-
-                        <!-- 右上方藍色電路節點圖形 -->
-                        <g stroke="#2898b0" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="332" cy="14" r="4.5" fill="white"/>
-                            <path d="M337 14 H 362 L 378 28 H 404"/>
-                            <circle cx="358" cy="27" r="4.5" fill="white"/>
-                            <path d="M363 27 H 374 L 390 38 H 426"/>
-                            <circle cx="430" cy="38" r="4.5" fill="white"/>
-                            <circle cx="358" cy="44" r="4.5" fill="white"/>
-                            <path d="M363 44 L 378 34 H 396"/>
-                        </g>
-
-                        <!-- 院名文字：臺北市立聯合醫院 -->
-                        <text x="104" y="64" fill="#334155" font-family="'Noto Sans TC', sans-serif" font-size="25" font-weight="700" letter-spacing="1.5">臺北市立聯合醫院</text>
-                        <text x="105" y="79" fill="#475569" font-family="'Noto Sans TC', sans-serif" font-size="11.5" font-weight="700" letter-spacing="1.2">TAIPEI CITY HOSPITAL</text>
-
-                        <!-- 院區名稱：仁愛院區 Renai Branch -->
-                        <text x="312" y="75" fill="#1e293b" font-family="'Noto Sans TC', sans-serif" font-size="40" font-weight="900">仁愛</text>
-                        <text x="396" y="67" fill="#334155" font-family="'Noto Sans TC', sans-serif" font-size="22" font-weight="700">院區</text>
-                        <text x="396" y="80" fill="#475569" font-family="'Noto Sans TC', sans-serif" font-size="9.5" font-weight="600" font-style="italic">Renai Branch</text>
-
-                        <!-- 下方醫療十字、心電圖波紋與綠色底弧 -->
-                        <g transform="translate(114, 83)">
-                            <rect x="6" y="0" width="7" height="19" rx="1" fill="#0e7490"/>
-                            <rect x="0" y="6" width="19" height="7" rx="1" fill="#0e7490"/>
-                            <path d="M21 10 H 33 L 37 5 L 42 16 L 47 1 L 52 17 L 56 7 L 60 12 L 64 10 H 112" stroke="#0e7490" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                            <path d="M112 10 Q 195 10, 238 -4 L 241 -1 Q 196 13, 112 12 Z" fill="#16a34a"/>
-                        </g>
-                    </svg>
-                </div>
-
-                <div>
-                    <h1 class="text-2xl md:text-4xl font-black tracking-wider flex items-center gap-3">
-                        <span class="text-3xl md:text-4xl">🌻</span>
-                        失智症家屬照護指南
-                    </h1>
-                    <p class="text-sm md:text-base text-sky-100 mt-1 ml-1 font-semibold">
-                        臺北市立聯合醫院 仁愛院區失智共照中心 製作關心
-                    </p>
-                </div>
+    <!-- 頂部功能列 -->
+    <header class="app-header">
+        <div style="max-width: 1440px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem;">
+            <div>
+                <h1 style="margin: 0; font-size: 1.35rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem;">
+                    <span>📋</span> 失智共照個案管理與服務紀錄表單
+                </h1>
+                <p style="margin: 0.15rem 0 0 0; font-size: 0.8rem; opacity: 0.9;">
+                    純單機離線版・資料自動暫存於本機・支援一鍵匯出 Word (.doc) 單欄直式格式
+                </p>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                <button type="button" class="btn btn-secondary" onclick="openSheetImport()">
+                    📊 匯入試算表資料
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="openOptionManager()">
+                    ⚙️ 管理下拉選項
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="clearForm()">
+                    🗑️ 清空重填
+                </button>
+                <button type="button" class="btn btn-secondary" onclick="openPreview()">
+                    👁️ 預覽排版
+                </button>
+                <button type="button" class="btn btn-primary" onclick="exportToWord()">
+                    📥 匯出 Word 檔 (.doc)
+                </button>
             </div>
         </div>
     </header>
 
-    <main class="max-w-6xl mx-auto px-4 py-8 relative">
+    <!-- 主要雙欄表單編輯區 -->
+    <main class="container-grid">
         
-        <!-- 首頁：主題卡片網格 -->
-        <div id="home-view" class="fade-in">
-            <div class="mb-8 bg-white p-6 rounded-2xl shadow-sm border-l-8 border-brand-dark">
-                <p class="text-xl md:text-2xl font-medium text-gray-700 leading-relaxed">
-                    親愛的家屬您好，照顧失智症長輩是一條需要耐心的道路。本網站由<strong>台北市立聯合醫院 仁愛院區失智共照中心</strong>為您整理常見的照護主題與資源。字體特別放大，請直接點選下方的主題卡片查看詳細內容：
-                </p>
+        <!-- 左欄：基本表頭 + 一、個案基本與臨床資料 -->
+        <!-- 第一部分：基本表頭 + 一、個案基本與臨床資料 -->
+        <div class="section-card">
+            <div class="section-title">
+                <span>一、個案基本與臨床資料</span>
             </div>
 
-            <!-- 新增首頁頂部超顯眼地圖快速進入橫幅 -->
-            <div onclick="openDetail(13)" class="mb-8 bg-gradient-to-r from-teal-600 to-sky-700 text-white p-6 md:p-8 rounded-3xl shadow-lg hover:shadow-2xl transition-all cursor-pointer border-4 border-teal-200 flex flex-col md:flex-row items-center justify-between gap-6 group hover:-translate-y-1">
-                <div class="flex items-center gap-5">
-                    <span class="text-6xl bg-white/20 p-4 rounded-2xl group-hover:scale-110 transition-transform">🗺️</span>
-                    <div>
-                        <span class="bg-amber-400 text-slate-900 font-bold px-3 py-1 rounded-full text-sm uppercase tracking-wide">家屬必看資源</span>
-                        <h2 class="text-2xl md:text-4xl font-black mt-1">台北市失智據點與共照中心地圖專區</h2>
-                        <p class="text-lg md:text-xl text-teal-100 mt-2 font-medium">快速查詢台北市 12 行政區據點、仁愛院區共照中心聯繫電話與導航資訊！</p>
+            <!-- 表頭資訊 -->
+            <div class="form-row" style="background: #f8fafc; padding: 0.85rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <div>
+                    <label>訪視 / 紀錄日期 (民國年)</label>
+                    <input type="text" id="recordDate" placeholder="例：115.08.26">
+                </div>
+                <div>
+                    <label>個案稱謂 / 姓名</label>
+                    <input type="text" id="caseName" placeholder="例：林先生">
+                </div>
+                <div>
+                    <label>個案編號</label>
+                    <input type="text" id="caseId" placeholder="例：R115XXX">
+                </div>
+            </div>
+
+            <!-- 基本人口學資料 -->
+            <div class="form-row">
+                <div>
+                    <label>● 性別狀況</label>
+                    <select id="gender">
+                        <option value="男">男</option>
+                        <option value="女">女</option>
+                        <option value="其他">其他</option>
+                    </select>
+                </div>
+                <div>
+                    <label>● 婚姻狀態</label>
+                    <div style="display: flex; gap: 0.4rem;">
+                        <select id="maritalStatus" style="flex: 1;">
+                            <option value="未婚">未婚</option>
+                            <option value="已婚">已婚</option>
+                            <option value="離婚">離婚</option>
+                            <option value="喪偶">喪偶</option>
+                            <option value="其他">其他</option>
+                        </select>
+                        <input type="text" id="maritalOther" style="width: 45%;" placeholder="其他補充">
                     </div>
                 </div>
-                <button class="bg-white text-teal-800 font-black text-xl px-8 py-4 rounded-2xl shadow-md group-hover:bg-amber-300 group-hover:text-slate-900 transition-colors shrink-0">
-                    立即查詢地圖 →
-                </button>
+                <div>
+                    <label>● 個案年齡 (歲)</label>
+                    <input type="number" id="age" placeholder="例：82" min="0" max="130">
+                </div>
             </div>
 
-            <!-- 卡片網格：手機單排，平板雙排，電腦三排 -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="card-container">
-                <!-- 卡片由 JavaScript 動態生成 -->
+            <!-- 使用語言 & 教育狀態 -->
+            <div class="form-row">
+                <div>
+                    <label>● 使用語言 (可下拉快速加入或輸入)</label>
+                    <div style="display: flex; gap: 0.4rem;">
+                        <select id="languagePreset" style="width: 45%;" onchange="appendPreset('languagePreset', 'language')">
+                            <option value="">+ 加入語言</option>
+                            <option value="國語">國語</option>
+                            <option value="台語">台語</option>
+                            <option value="客語">客語</option>
+                            <option value="原住民語">原住民語</option>
+                            <option value="英語">英語</option>
+                            <option value="日文">日文</option>
+                            <option value="其他">其他</option>
+                        </select>
+                        <input type="text" id="language" placeholder="例：國語、台語 / 原住民語(族別)">
+                    </div>
+                </div>
+                <div>
+                    <label>● 教育狀態</label>
+                    <div style="display: flex; gap: 0.4rem;">
+                        <select id="education" style="flex: 1;">
+                            <option value="不識字">不識字</option>
+                            <option value="識字，未受正規教育">識字，未受正規教育</option>
+                            <option value="國小">國小</option>
+                            <option value="國中">國中</option>
+                            <option value="高中(職)">高中(職)</option>
+                            <option value="五專">五專</option>
+                            <option value="大學（二三專）">大學（二三專）</option>
+                            <option value="研究所以上">研究所以上</option>
+                            <option value="其他">其他</option>
+                        </select>
+                        <input type="text" id="educationOther" style="width: 40%;" placeholder="其他補充">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 職業 -->
+            <div class="form-group">
+                <label>● 職業狀況</label>
+                <input type="text" id="occupation" placeholder="例：保險公司老闆(6月結束營業) / 退休教師 / 家管">
+            </div>
+
+            <!-- 經濟來源 & 宗教 -->
+            <div class="form-row">
+                <div>
+                    <label>● 經濟來源 (可複選累加)</label>
+                    <div style="display: flex; gap: 0.4rem;">
+                        <select id="incomePreset" style="width: 45%;" onchange="appendPreset('incomePreset', 'incomeSource')">
+                            <option value="">+ 加入經濟來源</option>
+                            <option value="自給">自給</option>
+                            <option value="子孫">子孫</option>
+                            <option value="親友">親友</option>
+                            <option value="退休俸">退休俸</option>
+                            <option value="低收入戶">低收入戶</option>
+                            <option value="中低收入戶">中低收入戶</option>
+                        </select>
+                        <input type="text" id="incomeSource" placeholder="例：自給、退休俸">
+                    </div>
+                </div>
+                <div>
+                    <label>● 宗教信仰</label>
+                    <div style="display: flex; gap: 0.4rem;">
+                        <select id="religion" style="flex: 1;">
+                            <option value="無信仰">無信仰</option>
+                            <option value="佛教">佛教</option>
+                            <option value="道教">道教</option>
+                            <option value="天主教">天主教</option>
+                            <option value="基督教">基督教</option>
+                            <option value="其他">其他</option>
+                        </select>
+                        <input type="text" id="religionOther" style="width: 40%;" placeholder="其他補充">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 居住處 -->
+            <div class="form-group">
+                <label>● 居住處</label>
+                <div style="display: flex; flex-wrap: wrap; gap: 0.4rem;">
+                    <input type="text" id="residenceFloor" style="width: 18%; min-width: 75px;" placeholder="樓層(例:9)">
+                    <select id="residenceElevator" style="width: 24%; min-width: 100px;">
+                        <option value="有電梯">有電梯</option>
+                        <option value="無電梯">無電梯</option>
+                    </select>
+                    <select id="residenceOwnership" style="width: 24%; min-width: 105px;">
+                        <option value="自購住宅">自購住宅</option>
+                        <option value="租屋">租屋</option>
+                        <option value="親友住宅">親友住宅</option>
+                    </select>
+                    <input type="text" id="residence" style="flex: 1; min-width: 140px;" placeholder="備註，例：年底租約到期">
+                </div>
+            </div>
+
+            <!-- 興趣 -->
+            <div class="form-row">
+                <div>
+                    <label>● 目前興趣</label>
+                    <input type="text" id="currentInterest" placeholder="例：看電視、散步、下棋">
+                </div>
+                <div>
+                    <label>● 舊時興趣</label>
+                    <input type="text" id="pastInterest" placeholder="例：爬山、書法、歌唱">
+                </div>
+            </div>
+
+            <!-- 身分別【可複選】 -->
+            <div class="form-group" style="background: #f8fafc; padding: 0.75rem; border-radius: 8px; border: 1px solid #e2e8f0;">
+                <label>● 身分別【可複選】</label>
+                <div style="display: flex; gap: 0.4rem; margin-bottom: 0.45rem;">
+                    <select id="identityPreset" style="width: 45%;" onchange="appendPreset('identityPreset', 'identityType')">
+                        <option value="">+ 勾選加入身分別</option>
+                        <option value="一般戶">一般戶</option>
+                        <option value="低收入戶">低收入戶</option>
+                        <option value="中低收入戶">中低收入戶</option>
+                        <option value="榮民">榮民</option>
+                        <option value="原住民">原住民</option>
+                        <option value="身心障礙證明申請中">身心障礙證明申請中</option>
+                        <option value="領有身心障礙證明">領有身心障礙證明</option>
+                        <option value="領有重大傷病卡">領有重大傷病卡</option>
+                    </select>
+                    <input type="text" id="identityType" placeholder="已選身分別（可複選累加），例：一般戶、領有身心障礙證明">
+                </div>
+                <div style="display: flex; gap: 0.4rem;">
+                    <input type="text" id="disabilityCategory" style="flex: 1;" placeholder="若領有身障證明－障別（例：第一類神經系統）">
+                    <select id="disabilityLevel" style="width: 35%;">
+                        <option value="">-- 障別等級 --</option>
+                        <option value="輕度">輕度</option>
+                        <option value="中度">中度</option>
+                        <option value="重度">重度</option>
+                        <option value="極重度">極重度</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>● 家庭狀況</label>
+                <textarea id="familyStatus" rows="2" placeholder="例：個案離婚育一子(未婚住萬華少聯絡)，案妻離婚育2子(長子已婚罕病，次子未婚思覺失調)，個案和配偶同住"></textarea>
+            </div>
+
+            <!-- 輔具使用 -->
+            <div class="form-group">
+                <label>● 輔具使用 (可複選加入)</label>
+                <div style="display: flex; gap: 0.4rem;">
+                    <select id="assistiveDevicePreset" style="width: 42%;" onchange="appendPreset('assistiveDevicePreset', 'assistiveDevice')">
+                        <option value="">+ 選擇輔具</option>
+                        <option value="無">無</option>
+                        <option value="輪椅">輪椅</option>
+                        <option value="護腰">護腰</option>
+                        <option value="四腳拐杖">四腳拐杖</option>
+                        <option value="手杖">手杖</option>
+                        <option value="其他">其他</option>
+                    </select>
+                    <input type="text" id="assistiveDevice" placeholder="例：手杖、護腰 / 其他補充">
+                </div>
+            </div>
+
+            <!-- 視力 & 聽力 (單一欄位，支援下拉快速帶入與手動輸入) -->
+            <div class="form-row">
+                <div>
+                    <label>● 視力 (可下拉或手動輸入)</label>
+                    <div style="display: flex; gap: 0.35rem;">
+                        <select id="visionPreset" style="width: 46%;" onchange="applyPreset('visionPreset', 'vision')">
+                            <option value="">-- 快速選擇 --</option>
+                            <option value="正常">正常</option>
+                            <option value="模糊">模糊</option>
+                            <option value="白內障">白內障</option>
+                            <option value="青光眼">青光眼</option>
+                            <option value="使用矯正眼鏡">使用矯正眼鏡</option>
+                            <option value="其他">其他</option>
+                        </select>
+                        <input type="text" id="vision" style="flex: 1;" placeholder="例：正常 / 左眼白內障">
+                    </div>
+                </div>
+                <div>
+                    <label>● 聽力 (可下拉或手動輸入)</label>
+                    <div style="display: flex; gap: 0.35rem;">
+                        <select id="hearingPreset" style="width: 46%;" onchange="applyPreset('hearingPreset', 'hearing')">
+                            <option value="">-- 快速選擇 --</option>
+                            <option value="正常">正常</option>
+                            <option value="重聽">重聽</option>
+                            <option value="使用助聽器">使用助聽器</option>
+                            <option value="其他">其他</option>
+                        </select>
+                        <input type="text" id="hearing" style="flex: 1;" placeholder="例：正常 / 重聽">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div>
+                    <label>● 主要照顧者</label>
+                    <select id="primaryCaregiver">
+                        <option value="配偶">配偶</option>
+                        <option value="兒子">兒子</option>
+                        <option value="女兒">女兒</option>
+                        <option value="媳婦/女婿">媳婦/女婿</option>
+                        <option value="外籍看護工">外籍看護工</option>
+                        <option value="本國籍看護/居服員">本國籍看護/居服員</option>
+                        <option value="無(獨居自理)">無(獨居自理)</option>
+                        <option value="其他親屬">其他親屬</option>
+                    </select>
+                </div>
+                <div>
+                    <label>● 智能評估 - CDR</label>
+                    <select id="cdrScore">
+                        <option value="尚未評估">尚未評估</option>
+                        <option value="0 (正常)">0 (正常)</option>
+                        <option value="0.5 (極輕度)">0.5 (極輕度)</option>
+                        <option value="1">1 (輕度)</option>
+                        <option value="2">2 (中度)</option>
+                        <option value="3">3 (重度)</option>
+                    </select>
+                </div>
+                <div>
+                    <label>● 智能評估 - MMSE</label>
+                    <input type="text" id="mmseScore" placeholder="例：21/30 或 尚未施測">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>● 過去病史</label>
+                <div style="display: flex; gap: 0.5rem;">
+                    <select id="historyPreset" style="width: 38%;" onchange="appendPreset('historyPreset', 'medicalHistory')">
+                        <option value="">+ 加入常見病史</option>
+                        <option value="高血壓">高血壓</option>
+                        <option value="糖尿病">糖尿病</option>
+                        <option value="高血脂">高血脂</option>
+                        <option value="心臟病">心臟病</option>
+                        <option value="腦中風">腦中風</option>
+                        <option value="慢性腎臟病">慢性腎臟病</option>
+                        <option value="無特殊病史">無特殊病史</option>
+                    </select>
+                    <input type="text" id="medicalHistory" placeholder="例：糖尿病(台大看診,因穩定不需回診,已半年未看診)">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>● 服藥狀況</label>
+                <div style="display: flex; gap: 0.5rem;">
+                    <select id="medPreset" style="width: 42%;" onchange="applyPreset('medPreset', 'medicationStatus')">
+                        <option value="">-- 快速選擇 --</option>
+                        <option value="規律服藥(自行服藥)">規律服藥(自行服藥)</option>
+                        <option value="規律服藥(家屬協助給藥)">規律服藥(家屬協助給藥)</option>
+                        <option value="不規律服藥/常忘記吃藥">不規律服藥/常忘記吃藥</option>
+                        <option value="拒吃藥物">拒吃藥物</option>
+                        <option value="目前未服任何藥物">目前未服任何藥物</option>
+                    </select>
+                    <input type="text" id="medicationStatus" placeholder="例：目前未服任何藥物">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div>
+                    <label>● 覺醒程度</label>
+                    <select id="alertness">
+                        <option value="清醒">清醒</option>
+                        <option value="被動回應">被動回應</option>
+                        <option value="嗜睡">嗜睡</option>
+                        <option value="混亂/譫妄">混亂/譫妄</option>
+                        <option value="木僵/昏迷">木僵/昏迷</option>
+                    </select>
+                </div>
+                <div>
+                    <label>● 表達能力</label>
+                    <select id="expression">
+                        <option value="可完整流暢表達">可完整流暢表達</option>
+                        <option value="可組織字詞表達意思">可組織字詞表達意思</option>
+                        <option value="僅能說簡單單字/短句">僅能說簡單單字/短句</option>
+                        <option value="答非所問/語無倫次">答非所問/語無倫次</option>
+                        <option value="無法言語(非語言溝通)">無法言語(非語言溝通)</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- 評估量表 -->
+            <div style="background: #f8fafc; padding: 0.85rem; border-radius: 8px; border: 1px solid #e2e8f0; margin-bottom: 0.85rem;">
+                <label style="color: #1e3a8a; margin-bottom: 0.5rem;">● 評估量表與行為指標</label>
+                <div class="form-row" style="margin-bottom: 0.5rem;">
+                    <div>
+                        <label style="font-size: 0.8rem;">情緒及行為型態 (BPSD，可複選累加)</label>
+                        <div style="display: flex; gap: 0.35rem;">
+                            <select id="bpsdBehaviorPreset" style="width: 48%;" onchange="appendPreset('bpsdBehaviorPreset', 'bpsdBehavior')">
+                                <option value="">+ 選擇行為型態</option>
+                                <option value="無明顯異常">無明顯異常</option>
+                                <option value="1.遊走">1.遊走</option>
+                                <option value="2.日夜顛倒/作息混亂">2.日夜顛倒/作息混亂</option>
+                                <option value="3.語言攻擊行為">3.語言攻擊行為</option>
+                                <option value="4.肢體攻擊行為">4.肢體攻擊行為</option>
+                                <option value="5.干擾行為">5.干擾行為</option>
+                                <option value="6.抗拒照護">6.抗拒照護</option>
+                                <option value="7.妄想">7.妄想</option>
+                                <option value="8.幻覺">8.幻覺</option>
+                                <option value="9.恐懼或焦慮">9.恐懼或焦慮</option>
+                            </select>
+                            <input type="text" id="bpsdBehavior" style="flex: 1;" placeholder="可複選累加或手動輸入">
+                        </div>
+                    </div>
+                    <div>
+                        <label style="font-size: 0.8rem;">高危險評估指標 (可複選累加)</label>
+                        <div style="display: flex; gap: 0.35rem;">
+                            <select id="highRiskIndicatorPreset" style="width: 48%;" onchange="appendPreset('highRiskIndicatorPreset', 'highRiskIndicator')">
+                                <option value="">+ 選擇高危指標</option>
+                                <option value="無">無</option>
+                                <option value="1.自殺風險">1.自殺風險</option>
+                                <option value="2.問題行為">2.問題行為</option>
+                                <option value="3.照顧負荷(共照顧__人)">3.照顧負荷(共照顧__人)</option>
+                                <option value="4.關係衝突">4.關係衝突</option>
+                                <option value="5.照顧品質">5.照顧品質</option>
+                                <option value="6.經濟困境">6.經濟困境</option>
+                                <option value="7.照顧空窗">7.照顧空窗</option>
+                                <option value="8.重大事件">8.重大事件</option>
+                                <option value="9.安全威脅">9.安全威脅</option>
+                                <option value="10.走失危險">10.走失危險</option>
+                            </select>
+                            <input type="text" id="highRiskIndicator" style="flex: 1;" placeholder="可複選累加或手動補充人數/說明">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 0;">
+                <label>● 就醫原因及歷程</label>
+                <textarea id="medicalJourney" rows="4" placeholder="請輸入轉介來源、就醫經過、電話關懷或訪視紀錄..."></textarea>
             </div>
         </div>
 
-        <!-- 詳細內容頁面 (預設隱藏) -->
-        <div id="detail-view" class="hidden fade-in bg-white rounded-3xl shadow-xl overflow-hidden min-h-[60vh]">
-            
-            <!-- 返回按鈕固定在頂部 -->
-            <div class="bg-brand-light p-4 flex items-center justify-between border-b border-blue-200">
-                <button onclick="goBack()" class="flex items-center gap-2 bg-white text-brand-dark hover:bg-blue-50 focus:ring-4 focus:ring-blue-300 font-bold rounded-xl text-xl px-6 py-3 transition-colors shadow-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                    </svg>
-                    返回主題列表
-                </button>
+        <!-- 右欄：二、服務記錄 (照護需求評估 / 照護目標 / 服務計劃) -->
+        <!-- 第二部分：二、服務記錄 (照護需求評估 / 照護目標 / 服務計劃) -->
+        <div class="section-card">
+            <div class="section-title">
+                <span>二、服務記錄</span>
+                <button type="button" class="btn btn-outline btn-sm" onclick="addRecordItem()">+ 手動新增一組項目</button>
             </div>
 
-            <div class="p-6 md:p-10 text-gray-800">
-                <div class="flex items-center gap-4 mb-8">
-                    <span id="detail-icon" class="text-5xl md:text-6xl bg-brand-light w-20 h-20 md:w-24 md:h-24 flex items-center justify-center rounded-2xl shadow-inner shrink-0"></span>
-                    <h2 id="detail-title" class="text-3xl md:text-5xl font-black text-brand-dark leading-tight"></h2>
+            <!-- 多選累加情境組合區塊 -->
+            <div class="scenario-panel">
+                <div class="scenario-panel-header">
+                    <div style="display: flex; align-items: center; gap: 0.4rem;">
+                        <span style="font-size: 1.1rem;">✨</span>
+                        <span>多選累加情境組合（點擊多個按鈕，可同時自動合併與遞增排序計畫）</span>
+                    </div>
+                    <button type="button" class="btn btn-outline btn-sm" style="background: #fff; font-size: 0.78rem;" onclick="clearAllRecordItems()">
+                        ↺ 重置服務記錄項目
+                    </button>
                 </div>
-                
-                <div id="detail-content" class="content-body">
-                    <!-- 詳細內容由 JavaScript 動態寫入 -->
+                <div class="scenario-grid" id="scenarioButtonGrid"></div>
+
+                <!-- 點擊按鈕後展開該情境的範例選項抽屜 -->
+                <div class="scenario-drawer" id="scenarioDrawer">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; border-bottom: 1px solid #fef3c7; padding-bottom: 0.4rem;">
+                        <strong id="drawerTitle" style="color: #b45309; font-size: 0.95rem;">請選擇要帶入的範例內容：</strong>
+                        <button type="button" class="btn btn-outline btn-sm" onclick="closeScenarioDrawer()">✕ 收合範例</button>
+                    </div>
+                    <div id="drawerOptionsList"></div>
                 </div>
             </div>
-            
-            <!-- 底部返回按鈕 -->
-            <div class="bg-gray-50 p-6 flex justify-center border-t border-gray-200">
-                 <button onclick="goBack()" class="flex items-center gap-2 bg-brand text-white hover:bg-brand-dark focus:ring-4 focus:ring-blue-300 font-bold rounded-xl text-2xl px-10 py-4 transition-colors shadow-lg">
-                    ← 回到首頁列表
-                </button>
-            </div>
+
+            <!-- 1. 照護需求評估 -->
+            <div class="sub-title" style="margin-top: 0;">➤➤ 照護需求評估</div>
+            <div id="needsContainer"></div>
+
+            <!-- 2. 照護目標 -->
+            <div class="sub-title">➤➤ 照護目標</div>
+            <div id="goalsContainer"></div>
+
+            <!-- 3. 服務計劃 -->
+            <div class="sub-title">➤➤ 服務計劃</div>
+            <div id="plansContainer"></div>
+
         </div>
     </main>
 
-    <footer class="bg-slate-800 text-slate-200 py-8 mt-12 text-center">
-        <div class="max-w-6xl mx-auto px-4 flex flex-col items-center">
-            <!-- 頁尾同步展示白色底卡 Logo -->
-            <div class="bg-white px-4 py-2 rounded-2xl shadow-md mb-4 inline-flex items-center justify-center">
-                <svg class="h-12 w-auto" viewBox="0 0 460 112" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="臺北市立聯合醫院 仁愛院區 TAIPEI CITY HOSPITAL Renai Branch">
-                    <g transform="translate(8, 12)">
-                        <rect x="14" y="18" width="16" height="64" rx="4" fill="#15803d"/>
-                        <rect x="46" y="18" width="16" height="64" rx="4" fill="#15803d"/>
-                        <rect x="26" y="42" width="24" height="14" fill="#15803d"/>
-                        <path d="M4 54 C 12 22, 64 8, 76 18 C 62 14, 18 28, 8 56 Z" fill="#ea580c"/>
-                        <path d="M74 22 C 84 44, 48 76, 12 72 C 44 70, 76 42, 70 20 Z" fill="#0284c7"/>
-                        <path d="M6 48 C 12 78, 56 88, 78 68 C 56 82, 16 74, 10 46 Z" fill="#eab308"/>
-                        <path d="M18 18 C 38 6, 68 12, 76 24 C 66 16, 40 12, 20 22 Z" fill="#f59e0b"/>
-                    </g>
-                    <path d="M162 46 Q 270 6, 336 32 Q 346 36, 344 46 L 336 46 Q 338 38, 326 34 Q 268 14, 162 48 Z" fill="#15803d"/>
-                    <path d="M172 44 Q 266 10, 324 28 Q 268 14, 174 46 Z" fill="#eab308"/>
-                    <g stroke="#2898b0" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="332" cy="14" r="4.5" fill="white"/>
-                        <path d="M337 14 H 362 L 378 28 H 404"/>
-                        <circle cx="358" cy="27" r="4.5" fill="white"/>
-                        <path d="M363 27 H 374 L 390 38 H 426"/>
-                        <circle cx="430" cy="38" r="4.5" fill="white"/>
-                        <circle cx="358" cy="44" r="4.5" fill="white"/>
-                        <path d="M363 44 L 378 34 H 396"/>
-                    </g>
-                    <text x="104" y="64" fill="#334155" font-family="'Noto Sans TC', sans-serif" font-size="25" font-weight="700" letter-spacing="1.5">臺北市立聯合醫院</text>
-                    <text x="105" y="79" fill="#475569" font-family="'Noto Sans TC', sans-serif" font-size="11.5" font-weight="700" letter-spacing="1.2">TAIPEI CITY HOSPITAL</text>
-                    <text x="312" y="75" fill="#1e293b" font-family="'Noto Sans TC', sans-serif" font-size="40" font-weight="900">仁愛</text>
-                    <text x="396" y="67" fill="#334155" font-family="'Noto Sans TC', sans-serif" font-size="22" font-weight="700">院區</text>
-                    <text x="396" y="80" fill="#475569" font-family="'Noto Sans TC', sans-serif" font-size="9.5" font-weight="600" font-style="italic">Renai Branch</text>
-                    <g transform="translate(114, 83)">
-                        <rect x="6" y="0" width="7" height="19" rx="1" fill="#0e7490"/>
-                        <rect x="0" y="6" width="19" height="7" rx="1" fill="#0e7490"/>
-                        <path d="M21 10 H 33 L 37 5 L 42 16 L 47 1 L 52 17 L 56 7 L 60 12 L 64 10 H 112" stroke="#0e7490" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-                        <path d="M112 10 Q 195 10, 238 -4 L 241 -1 Q 196 13, 112 12 Z" fill="#16a34a"/>
-                    </g>
-                </svg>
+    <!-- 排版預覽 Modal -->
+    <div class="modal-backdrop" id="previewModal" onclick="if(event.target === this) closePreview()">
+        <div class="modal-content">
+            <div style="padding: 1rem 1.5rem; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin: 0; font-size: 1.1rem; font-weight: 700;">📄 Word 匯出格式預覽 (A4 直式單欄版)</h3>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button type="button" class="btn btn-primary btn-sm" onclick="exportToWord()">📥 確認並下載 Word</button>
+                    <button type="button" class="btn btn-outline btn-sm" onclick="closePreview()">✕ 關閉</button>
+                </div>
             </div>
-            <p class="text-2xl font-bold mb-2">臺北市立聯合醫院 仁愛院區失智共照中心</p>
-            <p class="text-lg text-slate-300">關心失智症長輩與照顧家屬的身心健康</p>
-            <p class="text-base text-slate-400 mt-3">本網站資訊僅供衛教與照護參考，如有醫療或個別診斷需求，請至本院神經內科或精神科門診諮詢專業醫師。</p>
-        </div>
-    </footer>
-
-    <!-- 自訂訊息彈窗 (代替原生 alert) -->
-    <div id="custom-modal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4 fade-in">
-        <div class="bg-white rounded-3xl max-w-lg w-full p-6 md:p-8 shadow-2xl border border-gray-100">
-            <div class="flex items-center gap-3 mb-4">
-                <span class="text-4xl">💡</span>
-                <h3 id="modal-title" class="text-2xl font-bold text-gray-900">提示訊息</h3>
-            </div>
-            <p id="modal-message" class="text-xl text-gray-700 leading-relaxed mb-6"></p>
-            <div class="flex justify-end">
-                <button onclick="closeModal()" class="bg-brand hover:bg-brand-dark text-white font-bold text-xl px-8 py-3 rounded-xl transition-colors shadow">
-                    我知道了
-                </button>
+            <div class="modal-body">
+                <div class="paper-preview" id="previewArea"></div>
             </div>
         </div>
     </div>
 
+    <!-- Google 試算表資料匯入 Modal -->
+    <div class="modal-backdrop" id="sheetImportModal" onclick="if(event.target === this) closeSheetImport()">
+        <div class="modal-content" style="max-width: 720px;">
+            <div style="padding: 1rem 1.5rem; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin: 0; font-size: 1.1rem; font-weight: 700;">📊 從 Google 試算表匯入個案資料</h3>
+                <button type="button" class="btn btn-outline btn-sm" onclick="closeSheetImport()">✕ 關閉</button>
+            </div>
+            <div class="modal-body" style="background: #f8fafc;">
+                <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 0.85rem; margin-bottom: 1rem; font-size: 0.88rem; color: #1e3a8a;">
+                    <strong>💡 使用方式（支援直接複製貼上 或 匯入 CSV 檔）：</strong>
+                    <ol style="margin: 0.4rem 0 0 1.25rem; padding: 0;">
+                        <li>在 Google 試算表中，框選 <strong>「第 1 列標題列」</strong> 與 <strong>「要匯入的個案資料列」</strong>，按 <code>Ctrl+C</code> 複製後貼入下方文字框。</li>
+                        <li>或者在 Google 試算表點選 <code>檔案 → 下載 → 逗號分隔值 (.csv)</code>，直接上傳檔案即可切換多筆個案。</li>
+                    </ol>
+                </div>
+
+                <div class="form-group">
+                    <label>方式 A：上傳 Google 試算表下載的 .csv 檔（可批次讀取多筆個案）</label>
+                    <input type="file" id="csvFileInput" accept=".csv,.tsv,.txt" onchange="handleCsvUpload(event)" style="background: white; padding: 0.4rem;">
+                </div>
+
+                <div class="form-group">
+                    <label>方式 B：直接從 Google 試算表複製貼上（包含標題列與資料列）</label>
+                    <textarea id="sheetPasteArea" rows="6" placeholder="在此按 Ctrl+V 貼上從 Google 試算表複製的儲存格內容..." oninput="parseSheetText(this.value)"></textarea>
+                </div>
+
+                <div id="sheetRowSelectorBox" style="display: none; background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0.85rem; margin-bottom: 1rem;">
+                    <label style="color: #0f172a;">選擇要帶入表單的個案列（已自動辨識 <span id="parsedColCount" style="color: #2563eb;">0</span> 個欄位）：</label>
+                    <select id="sheetRowSelect" style="margin-top: 0.35rem;"></select>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 0.5rem;">
+                    <button type="button" class="btn btn-outline" onclick="closeSheetImport()">取消</button>
+                    <button type="button" class="btn btn-primary" onclick="applySheetRowToForm()">✅ 立即帶入表單</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 自訂下拉選項管理 Modal (不改程式碼/不改網址即可擴充選項) -->
+    <div class="modal-backdrop" id="optionModal" onclick="if(event.target === this) closeOptionManager()">
+        <div class="modal-content" style="max-width: 680px;">
+            <div style="padding: 1rem 1.5rem; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin: 0; font-size: 1.1rem; font-weight: 700;">⚙️ 自訂下拉選單內容 (修改後網址不變)</h3>
+                <button type="button" class="btn btn-outline btn-sm" onclick="closeOptionManager()">✕ 關閉</button>
+            </div>
+            <div class="modal-body" style="background: #f8fafc;">
+                <p style="font-size: 0.85rem; color: #475569; margin-top: 0;">
+                    在此新增或修改各欄位的下拉選單選項（每行一個選項）。設定會永久儲存在本機瀏覽器中，不需修改原始檔案。
+                </p>
+                <div class="form-group">
+                    <label>選擇要編輯的下拉欄位：</label>
+                    <select id="manageTargetSelect" onchange="loadTargetOptions()">
+                        <option value="needTitles">照護需求 / 目標 / 計劃 標題分類</option>
+                        <option value="languagePreset">使用語言 (快速加入)</option>
+                        <option value="education">教育狀態</option>
+                        <option value="maritalStatus">婚姻狀態</option>
+                        <option value="incomePreset">經濟來源 (快速加入)</option>
+                        <option value="religion">宗教信仰</option>
+                        <option value="identityPreset">身分別【可複選】</option>
+                        <option value="assistiveDevicePreset">輔具使用</option>
+                        <option value="visionPreset">視力選項</option>
+                        <option value="hearingPreset">聽力選項</option>
+                        <option value="historyPreset">過去病史 (快速加入)</option>
+                        <option value="medPreset">服藥狀況 (快速選擇)</option>
+                        <option value="bpsdBehaviorPreset">情緒及行為型態 (BPSD)</option>
+                        <option value="highRiskIndicatorPreset">高危險評估指標</option>
+                        <option value="primaryCaregiver">主要照顧者</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>選項清單（每行一筆）：</label>
+                    <textarea id="manageOptionsText" rows="8" style="font-family: monospace; line-height: 1.6;"></textarea>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                    <button type="button" class="btn btn-outline btn-sm" onclick="resetTargetOptions()">↺ 恢復此欄位預設值</button>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button type="button" class="btn btn-primary" onclick="saveTargetOptions()">💾 儲存選單設定</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 訊息提示 Toast -->
+    <div class="toast" id="toast"></div>
+
     <script>
-        // 核心主題資料庫
-        const topics = [
-            {
-                id: 1,
-                title: '1. 認識失智症',
-                icon: '🧠',
-                desc: '失智症不是正常老化，了解早期十大警訊與核心症狀。',
-                content: `
-                    <h3>什麼是失智症？</h3>
-                    <p>失智症（Dementia）不是單一的一種疾病，而是一群症狀的組合（症候群）。它的主要特徵是大腦功能逐漸退化，導致記憶力、思考能力、語言能力、定向感與判斷力等認知功能減退，並嚴重影響到日常獨立生活能力。</p>
-                    
-                    <h3>失智症與正常老化的區別</h3>
-                    <ul>
-                        <li><strong>正常老化：</strong> 可能偶爾忘記某個人的名字，但過一陣子會想起來；做記憶測試時，經提示能想起來。</li>
-                        <li><strong>失智症：</strong> 對於剛發生的事情完全忘記，無法回想；甚至會連帶忘記自己剛剛問過的問題或做過的事，經提示也無法想起。</li>
-                    </ul>
+        // ==========================================
+        // 全域狀態與欄位設定
+        // ==========================================
+        const STORAGE_KEY_DATA = 'dementia_case_form_data_v3';
+        const STORAGE_KEY_OPTIONS = 'dementia_case_custom_options_v3';
 
-                    <h3>失智症的十大早期警訊</h3>
-                    <ul>
-                        <li>1. 記憶力減退影響到生活（重複詢問相同問題）。</li>
-                        <li>2. 計劃事情或解決問題有困難（如搞不清楚食譜或帳單步驟）。</li>
-                        <li>3. 無法勝任原本熟悉的事務（如不會開微波爐或開車迷路）。</li>
-                        <li>4. 對時間或地點感到混淆（搞不清年份、季節或身在何處）。</li>
-                        <li>5. 理解視覺影像和空間關係有困難（不認識鏡中的自己或常絆倒）。</li>
-                        <li>6. 言語表達或書寫出現困難（找不到合適的詞彙描述事物）。</li>
-                        <li>7. 物件擺放錯亂且失去回溯能力（把遙控器放進冰箱）。</li>
-                        <li>8. 判斷力變差或減弱（穿著不合時宜、容易上當受騙）。</li>
-                        <li>9. 退出職場或社交活動（變得孤僻、不願參與以往興趣）。</li>
-                        <li>10. 情緒和個性改變（變得疑心重、焦慮、憂鬱或易怒）。</li>
-                    </ul>
-                `
+        const FIELD_IDS = [
+            'recordDate', 'caseName', 'caseId', 'gender', 'maritalStatus', 'maritalOther', 'age',
+            'language', 'education', 'educationOther', 'occupation',
+            'incomeSource', 'religion', 'religionOther',
+            'residenceFloor', 'residenceElevator', 'residenceOwnership', 'residence',
+            'currentInterest', 'pastInterest',
+            'identityType', 'disabilityCategory', 'disabilityLevel',
+            'familyStatus', 'assistiveDevice', 'vision', 'hearing',
+            'primaryCaregiver', 'cdrScore', 'mmseScore',
+            'medicalHistory', 'medicationStatus', 'alertness', 'expression',
+            'bpsdBehavior', 'highRiskIndicator', 'medicalJourney'
+        ];
+
+        let recordItems = [];
+        let activeScenarioKey = null;
+        let parsedSheetHeaders = [];
+        let parsedSheetRows = [];
+
+        const DEFAULT_OPTIONS = {
+            needTitles: [
+                '照顧負荷大', '社會福利與居住需求', '家屬對失智症病程認知不足',
+                '走失風險高', '延緩失智失能活動需求', '法律財務問題',
+                '居家安全問題', '照顧資源需求', '精神行為問題(BPSD)',
+                '預立醫療照護諮商', '吞嚥問題'
+            ],
+            languagePreset: ['國語', '台語', '客語', '原住民語', '英語', '日文', '其他'],
+            education: ['不識字', '識字，未受正規教育', '國小', '國中', '高中(職)', '五專', '大學（二三專）', '研究所以上', '其他'],
+            maritalStatus: ['未婚', '已婚', '離婚', '喪偶', '其他'],
+            incomePreset: ['自給', '子孫', '親友', '退休俸', '低收入戶', '中低收入戶'],
+            religion: ['無信仰', '佛教', '道教', '天主教', '基督教', '其他'],
+            identityPreset: ['一般戶', '低收入戶', '中低收入戶', '榮民', '原住民', '身心障礙證明申請中', '領有身心障礙證明', '領有重大傷病卡'],
+            assistiveDevicePreset: ['無', '輪椅', '護腰', '四腳拐杖', '手杖', '其他'],
+            visionPreset: ['正常', '模糊', '白內障', '青光眼', '使用矯正眼鏡', '其他'],
+            hearingPreset: ['正常', '重聽', '使用助聽器', '其他'],
+            historyPreset: ['高血壓', '糖尿病', '高血脂', '心臟病', '腦中風', '慢性腎臟病', '無特殊病史'],
+            medPreset: ['規律服藥(自行服藥)', '規律服藥(家屬協助給藥)', '不規律服藥/常忘記吃藥', '拒吃藥物', '目前未服任何藥物'],
+            bpsdBehaviorPreset: [
+                '無明顯異常', '1.遊走', '2.日夜顛倒/作息混亂', '3.語言攻擊行為',
+                '4.肢體攻擊行為', '5.干擾行為', '6.抗拒照護', '7.妄想', '8.幻覺', '9.恐懼或焦慮'
+            ],
+            highRiskIndicatorPreset: [
+                '無', '1.自殺風險', '2.問題行為', '3.照顧負荷(共照顧__人)', '4.關係衝突',
+                '5.照顧品質', '6.經濟困境', '7.照顧空窗', '8.重大事件', '9.安全威脅', '10.走失危險'
+            ],
+            primaryCaregiver: ['配偶', '兒子', '女兒', '媳婦/女婿', '外籍看護工', '本國籍看護/居服員', '無(獨居自理)', '其他親屬']
+        };
+
+        let customOptions = JSON.parse(JSON.stringify(DEFAULT_OPTIONS));
+
+        // 11 項多選累加情境組合資料庫
+        const SCENARIO_PRESETS = [
+            {
+                key: 'education',
+                label: '失智症相關病程及衛教',
+                presets: [
+                    {
+                        title: '家屬對失智症病程認知不足',
+                        need: '個案確診失智症，家屬對其退化病程與疾病症狀不理解，常因個案重複提問或忘記事務產生焦慮與摩擦。',
+                        goal: '衛教後主要照顧者能了解失智症並非正常老化，並能舉例正確的溝通與應對原則；個案維持規律門診追蹤與用藥。',
+                        plan: '提供失智症照護資源手冊，解說失智症各階段病程及溝通技巧（順應不爭辯、簡化指令），並邀請家屬加入共照中心家屬支持團體。'
+                    },
+                    {
+                        title: '用藥遵從性與門診追蹤需求',
+                        need: '個案記憶力退化導致偶有忘記服藥或重複服藥情形，需建立安全給藥機制。',
+                        goal: '1個月內建立固定給藥提醒與分裝機制，確保個案規律服藥並按時回診。',
+                        plan: '衛教家屬使用週曆式藥盒協助備藥與確認服藥狀況，協助記錄回診日期並追蹤門診檢查結果。'
+                    }
+                ]
             },
             {
-                id: 2,
-                title: '2. 失智症類型',
-                icon: '🔍',
-                desc: '阿茲海默症、血管性失智症、路易氏體失智症等介紹。',
-                content: `
-                    <h3>失智症的主要分類與特徵</h3>
-                    <p>失智症主要分為「退化性」與「血管性」兩大類，也有部分患者屬於混合型：</p>
-                    
-                    <h4>1. 阿茲海默症 (Alzheimer's Disease)</h4>
-                    <p>最常見的退化性失智症，約佔所有失智症病例的 60% 至 70%。主要因大腦異常蛋白質（β-類澱粉蛋白與Tau蛋白質）堆積導致神經細胞死亡。早期主要表現為近期記憶衰退、時間與空間定向感喪失。</p>
-
-                    <h4>2. 血管性失智症 (Vascular Dementia)</h4>
-                    <p>第二常見類型，因腦中風或腦血管微病變導致大腦血液循環不良，造成腦細胞壞死。退化常呈現「階梯式」變化，即每次中風或血管事件發生後，功能突然下降一段，情緒轉變大、常有半身麻痺或步態不穩。</p>
-
-                    <h4>3. 路易氏體失智症 (Dementia with Lewy Bodies, DLB)</h4>
-                    <p>除了記憶力減退外，特性為：容易出現清晰的生動視覺幻覺、認知功能起伏不定、伴隨帕金森氏症狀（手震、肌肉僵硬、走路步態緩慢僵硬）。</p>
-
-                    <h4>4. 額顳葉型失智症 (Frontotemporal Dementia, FTD)</h4>
-                    <p>發病年齡通常較早（50-60歲）。早期記憶力可能尚可，但人格特質變化劇烈、出現不合宜社交行為、語言表達能力顯著退化或缺乏同理心。</p>
-                `
+                key: 'wandering',
+                label: '走失風險',
+                presets: [
+                    {
+                        title: '走失風險高',
+                        need: '個案定向感退化，有外出迷途或反覆想出門找尋過往人事物之情形，具走失安全風險。',
+                        goal: '1個月內完成防走失輔具申請與配戴，並建立社區鄰里守望機制，降低走失風險。',
+                        plan: '協助申請愛心手鍊、指紋捺印或GPS定位器；衛教家屬保留個案近期清晰照片及常穿衣物特徵，並向里長及大樓管理員報備留意。'
+                    }
+                ]
             },
             {
-                id: 3,
-                title: '3. 失智症病程發展',
-                icon: '📈',
-                desc: '從輕度知能障礙、輕度、中度到重度的照顧重點變化。',
-                content: `
-                    <h3>失智症的病程階段與照護重點</h3>
-                    <p>失智症是一種持續進行的退化性疾病，瞭解各階段病程能幫助家屬預先做好照顧準備與心理建設：</p>
-
-                    <h4>第一階段：輕度知能障礙 (MCI)</h4>
-                    <ul>
-                        <li><strong>表現：</strong> 記憶力比同齡者差，但基本日常生活（購物、煮飯）仍能獨立完成。</li>
-                        <li><strong>照護重點：</strong> 保持社交活動、進行健腦運動，定期至門診追蹤。</li>
-                    </ul>
-
-                    <h4>第二階段：輕度失智症（初期）</h4>
-                    <ul>
-                        <li><strong>表現：</strong> 對近期發生的事嚴重遺忘、常常迷路、處理金錢財務出錯、情緒易緊張焦慮。</li>
-                        <li><strong>照護重點：</strong> 協助建立常規生活，安全評估（防走失），避免單獨處理財務。</li>
-                    </ul>
-
-                    <h4>第三階段：中度失智症（中期）</h4>
-                    <ul>
-                        <li><strong>表現：</strong> 遠期記憶開始減退，穿衣穿鞋困難，出現情緒行為異常（如被偷妄想、日落症候群），無法獨自生活。</li>
-                        <li><strong>照護重點：</strong> 簡化指示步驟，提供生活協助，安排日照中心或社區據點活動。</li>
-                    </ul>
-
-                    <h4>第四階段：重度失智症（晚期）</h4>
-                    <ul>
-                        <li><strong>表現：</strong> 喪失語言溝通能力、無法認出親人、大小便失禁、吞嚥困難、長期臥床。</li>
-                        <li><strong>照護重點：</strong> 著重舒適照顧、皮膚壓瘡預防、吞嚥安全及營養維護。</li>
-                    </ul>
-                `
+                key: 'activity',
+                label: '延緩失智失能活動',
+                presets: [
+                    {
+                        title: '延緩失智失能活動需求',
+                        need: '個案平日居家缺乏社交互動與認知刺激，生活作息較被動，有功能退化之虞。',
+                        goal: '2個月內連結社區據點或日間照顧服務，每週至少參與1-2次延緩失智失能課程。',
+                        plan: '提供住家附近失智社區服務據點及C級巷弄長照站資訊，鼓勵並協助家屬安排個案參與認知訓練、懷舊與體適能活動。'
+                    }
+                ]
             },
             {
-                id: 4,
-                title: '4. 日常生活照顧',
-                icon: '🏠',
-                desc: '環境安全、個人衛生、作息安排、溝通技巧與實用照護影音教學。',
-                content: `
-                    <h3>照顧原則：尊嚴、規律與安全</h3>
-                    
-                    <h4>1. 友善且安全家居環境</h4>
-                    <ul>
-                        <li><strong>防跌措施：</strong> 保持地面乾爽，移除地毯，走廊與浴室加裝扶手與夜燈。</li>
-                        <li><strong>物品標籤：</strong> 在廁所、房間門口貼上清晰大圖示，幫助長輩辨識地點。</li>
-                    </ul>
-
-                    <h4>2. 正確的溝通互動技巧</h4>
-                    <ul>
-                        <li><strong>眼對眼專注溝通：</strong> 說話時站在長輩前方，維持眼神接觸，表情溫和。</li>
-                        <li><strong>一句話只包含一個指令：</strong> 避免複雜語句（如：「先洗手再拿碗來吃飯」改為「我們來洗手」）。</li>
-                        <li><strong>不爭辯、多肯定：</strong> 當長輩說錯事情時，切勿面紅耳赤地糾正，應順著回應並溫柔轉移話題。</li>
-                    </ul>
-
-                    <h4>3. 作息與睡眠管理</h4>
-                    <ul>
-                        <li>保持固定起床與入睡時間，白天多接觸陽光，避免白天睡太多導致夜間遊走。</li>
-                    </ul>
-
-                    <h3>🎬 失智照護小技巧：實用影音教學</h3>
-                    <p>以下精選自「愛長照」專欄與「天主教中華聖母基金會」製作的失智照護短片，用輕鬆易懂的示範，幫家屬解決日常照顧難題：</p>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6 no-print">
-                        <!-- 影片 1：不愛喝水 -->
-                        <div class="bg-sky-50 border-2 border-sky-200 rounded-2xl p-4 shadow-sm flex flex-col">
-                            <h4 class="text-xl font-bold text-brand-dark mt-0 mb-2">💧 1. 如何讓失智長輩多喝水？</h4>
-                            <p class="text-base text-gray-700 mb-3">長輩喝水易嗆咳、不愛喝水，教你用小技巧輕鬆補充每日所需水分。</p>
-                            <div class="aspect-video w-full rounded-xl overflow-hidden shadow bg-black mt-auto">
-                                <iframe class="w-full h-full" src="https://www.youtube.com/embed/vTmQ_Y7mDGg" title="失智照護小技巧 如何讓失智老人多喝水？" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                            </div>
-                        </div>
-
-                        <!-- 影片 2：作息混亂 -->
-                        <div class="bg-sky-50 border-2 border-sky-200 rounded-2xl p-4 shadow-sm flex flex-col">
-                            <h4 class="text-xl font-bold text-brand-dark mt-0 mb-2">🌙 2. 作息混亂、半夜睡不著怎麼辦？</h4>
-                            <p class="text-base text-gray-700 mb-3">長輩日夜顛倒、半夜精神好到處走動，掌握白天活動與光線調整秘訣。</p>
-                            <div class="aspect-video w-full rounded-xl overflow-hidden shadow bg-black mt-auto">
-                                <iframe class="w-full h-full" src="https://www.youtube.com/embed/p-iHC71PAbI" title="失智照護小技巧-作息混亂怎麼辦？" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                            </div>
-                        </div>
-
-                        <!-- 影片 3：不喜歡洗澡 -->
-                        <div class="bg-sky-50 border-2 border-sky-200 rounded-2xl p-4 shadow-sm flex flex-col">
-                            <h4 class="text-xl font-bold text-brand-dark mt-0 mb-2">🛁 3. 長輩不喜歡洗澡怎麼辦？</h4>
-                            <p class="text-base text-gray-700 mb-3">減少抗拒與衝突，透過保暖、尊重隱私與溫和引導讓洗澡變輕鬆。</p>
-                            <div class="aspect-video w-full rounded-xl overflow-hidden shadow bg-black mt-auto">
-                                <iframe class="w-full h-full" src="https://www.youtube.com/embed/MzeHh5X3ZIs" title="失智照護小技巧 長輩不喜歡洗澡怎麼辦" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                            </div>
-                        </div>
-
-                        <!-- 影片 4：被偷妄想 -->
-                        <div class="bg-sky-50 border-2 border-sky-200 rounded-2xl p-4 shadow-sm flex flex-col">
-                            <h4 class="text-xl font-bold text-brand-dark mt-0 mb-2">🔐 4. 長輩有被偷妄想怎麼辦？</h4>
-                            <p class="text-base text-gray-700 mb-3">被懷疑偷東西好委屈？學會同理安撫與轉移注意力，化解緊張關係。</p>
-                            <div class="aspect-video w-full rounded-xl overflow-hidden shadow bg-black mt-auto">
-                                <iframe class="w-full h-full" src="https://www.youtube.com/embed/vd75S2dn6ZI" title="失智照顧小技巧-長輩有被偷妄想怎麼辦？" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="bg-amber-50 border-2 border-amber-300 p-4 rounded-2xl my-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-                        <p class="text-lg text-amber-950 font-medium m-0">
-                            📖 <strong>文章與影音出處：</strong>愛長照《【失智照護小技巧】不愛洗澡、不愛喝水、作息混亂、懷疑家人偷東西？中華聖母基金會幫你找方法》
-                        </p>
-                        <a href="https://www.ilong-termcare.com/articles/pYYV" target="_blank" rel="noopener noreferrer" class="bg-amber-500 hover:bg-amber-600 text-white font-bold text-lg px-5 py-2.5 rounded-xl shadow transition-colors shrink-0">
-                            前往愛長照原文 ↗
-                        </a>
-                    </div>
-                `
+                key: 'burden',
+                label: '照顧壓力',
+                presets: [
+                    {
+                        title: '照顧負荷大',
+                        need: '主要照顧者長期獨力承擔生活照顧與陪同就醫，身心負荷沉重，且對政府長照服務給付方式不清楚。',
+                        goal: '幫助照顧者了解長照2.0給付與喘息服務方式，1個月內導入居家服務，3個月後照顧壓力下降。',
+                        plan: '協助撥打1966或轉介照管中心進行長照失能等級評估，連結居家服務與喘息服務，並定期電訪關懷照顧者情緒壓力。'
+                    }
+                ]
             },
             {
-                id: 5,
-                title: '5. 在家可以做的活動',
-                icon: '🎨',
-                desc: '懷舊互動、簡單家務、手藝創作與認知健腦活動。',
-                content: `
-                    <h3>適當的活動能延緩退化，增進長輩成就感！</h3>
-                    <p>活動設計應以「長輩過去熟悉且喜歡的事」為原則，過程比結果重要，讓長輩感到自信與快樂最關鍵：</p>
-
-                    <h4>1. 懷舊回憶分享</h4>
-                    <ul>
-                        <li><strong>看老照片/聽老歌：</strong> 拿出舊相簿討論過去的旅遊經歷、節慶活動，播放長輩年輕時喜歡的流行歌或戲曲，引導開口哼唱。</li>
-                    </ul>
-
-                    <h4>2. 參與簡單安全家務</h4>
-                    <ul>
-                        <li>讓長輩感受自己「仍對家庭有貢獻」，可安排：摺衣服、擦桌子、挑菜葉、剝水煮蛋皮、整理毛巾等。</li>
-                    </ul>
-
-                    <h4>3. 手眼協調與手藝創作</h4>
-                    <ul>
-                        <li><strong>圖案著色與剪貼：</strong> 使用粗筆芯蠟筆著色，或是將舊報紙雜誌圖片剪下貼成懷舊圖畫。</li>
-                        <li><strong>搓黏土/積木拼貼：</strong> 訓練手指精細動作與空間概念。</li>
-                    </ul>
-
-                    <h4>4. 溫和肢體伸展與感官刺激</h4>
-                    <ul>
-                        <li>拍手操、椅子伸展運動、收聽廣播，或者進行簡單的香氛手部按摩，刺激觸覺與嗅覺。</li>
-                    </ul>
-                `
+                key: 'welfare',
+                label: '社會福利需求',
+                presets: [
+                    {
+                        title: '社會福利與居住需求',
+                        need: '案家經濟負擔較重，且不了解身心障礙證明、中低收入老人生活津貼或社會住宅等福利申請條件。',
+                        goal: '1個月內協助釐清福利資格並完成身心障礙鑑定或相關補助申請流程。',
+                        plan: '說明身心障礙證明鑑定流程、低收/中低收及租屋補貼申請條件，必要時轉介區公所社會課或社福中心提供經濟與居住協助。'
+                    }
+                ]
             },
             {
-                id: 6,
-                title: '6. 精神行為異常 (BPSD) 處理步驟',
-                icon: '🛡️',
-                desc: '被偷妄想、關係妄想、幻覺、不洗澡、重複行為處理指南。',
-                content: `
-                    <h3>精神行為症狀（BPSD）查詢與應對指南</h3>
-                    <p>失智症長輩出現精神行為異常並非故意挑釁，而是因為腦部病變導致認知與表達受阻。點選下方症狀查看詳細處理步驟：</p>
-
-                    <div class="space-y-4 my-6 no-print">
-                        
-                        <!-- 1. 被偷妄想 -->
-                        <details class="bg-sky-50 border-2 border-brand rounded-2xl p-4 cursor-pointer hover:bg-sky-100 transition-colors">
-                            <summary class="text-2xl font-bold text-brand-dark flex items-center justify-between">
-                                <span>🔐 1. 被偷妄想（堅信錢財或物品被家人、移工偷走）</span>
-                                <span class="text-sm bg-brand text-white px-3 py-1 rounded-full font-normal">點擊展開步驟</span>
-                            </summary>
-                            <div class="mt-4 pt-4 border-t border-sky-200 text-gray-800 space-y-2">
-                                <p><strong>原因分析：</strong> 因記憶力退化忘記物品放哪裡，為了給「東西不見」一個合理的解釋而產生妄想。</p>
-                                <div class="step-box">
-                                    <p class="font-bold text-sky-900">👉 處理三步驟：</p>
-                                    <ol class="list-decimal ml-6 space-y-1">
-                                        <li><strong>同理情緒不爭辯：</strong> 溫和回應：「找不到錢包你一定很著急對不對？我們一起找找看。」切勿大聲自清或責備其胡說八道。</li>
-                                        <li><strong>協助尋找並準備備份：</strong> 家屬平時可觀察長輩常藏東西的地點（如床墊下、衣櫃底），平時多準備一份相同的皮包或存摺備用。</li>
-                                        <li><strong>轉移注意力：</strong> 找到物品後，順勢請長輩幫忙做其他事（如喝杯溫水、吃餅乾）。</li>
-                                    </ol>
-                                </div>
-                            </div>
-                        </details>
-
-                        <!-- 2. 關係妄想與嫉妒妄想 -->
-                        <details class="bg-sky-50 border-2 border-brand rounded-2xl p-4 cursor-pointer hover:bg-sky-100 transition-colors">
-                            <summary class="text-2xl font-bold text-brand-dark flex items-center justify-between">
-                                <span>💔 2. 關係妄想（懷疑配偶外遇、家人要害自己）</span>
-                                <span class="text-sm bg-brand text-white px-3 py-1 rounded-full font-normal">點擊展開步驟</span>
-                            </summary>
-                            <div class="mt-4 pt-4 border-t border-sky-200 text-gray-800 space-y-2">
-                                <p><strong>原因分析：</strong> 安全感喪失、對環境變化感到極度不安與孤單。</p>
-                                <div class="step-box">
-                                    <p class="font-bold text-sky-900">👉 處理三步驟：</p>
-                                    <ol class="list-decimal ml-6 space-y-1">
-                                        <li><strong>給予高度安全感：</strong> 握住長輩的手，用溫柔眼神告訴他：「我是最關心你的人，我會一直陪伴你，不用擔心。」</li>
-                                        <li><strong>避免正面衝突：</strong> 被指責的照顧者可暫時離開現場，換其他親友協助安撫情緒。</li>
-                                        <li><strong>尋求醫師評估：</strong> 若妄想嚴重影響家庭關係或造成暴力，可請門診醫師評估藥物調整。</li>
-                                    </ol>
-                                </div>
-                            </div>
-                        </details>
-
-                        <!-- 3. 幻覺 -->
-                        <details class="bg-sky-50 border-2 border-brand rounded-2xl p-4 cursor-pointer hover:bg-sky-100 transition-colors">
-                            <summary class="text-2xl font-bold text-brand-dark flex items-center justify-between">
-                                <span>👁️ 3. 視幻覺或聽幻覺（看到過世親人、屋裡有陌生人）</span>
-                                <span class="text-sm bg-brand text-white px-3 py-1 rounded-full font-normal">點擊展開步驟</span>
-                            </summary>
-                            <div class="mt-4 pt-4 border-t border-sky-200 text-gray-800 space-y-2">
-                                <p><strong>原因分析：</strong> 腦部功能退化、視力或聽力模糊、室內光線太暗產生陰影。</p>
-                                <div class="step-box">
-                                    <p class="font-bold text-sky-900">👉 處理三步驟：</p>
-                                    <ol class="list-decimal ml-6 space-y-1">
-                                        <li><strong>接納感受不否定：</strong> 不要硬說「根本沒有人，你亂講」，可回應：「你覺得有人在那裡會害怕嗎？別擔心，我保護你。」</li>
-                                        <li><strong>改善環境光源：</strong> 保持室內明亮，移除容易產生陰影的窗簾或大型擺飾。</li>
-                                        <li><strong>引導離開現場：</strong> 帶長輩到另一個房間散步或聽音樂，轉移專注力。</li>
-                                    </ol>
-                                </div>
-                            </div>
-                        </details>
-
-                        <!-- 4. 抗拒洗澡與清潔 -->
-                        <details class="bg-sky-50 border-2 border-brand rounded-2xl p-4 cursor-pointer hover:bg-sky-100 transition-colors">
-                            <summary class="text-2xl font-bold text-brand-dark flex items-center justify-between">
-                                <span>🛁 4. 抗拒洗澡或換衣服（高齡照顧者安心指南）</span>
-                                <span class="text-sm bg-brand text-white px-3 py-1 rounded-full font-normal">點擊展開詳細步驟</span>
-                            </summary>
-                            <div class="mt-4 pt-4 border-t border-sky-200 text-gray-800 space-y-5">
-                                <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-xl">
-                                    <p class="font-bold text-amber-950 text-xl m-0">💡 核心觀念：長輩不是故意「不愛乾淨」，洗澡對他來說可能真的很不安。</p>
-                                    <p class="text-lg text-amber-900 mt-1 mb-0">先想一想：他現在在怕什麼、哪裡不舒服，或是哪一步做不到？</p>
-                                </div>
-
-                                <!-- 一、為什麼長輩不願意洗澡 -->
-                                <div>
-                                    <h4 class="text-xl font-bold text-brand-dark mb-2">一、為什麼長輩不願意洗澡？</h4>
-                                    <div class="overflow-x-auto">
-                                        <table class="w-full text-left border-collapse bg-white rounded-xl overflow-hidden shadow-sm border border-sky-200">
-                                            <thead>
-                                                <tr class="bg-brand text-white text-lg">
-                                                    <th class="p-3 w-1/3">常見原因</th>
-                                                    <th class="p-3">長輩心裡的真實感受</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody class="divide-y divide-sky-100 text-lg">
-                                                <tr>
-                                                    <td class="p-3 font-bold text-sky-900">以為自己洗過了</td>
-                                                    <td class="p-3">記憶力退化，不記得上次洗澡時間，被催促會覺得被冤枉。</td>
-                                                </tr>
-                                                <tr class="bg-sky-50/40">
-                                                    <td class="p-3 font-bold text-sky-900">忘記怎麼做</td>
-                                                    <td class="p-3">脫衣、開水、抹肥皂、沖水步驟太複雜，卡在某一步不敢動。</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="p-3 font-bold text-sky-900">怕冷、怕水、怕跌倒</td>
-                                                    <td class="p-3">脫衣覺得冷、怕水從頭上沖下來，或曾滑倒而害怕進浴室。</td>
-                                                </tr>
-                                                <tr class="bg-sky-50/40">
-                                                    <td class="p-3 font-bold text-sky-900">在意隱私或怕被偷</td>
-                                                    <td class="p-3">不習慣在別人面前裸體，或擔心洗澡時錢、鑰匙等物品不見。</td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="p-3 font-bold text-sky-900">身體不舒服</td>
-                                                    <td class="p-3">肩膀痛、膝蓋痛、皮膚破皮或頭暈，讓脫衣與洗澡變得很難受。</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-
-                                <!-- 二、洗澡前先準備好 -->
-                                <div class="step-box">
-                                    <h4 class="text-xl font-bold text-sky-900 mt-0 mb-2">二、洗澡前先準備好，減少等待與緊張</h4>
-                                    <ul class="list-disc ml-6 space-y-2 mb-0">
-                                        <li><strong>沿用原本時間與用品：</strong> 選精神最好的時段，維持過去習慣的洗澡時間，使用他熟悉的毛巾與香皂。</li>
-                                        <li><strong>浴室先弄暖、防滑：</strong> 開燈保持明亮、先放熱水讓浴室變暖；地面放防滑墊，備好洗澡椅與扶手。</li>
-                                        <li><strong>毛巾衣服先放手邊：</strong> 洗完立刻擦乾穿衣，縮短光著身體吹風、等待的時間。</li>
-                                    </ul>
-                                </div>
-
-                                <!-- 三、怎麼開口？話術對比 -->
-                                <div>
-                                    <h4 class="text-xl font-bold text-brand-dark mb-2">三、怎麼開口？少一點命令，多一點簡單選擇</h4>
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div class="bg-red-50 border-2 border-red-200 p-4 rounded-xl">
-                                            <p class="font-bold text-red-800 text-xl mb-2">❌ 盡量避免這樣說（容易生氣）</p>
-                                            <ul class="list-disc ml-5 space-y-2 text-red-950 mb-0">
-                                                <li>「你好幾天沒洗了，身上都有味道！」</li>
-                                                <li>「不要再鬧了，快點進去洗！」</li>
-                                                <li>「你今天一定要把頭和身體都洗完。」</li>
-                                            </ul>
-                                        </div>
-                                        <div class="bg-emerald-50 border-2 border-emerald-300 p-4 rounded-xl">
-                                            <p class="font-bold text-emerald-800 text-xl mb-2">✅ 可以試試這樣說（好接受）</p>
-                                            <ul class="list-disc ml-5 space-y-2 text-emerald-950 mb-0">
-                                                <li>「熱水準備好了，我們先去擦擦汗。」</li>
-                                                <li>「你想現在洗，還是吃完飯再洗？」</li>
-                                                <li>「先洗手和臉、換件乾淨衣服好嗎？」</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- 四、洗澡5步驟 -->
-                                <div class="step-box">
-                                    <h4 class="text-xl font-bold text-sky-900 mt-0 mb-2">四、洗澡 5 步驟：慢一點、安全第一</h4>
-                                    <ol class="list-decimal ml-6 space-y-2 text-lg">
-                                        <li><strong>一次只說一個動作：</strong> 例如「先坐好」、「我們先洗手」，不要一次交代好幾件事。</li>
-                                        <li><strong>讓他自己洗洗看：</strong> 將毛巾或香皂交到他手上，能自己洗的部分先自己來，做不到再幫忙。</li>
-                                        <li><strong>用大毛巾遮蓋保暖：</strong> 身體一次只露出要清洗的部位，其他地方用毛巾蓋著，減少害羞與受涼。</li>
-                                        <li><strong>洗完最重要部位就好：</strong> 不必每次都同時洗頭、剪指甲；安全洗好身體、擦乾穿衣就值得稱讚。</li>
-                                        <li><strong>擔心東西被偷怎麼辦：</strong> 洗澡前陪他把錢包、鑰匙放進固定盒子或交給信任家人，洗完再一起確認。</li>
-                                    </ol>
-                                </div>
-
-                                <!-- 五、洗到一半生氣推人或今天真的不洗怎麼辦 -->
-                                <div class="bg-white border-2 border-sky-200 p-4 rounded-xl">
-                                    <h4 class="text-xl font-bold text-brand-dark mt-0 mb-2">五、洗到一半生氣推人，或今天真的不洗怎麼辦？</h4>
-                                    <ul class="list-disc ml-6 space-y-2 mb-0">
-                                        <li><strong>發生衝突立刻停止：</strong> 不要硬拉或多人圍住！馬上關水、用大毛巾擦乾披好，扶他坐回安全位置，等心情平復再說。</li>
-                                        <li><strong>改用「替代清潔」：</strong> 不一定要每天全身淋浴。可用溫熱毛巾分區擦澡（擦臉、腋下、私密處與皺摺），或把洗頭與洗澡分不同天進行。</li>
-                                        <li><strong>換新照顧者先熟悉：</strong> 請新照服員或家人先聊天陪伴，建立安全感再協助洗澡。</li>
-                                    </ul>
-                                </div>
-
-                                <!-- 就醫提醒 -->
-                                <div class="bg-rose-50 border-2 border-rose-400 p-4 rounded-xl">
-                                    <p class="font-bold text-rose-900 text-xl mb-1">🩺 【提醒】什麼時候要看醫生？</p>
-                                    <p class="text-rose-950 text-lg m-0">如果長輩平常肯洗，近期卻突然強烈抗拒，且伴隨<strong>抬手或彎腰疼痛、皮膚紅腫破皮、發燒、嗜睡或精神明顯變差</strong>，可能是身體不適或感染，請儘早就醫檢查。</p>
-                                </div>
-                            </div>
-                        </details>
-
-                        <!-- 5. 重複行為與重複詢問 -->
-                        <details class="bg-sky-50 border-2 border-brand rounded-2xl p-4 cursor-pointer hover:bg-sky-100 transition-colors">
-                            <summary class="text-2xl font-bold text-brand-dark flex items-center justify-between">
-                                <span>🔄 5. 重複詢問相同的問題或重複做同一個動作</span>
-                                <span class="text-sm bg-brand text-white px-3 py-1 rounded-full font-normal">點擊展開步驟</span>
-                            </summary>
-                            <div class="mt-4 pt-4 border-t border-sky-200 text-gray-800 space-y-2">
-                                <p><strong>原因分析：</strong> 即時記憶喪失，剛問完就忘記答案，或是感到無聊與焦慮。</p>
-                                <div class="step-box">
-                                    <p class="font-bold text-sky-900">👉 處理三步驟：</p>
-                                    <ol class="list-decimal ml-6 space-y-1">
-                                        <li><strong>平心靜氣簡短回答：</strong> 每次回答保持語氣溫和一致，不顯露不耐煩。</li>
-                                        <li><strong>視覺提示輔助：</strong> 若重複問「幾點吃飯？」，可以在桌上放置清晰的大時鐘與標示文字（如：「12點吃飯」）。</li>
-                                        <li><strong>安排簡單任務轉移注意力：</strong> 請長輩幫忙擦桌子、挑菜或聽音樂。</li>
-                                    </ol>
-                                </div>
-                            </div>
-                        </details>
-
-                        <!-- 6. 日落症候群與夜間遊走 -->
-                        <details class="bg-sky-50 border-2 border-brand rounded-2xl p-4 cursor-pointer hover:bg-sky-100 transition-colors">
-                            <summary class="text-2xl font-bold text-brand-dark flex items-center justify-between">
-                                <span>🌅 6. 日落症候群（傍晚一直喊「我要回家」怎麼辦？）</span>
-                                <span class="text-sm bg-brand text-white px-3 py-1 rounded-full font-normal">點擊展開詳細步驟</span>
-                            </summary>
-                            <div class="mt-4 pt-4 border-t border-sky-200 text-gray-800 space-y-5">
-                                <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-xl">
-                                    <p class="font-bold text-amber-950 text-xl m-0">許多家屬都有類似的困擾：長輩白天都好好的，一到黃昏就開始焦躁、收拾行李，甚至一直吵著要「回家」。</p>
-                                    <p class="text-lg text-amber-900 mt-1 mb-0">這往往是失智症常見的「黃昏症候群」與「錯認症狀」，長輩並不是故意唱反調，而是大腦發出求救訊號了。</p>
-                                </div>
-
-                                <!-- 一、為什麼傍晚特別想回家 -->
-                                <div class="step-box">
-                                    <h4 class="text-xl font-bold text-sky-900 mt-0 mb-2">💡 為什麼傍晚特別想回家？</h4>
-                                    <ol class="list-decimal ml-6 space-y-2 text-lg mb-0">
-                                        <li><strong>光線與生理時鐘改變：</strong> 太陽下山、光線變暗容易引發大腦混亂與不安全感。</li>
-                                        <li><strong>體力與專注力下降：</strong> 經過白天的消耗，傍晚大腦疲累，對環境的判斷力變差。</li>
-                                        <li><strong>尋找記憶中的安全感：</strong> 他想回的往往不是現在的房子，而是記憶中「有爸媽、有熟悉感」的老家。</li>
-                                    </ol>
-                                </div>
-
-                                <!-- 二、家屬應對 4 技巧 -->
-                                <div>
-                                    <h4 class="text-xl font-bold text-brand-dark mb-3">🤝 家屬應對 4 技巧（順勢安撫、不硬碰硬）</h4>
-                                    
-                                    <div class="space-y-4">
-                                        <!-- 技巧 1 -->
-                                        <div class="bg-white border-2 border-sky-200 p-4 rounded-xl">
-                                            <p class="font-bold text-brand-dark text-xl mb-2">✅ 1. 不爭辯事實，先同理情緒</p>
-                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-2">
-                                                <div class="bg-red-50 border border-red-200 p-3 rounded-lg text-red-950">
-                                                    <span class="font-bold text-red-800 block mb-1">❌ 避免說：</span>
-                                                    「這裡就是你家啊！你住幾十年了怎麼又忘了？」（容易引發長輩生氣或防衛）
-                                                </div>
-                                                <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-lg text-emerald-950">
-                                                    <span class="font-bold text-emerald-800 block mb-1">⭕ 試著說：</span>
-                                                    「你一定很想念以前的家對不對？外面現在天黑了，我們先休息一下。」
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- 技巧 2 -->
-                                        <div class="bg-white border-2 border-sky-200 p-4 rounded-xl">
-                                            <p class="font-bold text-brand-dark text-xl mb-1">✅ 2. 善用「善意拖延法」</p>
-                                            <p class="text-lg text-gray-800 m-0">順著長輩的話找台階下，例如：<strong>「現在外面沒公車了，而且風很大，我們先吃晚飯、睡一覺，明天一早天亮我再帶你回去！」</strong>（通常睡醒或轉移注意力後就會忘記）</p>
-                                        </div>
-
-                                        <!-- 技巧 3 -->
-                                        <div class="bg-white border-2 border-sky-200 p-4 rounded-xl">
-                                            <p class="font-bold text-brand-dark text-xl mb-1">✅ 3. 提前開燈，減少陰影恐懼</p>
-                                            <p class="text-lg text-gray-800 m-0">在太陽還沒完全下山前（約<strong>下午 4 點半至 5 點</strong>），提早把家裡的燈全部打開、拉上窗簾，避免黃昏的昏暗與窗戶反光造成長輩錯覺與不安。</p>
-                                        </div>
-
-                                        <!-- 技巧 4 -->
-                                        <div class="bg-white border-2 border-sky-200 p-4 rounded-xl">
-                                            <p class="font-bold text-brand-dark text-xl mb-1">✅ 4. 安排「黃昏轉移活動」</p>
-                                            <p class="text-lg text-gray-800 m-0">在長輩平常開始焦躁的<strong>前半小時</strong>，準備他喜歡的小點心、溫熱飲品，或邀請他幫忙做簡單的家事（如摺毛巾、挑菜）、聽聽懷舊老歌，讓雙手與注意力有事可做。</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- 三、給照顧者的小提醒 -->
-                                <div class="bg-rose-50 border-2 border-rose-300 p-4 rounded-xl">
-                                    <p class="font-bold text-rose-900 text-xl mb-1">❤️ 給照顧者的小提醒：</p>
-                                    <p class="text-rose-950 text-lg m-0">當長輩一直重複問、一直想出門時，您一定非常疲憊。請記得這都是疾病造成的行為，若長輩執意往外衝，<strong>「安全第一」</strong>，可先順勢陪他下樓散步一圈再回家；若頻率過高影響生活，也歡迎在回診時與醫師或個管師討論調整照護策略喔！</p>
-                                </div>
-                            </div>
-                        </details>
-
-                    </div>
-                `
+                key: 'legal',
+                label: '法律財務問題',
+                presets: [
+                    {
+                        title: '法律財務安全需求',
+                        need: '個案判斷力與金錢計算能力退化，有遭詐騙、不當推銷或財產管理糾紛之風險。',
+                        goal: '協助家屬了解財產保護機制，3個月內完成金融註記或評估監護/輔助宣告需求。',
+                        plan: '衛教家屬可向金融聯合徵信中心申請「當事人註記」防範借貸詐騙，並提供法律扶助基金會免費諮詢與監護/輔助宣告資訊。'
+                    }
+                ]
             },
             {
-                id: 7,
-                title: '7. 進食問題與營養照護',
-                icon: '🍚',
-                desc: '食慾改變、忘記吃過飯、吞嚥困難與進食技巧。',
-                content: `
-                    <h3>常見進食問題與實用解決方案</h3>
-                    
-                    <h4>1. 剛吃飽又吵著要吃飯</h4>
-                    <ul>
-                        <li><strong>應對策略：</strong> 切勿正面爭辯「你剛剛才吃過！」。可提供低卡熱量的少量食物（如軟質水果片、幾顆蘇打餅乾），或透過陪同散步轉移注意力。</li>
-                    </ul>
-
-                    <h4>2. 忘記如何使用餐具或集中注意力</h4>
-                    <ul>
-                        <li><strong>應對策略：</strong> 簡化餐具，一次桌上只放一個碗和一把湯匙；將食物切成方便用手拿取的「手抓食物」（如飯糰、蒸蛋塊、地瓜塊）。</li>
-                    </ul>
-
-                    <h4>3. 吞嚥困難與嗆咳預防</h4>
-                    <ul>
-                        <li><strong>應對策略：</strong> 進食時維持 90 度坐姿，進食後保持坐姿至少 30 分鐘。食物質地調整為軟質、泥狀，液體可加入食物凝固劑（快凝寶）增加濃稠度防止嗆咳。</li>
-                    </ul>
-                `
+                key: 'safety',
+                label: '居家安全問題',
+                presets: [
+                    {
+                        title: '居家安全環境改善需求',
+                        need: '個案步態不穩且居家環境有門檻、浴室濕滑或使用瓦斯忘記關火等潛在安全疑慮。',
+                        goal: '1個月內完成居家無障礙環境評估與防跌、用火安全改善，預防意外發生。',
+                        plan: '建議加裝浴室扶手、止滑墊及夜燈，改用定時自動斷火瓦斯爐或電磁爐，並協助申請長照輔具及居家無障礙環境改善補助。'
+                    }
+                ]
             },
             {
-                id: 8,
-                title: '8. 安寧照顧與預立醫療',
-                icon: '🕊️',
-                desc: '尊嚴與舒適照顧、預立醫療照護諮商（ACP）與臨終關懷。',
-                content: `
-                    <h3>失智症晚期的尊嚴與舒適照護</h3>
-                    <p>失智症屬於不可逆的慢性退化疾病。在病程中早期，家屬即可與長輩討論預立醫療意願，確保末期照護尊嚴：</p>
-
-                    <h4>1. 預立醫療照護諮商 (ACP)</h4>
-                    <ul>
-                        <li>建議在長輩處於<strong>輕度失智、尚有心智表達能力時</strong>，至醫院進行預立醫療照護諮商，預先簽署「預立醫療決定 (AD)」，明確表達未來末期時是否接受鼻胃管、插管或胸外按壓等急救措施。</li>
-                    </ul>
-
-                    <h4>2. 晚期舒適照護重點</h4>
-                    <ul>
-                        <li><strong>疼痛與症狀控制：</strong> 觀察身體語言（表情皺眉、呻吟），適時給予疼痛緩解與皮膚照護。</li>
-                        <li><strong>非侵入性餵食：</strong> 重度晚期吞嚥困難時，以舒適餵食為主，避免過度勉強插鼻胃管造成痛苦。</li>
-                    </ul>
-                `
+                key: 'resource',
+                label: '照顧資源需求',
+                presets: [
+                    {
+                        title: '照顧資源連結需求',
+                        need: '案家缺乏在地醫療、交通接送及照顧技巧支援資訊，遇突發狀況時不知如何尋求協助。',
+                        goal: '提供完整在地失智照護資源網絡，讓家屬能順利運用交通接送、輔具租借與諮詢專線。',
+                        plan: '提供失智症關懷專線(0800-474-580)、長照交通接送預約方式及輔具中心聯絡資訊，建立個案管理師單一窗口追蹤機制。'
+                    }
+                ]
             },
             {
-                id: 9,
-                title: '9. 走失預防策略',
-                icon: '📍',
-                desc: '防走失手鍊、指紋捺印、GPS定位與社區防護網。',
-                content: `
-                    <h3>多重預防，守護長輩安全</h3>
-                    <p>失智長輩由於定向感喪失，極易在熟悉的環境中迷路。建議採取「多重防護機制」：</p>
-
-                    <h4>1. 身分標示與愛心手鍊</h4>
-                    <ul>
-                        <li><strong>申請防走失愛心手鍊：</strong> 可向台北市民政局或失智症協會申請，刻有服務專線與個人編號。</li>
-                        <li><strong>衣物標籤與卡片：</strong> 在長輩常用外衣、背包內縫上姓名與緊急聯絡電話。</li>
-                    </ul>
-
-                    <h4>2. 科技輔助與指紋捺印</h4>
-                    <ul>
-                        <li><strong>警察局指紋捺印：</strong> 帶長輩至各警察分局進行指紋捺印建檔，萬一走失能快速確認身分。</li>
-                        <li><strong>GPS 定位裝置：</strong> 使用具備 GPS 定位功能的手錶或定位器，家人可透過手機 App 即時掌握位置。</li>
-                    </ul>
-
-                    <h4>3. 鄰里社區防護網</h4>
-                    <ul>
-                        <li>與家附近的超商、里長、經常光顧的店家打招呼，告知長輩狀況，請大家幫忙多加留意。</li>
-                    </ul>
-                `
+                key: 'bpsd',
+                label: '精神行為問題',
+                presets: [
+                    {
+                        title: '精神行為問題(BPSD)因應需求',
+                        need: '個案出現多疑妄想、日夜顛倒或抗拒照護等精神行為症狀，造成照顧者極大困擾。',
+                        goal: '家屬能掌握非藥物行為引導技巧，並於回診時與醫師討論調整藥物，降低BPSD發生頻率。',
+                        plan: '指導家屬記錄BPSD誘發情境，運用轉移注意力、建立規律白天活動與光照等非藥物策略，並建議回診神經內科/精神科評估。'
+                    }
+                ]
             },
             {
-                id: 10,
-                title: '10. 福利資源與申請管道',
-                icon: '📋',
-                desc: '長照3.0專線1966、身心障礙證明、喘息服務與輔具補助。',
-                content: `
-                    <h3>政府照顧資源與補助管道</h3>
-
-                    <h4>1. 長照 3.0 專線：1966</h4>
-                    <p>長照 3.0 已全面擴大服務對象至<strong>全年齡失智症者</strong>（涵蓋未滿 50 歲之年輕型失智症者）。只要經醫師診斷確診失智症，即可撥打 <strong>1966</strong> 專線，由照管專員到府評估失能等級，協助提供居家照顧、日間照顧或喘息服務。</p>
-
-                    <h4>2. 身心障礙證明申請</h4>
-                    <p>至醫院神經內科或精神科門診進行臨床評估與鑑定，取得身心障礙證明後，可享有輔具補助、稅捐減免與復康巴士等服務。</p>
-
-                    <h4>3. 家屬喘息服務 (Respite Care)</h4>
-                    <p>照顧者也是需要休息的！長照專線可申請「喘息服務」，讓照服員到府照顧長輩，或讓長輩至機構住宿數日，給家屬喘息空間。</p>
-                `
+                key: 'acp',
+                label: '預立醫療照護諮商',
+                presets: [
+                    {
+                        title: '預立醫療照護諮商(ACP)需求',
+                        need: '個案目前仍具表達與決策能力，家屬與個案關心未來疾病進展至末期時之醫療照護意願。',
+                        goal: '協助個案與家屬了解病人自主權利法，於具行為能力階段完成預立醫療照護諮商預約。',
+                        plan: '說明《病人自主權利法》與預立醫療決定(AD)內容，提供本院或鄰近預立醫療照護諮商(ACP)門診預約資訊與補助資格說明。'
+                    }
+                ]
             },
             {
-                id: 11,
-                title: '11. 照護系統與機構選擇',
-                icon: '🏥',
-                desc: '社區據點、日間照顧中心、團體家屋與住宿型機構比較。',
-                content: `
-                    <h3>社區與機構照護資源選擇指南</h3>
-                    <p>隨著失智症病程進展，家屬可以依長輩的失能程度與家庭照顧人力，選擇合適的社區或住宿資源：</p>
-
-                    <h4>1. 失智社區服務據點（適合極輕度至輕度）</h4>
-                    <ul>
-                        <li><strong>服務內容：</strong> 提供認知促進、緩和失智課程、共餐活動及家屬支持團體。</li>
-                        <li><strong>特色：</strong> 讓長輩白天走出家門與鄰里互動，延緩退化速度。</li>
-                    </ul>
-
-                    <h4>2. 日間照顧中心（適合輕度至中重度）</h4>
-                    <ul>
-                        <li><strong>服務內容：</strong> 類似「長輩的托兒所」，白天由專業照服員與護理師照顧、協助午餐與午休，傍晚由家人接回或交通車接送。</li>
-                        <li><strong>特色：</strong> 減輕上班族家屬白天的照顧壓力，長輩晚上仍可享受家庭天倫之樂。</li>
-                    </ul>
-
-                    <h4>3. 團體家屋 Group Home（適合中度以上具行動能力者）</h4>
-                    <ul>
-                        <li><strong>服務內容：</strong> 小規模（每單元約 9 人）、家庭化環境的 24 小時住宿照護，讓長輩在類似一般住家的環境中生活並參與簡單家務。</li>
-                    </ul>
-
-                    <h4>4. 住宿型長照機構 / 失智專區（適合重度或全天候照護需求）</h4>
-                    <ul>
-                        <li><strong>選擇建議：</strong> 參觀機構時請留意環境是否無異味、空間是否有防走失門禁設計、照護人力比是否充足，以及活動空間是否明亮友善。</li>
-                    </ul>
-                `
-            },
-            {
-                id: 12,
-                title: '12. 健腦認知活動學習單下載列印',
-                icon: '🖨️',
-                desc: '提供可直接列印或下載 PDF 的 A4 健腦學習單（不含失智字眼）。',
-                content: `
-                    <h3>🏠 居家健腦認知活動學習單（A4 列印專區）</h3>
-                    <p>為保護長輩自尊心，所有學習單標題均設計為<strong>「健腦認知活動學習單」</strong>（不含任何「失智」字眼）。請選擇主題後直接列印或下載 PDF 檔案陪同長輩練習：</p>
-
-                    <div class="bg-sky-50 border-2 border-brand p-5 rounded-2xl my-6 space-y-4 no-print">
-                        <div>
-                            <label for="worksheet-select" class="block text-xl font-bold text-brand-dark mb-2">📌 請選擇要練習的學習單主題（共 14 款）：</label>
-                            <select id="worksheet-select" onchange="renderWorksheet()" class="w-full p-3.5 text-xl font-bold text-gray-800 bg-white border-2 border-sky-300 rounded-xl focus:outline-none focus:border-brand">
-                                <option value="ws1">1. 時間定向感與畫時鐘練習</option>
-                                <option value="ws2">2. 懷舊水果找找看與數量計算</option>
-                                <option value="ws3">3. 吉祥話數字順序連連看</option>
-                                <option value="ws4">4. 菜市場生活買菜好算術</option>
-                                <option value="ws5">5. 傳統節慶與習俗美食連連看</option>
-                                <option value="ws6">6. 台灣常用俗語與成語缺字填空</option>
-                                <option value="ws7">7. 蔬菜與水果生活分類大挑戰</option>
-                                <option value="ws8">8. 溫馨短文閱讀與小隨堂回想</option>
-                                <option value="ws9">9. 台灣懷舊名產與產地連連看</option>
-                                <option value="ws10">10. 家常菜「番茄炒蛋」步驟排序</option>
-                                <option value="ws11">11. 符號視覺搜尋與專注力計算</option>
-                                <option value="ws12">12. 四季天氣與生活穿搭常識</option>
-                                <option value="ws13">13. 數字規律填空（數感邏輯）</option>
-                                <option value="ws14">14. 懷舊童謠歌詞缺字回想</option>
-                            </select>
-                        </div>
-
-                        <div class="flex flex-wrap gap-3 pt-2">
-                            <button onclick="printCurrentWorksheet()" class="bg-brand hover:bg-brand-dark text-white font-bold text-xl px-6 py-3 rounded-xl shadow transition-colors flex items-center gap-2">
-                                🖨️ 直接列印此頁 (A4)
-                            </button>
-                            <button id="pdf-btn" onclick="downloadPDF(event)" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xl px-6 py-3 rounded-xl shadow transition-colors flex items-center gap-2">
-                                📥 下載 PDF 檔案
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- 可列印與匯出 PDF 的 A4 預覽區 -->
-                    <div id="printable-worksheet" class="bg-white border-2 border-gray-300 rounded-2xl p-6 md:p-10 shadow-inner">
-                        <!-- 由 JavaScript 動態產生學習單內容 -->
-                    </div>
-                `
-            },
-            {
-                id: 13,
-                title: '13. 台北市失智據點與醫療地圖',
-                icon: '🗺️',
-                desc: '仁愛院區共照中心聯絡資訊、台北市 12 行政區據點快速導航與資源地圖。',
-                content: `
-                    <h3>台北市失智症服務資源與據點地圖指南</h3>
-                    <p>為了方便照顧家屬就近尋求醫療診斷、照護諮詢與社區據點活動，本區提供台北市失智服務據點與醫療地圖連結：</p>
-
-                    <!-- 仁愛院區失智共照中心卡片 -->
-                    <div class="bg-sky-50 border-3 border-brand p-6 rounded-2xl my-6 shadow-sm">
-                        <div class="flex items-center gap-4 mb-3">
-                            <span class="text-4xl">🏥</span>
-                            <div>
-                                <h4 class="text-2xl font-bold text-brand-dark m-0">台北市立聯合醫院 仁愛院區 失智共照中心</h4>
-                                <p class="text-lg text-gray-600 m-0">專業神經內科/精神科診斷、照護諮詢、個案管理服務</p>
-                            </div>
-                        </div>
-                        <ul class="space-y-2 text-xl text-gray-800 mt-4 border-t border-sky-200 pt-4">
-                            <li>📍 <strong>地址：</strong>106 台北市大安區仁愛路四段 10 號</li>
-                            <li>📞 <strong>諮詢電話：</strong>(02) 2709-3600</li>
-                            <li>⏰ <strong>服務時間：</strong>星期一至星期五 08:00 - 16:00</li>
-                        </ul>
-                        <div class="mt-4 flex flex-wrap gap-3">
-                        <a href="https://www.google.com/maps/search/?api=1&query=台北市立聯合醫院仁愛院區" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 bg-brand text-white font-bold text-lg px-5 py-2.5 rounded-xl hover:bg-brand-dark transition-colors shadow">
-                            🧭 開啟 Google 地圖導航
-                        </a>
-                        <a href="tel:0227093600" class="inline-flex items-center gap-2 bg-emerald-600 text-white font-bold text-lg px-5 py-2.5 rounded-xl hover:bg-emerald-700 transition-colors shadow">
-                            📞 直接撥打電話諮詢
-                        </a>
-                    </div>
-                </div>
-
-                <!-- 台北市失智據點完整通訊錄 PDF 下載專區 -->
-                <div class="bg-gradient-to-r from-amber-50 to-orange-50 border-3 border-amber-400 p-6 rounded-2xl my-6 shadow-md flex flex-col md:flex-row items-center justify-between gap-5 border-l-8 border-l-amber-500">
-                    <div class="flex items-center gap-4">
-                        <span class="text-5xl bg-white p-3 rounded-2xl shadow-sm shrink-0">📄</span>
-                        <div>
-                            <span class="bg-amber-200 text-amber-900 font-bold px-3 py-0.5 rounded-full text-sm">官方文件</span>
-                            <h4 class="text-2xl font-bold text-amber-950 m-0 mt-1">台北市失智服務據點完整通訊錄 (PDF)</h4>
-                            <p class="text-lg text-amber-900 m-0 mt-1">彙整全台北市各行政區失智社區服務據點之名稱、地址與聯絡電話，方便下載儲存與列印。</p>
-                        </div>
-                    </div>
-                    <a href="https://www-ws.gov.taipei/Download.ashx?u=LzAwMS9VcGxvYWQvNjk0L3JlbGZpbGUvMC84NjcyNC80YzMxNWM3YS1mODJhLTRjNGUtOWFkMC02YTI0NjA3ZmMwZTUucGRm&n=6Ie65YyX5biC5aSx5pm65pyN5YuZ5pOa6bue5biD6YGU6YCa6KiK6YyEKDExNTA4MDPkv64pLnBkZg%3d%3d&icon=..pdf" target="_blank" rel="noopener noreferrer" class="bg-amber-500 hover:bg-amber-600 text-white font-black text-xl px-7 py-3.5 rounded-2xl shadow-md hover:shadow-lg transition-all shrink-0 flex items-center gap-2">
-                        📥 下載據點通訊錄 PDF
-                    </a>
-                </div>
-
-                <h3>台北市 12 行政區失智社區服務據點總覽（共 50 處）</h3>
-                <p>依據臺北市政府衛生局最新《臺北市失智社區服務據點通訊錄》行政分區完整整理。請點選下方<strong>行政區按鈕</strong>，即可直接篩選查看該區所有據點名稱、地址、電話與一鍵 Google 地圖導航：</p>
-
-                <!-- 12 行政區篩選器按鈕 -->
-                <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2.5 my-6 no-print" id="district-filter-buttons">
-                    <button onclick="filterDistrictSites('大安區')" data-district="大安區" class="district-btn bg-brand text-white border-2 border-brand font-bold p-3 rounded-xl text-center text-lg transition-all shadow-sm">📍 大安區 (5)</button>
-                    <button onclick="filterDistrictSites('信義區')" data-district="信義區" class="district-btn bg-white border-2 border-slate-200 hover:border-brand hover:bg-sky-50 text-slate-800 font-bold p-3 rounded-xl text-center text-lg transition-all shadow-sm">📍 信義區 (5)</button>
-                    <button onclick="filterDistrictSites('中正區')" data-district="中正區" class="district-btn bg-white border-2 border-slate-200 hover:border-brand hover:bg-sky-50 text-slate-800 font-bold p-3 rounded-xl text-center text-lg transition-all shadow-sm">📍 中正區 (5)</button>
-                    <button onclick="filterDistrictSites('中山區')" data-district="中山區" class="district-btn bg-white border-2 border-slate-200 hover:border-brand hover:bg-sky-50 text-slate-800 font-bold p-3 rounded-xl text-center text-lg transition-all shadow-sm">📍 中山區 (5)</button>
-                    <button onclick="filterDistrictSites('松山區')" data-district="松山區" class="district-btn bg-white border-2 border-slate-200 hover:border-brand hover:bg-sky-50 text-slate-800 font-bold p-3 rounded-xl text-center text-lg transition-all shadow-sm">📍 松山區 (5)</button>
-                    <button onclick="filterDistrictSites('萬華區')" data-district="萬華區" class="district-btn bg-white border-2 border-slate-200 hover:border-brand hover:bg-sky-50 text-slate-800 font-bold p-3 rounded-xl text-center text-lg transition-all shadow-sm">📍 萬華區 (5)</button>
-                    <button onclick="filterDistrictSites('文山區')" data-district="文山區" class="district-btn bg-white border-2 border-slate-200 hover:border-brand hover:bg-sky-50 text-slate-800 font-bold p-3 rounded-xl text-center text-lg transition-all shadow-sm">📍 文山區 (2)</button>
-                    <button onclick="filterDistrictSites('內湖區')" data-district="內湖區" class="district-btn bg-white border-2 border-slate-200 hover:border-brand hover:bg-sky-50 text-slate-800 font-bold p-3 rounded-xl text-center text-lg transition-all shadow-sm">📍 內湖區 (2)</button>
-                    <button onclick="filterDistrictSites('南港區')" data-district="南港區" class="district-btn bg-white border-2 border-slate-200 hover:border-brand hover:bg-sky-50 text-slate-800 font-bold p-3 rounded-xl text-center text-lg transition-all shadow-sm">📍 南港區 (3)</button>
-                    <button onclick="filterDistrictSites('士林區')" data-district="士林區" class="district-btn bg-white border-2 border-slate-200 hover:border-brand hover:bg-sky-50 text-slate-800 font-bold p-3 rounded-xl text-center text-lg transition-all shadow-sm">📍 士林區 (6)</button>
-                    <button onclick="filterDistrictSites('北投區')" data-district="北投區" class="district-btn bg-white border-2 border-slate-200 hover:border-brand hover:bg-sky-50 text-slate-800 font-bold p-3 rounded-xl text-center text-lg transition-all shadow-sm">📍 北投區 (3)</button>
-                    <button onclick="filterDistrictSites('大同區')" data-district="大同區" class="district-btn bg-white border-2 border-slate-200 hover:border-brand hover:bg-sky-50 text-slate-800 font-bold p-3 rounded-xl text-center text-lg transition-all shadow-sm">📍 大同區 (4)</button>
-                </div>
-
-                <!-- 互動地圖預覽與該行政區據點明細列表容器 -->
-                <div id="district-sites-container" class="my-6">
-                    <!-- 由 JavaScript 動態渲染所選行政區的內嵌地圖與據點清單 -->
-                </div>
-
-                <h3>官方地圖與資源系統入口</h3>
-                <div class="space-y-3 my-4">
-                    <a href="https://dementia.gov.taipei/" target="_blank" rel="noopener noreferrer" class="block bg-amber-50 border-2 border-amber-300 p-5 rounded-2xl hover:bg-amber-100 transition-colors shadow-sm">
-                        <div class="flex items-center justify-between">
-                            <p class="font-bold text-amber-900 text-xl m-0">🌐 臺北市政府失智症服務網</p>
-                            <span class="text-sm bg-amber-200 text-amber-900 font-bold px-3 py-1 rounded-lg">開啟網站 ↗</span>
-                        </div>
-                        <p class="text-base text-gray-700 mt-1 m-0">查詢台北市最新失智衛教訊息、共照中心名單與社區照顧據點（網址：dementia.gov.taipei）。</p>
-                    </a>
-                    
-                    <a href="https://ltcpap.mohw.gov.tw/public/index.html" target="_blank" rel="noopener noreferrer" class="block bg-emerald-50 border-2 border-emerald-300 p-5 rounded-2xl hover:bg-emerald-100 transition-colors shadow-sm">
-                        <div class="flex items-center justify-between">
-                            <p class="font-bold text-emerald-900 text-xl m-0">🌐 衛生福利部 長照服務資源地理地圖 ( LTC-GIS )</p>
-                            <span class="text-sm bg-emerald-200 text-emerald-900 font-bold px-3 py-1 rounded-lg">開啟網站 ↗</span>
-                        </div>
-                        <p class="text-base text-gray-700 mt-1 m-0">輸入地址或即時定位，查詢周邊的長照據點、日照中心與喘息服務機構（網址：ltcpap.mohw.gov.tw）。</p>
-                    </a>
-
-                    <a href="https://1966.gov.tw/" target="_blank" rel="noopener noreferrer" class="block bg-sky-50 border-2 border-sky-300 p-5 rounded-2xl hover:bg-sky-100 transition-colors shadow-sm">
-                        <div class="flex items-center justify-between">
-                            <p class="font-bold text-sky-900 text-xl m-0">🌐 衛生福利部 1966 長照專區</p>
-                            <span class="text-sm bg-sky-200 text-sky-900 font-bold px-3 py-1 rounded-lg">開啟網站 ↗</span>
-                        </div>
-                        <p class="text-base text-gray-700 mt-1 m-0">線上申辦長照服務、查詢長照 3.0 服務項目與最新長照補助政策（網址：1966.gov.tw）。</p>
-                    </a>
-                </div>
-            `
+                key: 'swallowing',
+                label: '吞嚥問題',
+                presets: [
+                    {
+                        title: '吞嚥功能退化與營養照護需求',
+                        need: '個案進食速度變慢，偶有嗆咳或含飯情形，有吸入性肺炎及營養不良風險。',
+                        goal: '照顧者能掌握安全餵食姿勢與食物質地調整技巧，減少進食嗆咳發生。',
+                        plan: '衛教進食時採坐姿90度、小口慢餵、避免邊吃邊說話，依吞嚥能力調整食物軟硬度或使用增稠劑，必要時轉介語言治療師評估。'
+                    }
+                ]
             }
         ];
 
-        // 頁面初始化與卡片生成
-        window.onload = function() {
-            renderCards();
-        };
-
-        function renderCards() {
-            const container = document.getElementById('card-container');
-            if (!container) return;
-            
-            container.innerHTML = '';
-            topics.forEach(topic => {
-                const card = document.createElement('div');
-                card.className = 'bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all border border-slate-100 flex flex-col justify-between cursor-pointer group hover:-translate-y-1';
-                card.onclick = () => openDetail(topic.id);
-                
-                card.innerHTML = `
-                    <div>
-                        <div class="flex items-center gap-4 mb-4">
-                            <span class="text-4xl bg-brand-light w-16 h-16 flex items-center justify-center rounded-xl group-hover:scale-110 transition-transform">${topic.icon}</span>
-                            <h3 class="text-2xl font-bold text-gray-800 group-hover:text-brand transition-colors leading-snug">${topic.title}</h3>
-                        </div>
-                        <p class="text-gray-600 text-lg font-normal leading-relaxed mb-4">${topic.desc}</p>
-                    </div>
-                    <div class="flex items-center text-brand font-bold text-xl group-hover:translate-x-1 transition-transform">
-                        查看內容細節 →
-                    </div>
-                `;
-                container.appendChild(card);
-            });
+        // ==========================================
+        // 初始化與工具函式
+        // ==========================================
+        function getTodayROC() {
+            const now = new Date();
+            const rocYear = now.getFullYear() - 1911;
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            return `${rocYear}.${month}.${day}`;
         }
 
-        // 切換詳細頁面
-        function openDetail(id) {
-            const topic = topics.find(t => t.id === id);
-            if (!topic) return;
-
-            document.getElementById('detail-icon').innerText = topic.icon;
-            document.getElementById('detail-title').innerText = topic.title;
-            document.getElementById('detail-content').innerHTML = topic.content;
-
-            document.getElementById('home-view').classList.add('hidden');
-            const detailView = document.getElementById('detail-view');
-            detailView.classList.remove('hidden');
-
-            // 觸發淡入動畫
-            detailView.classList.remove('fade-in');
-            void detailView.offsetWidth;
-            detailView.classList.add('fade-in');
-
-            // 若選擇學習單頁面，進行初始化渲染
-            if (id === 12) {
-                renderWorksheet();
-            }
-            // 若選擇台北市據點地圖頁面，預設顯示大安區據點與地圖
-            if (id === 13) {
-                filterDistrictSites('大安區');
-            }
-
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        function getVal(id) {
+            const el = document.getElementById(id);
+            return el ? el.value.trim() : '';
         }
 
-        // 台北市 12 行政區失智社區服務據點完整資料庫（依據 115年度臺北市失智社區服務據點通訊錄 行政分區標記）
-        const taipeiDementiaSites = {
-            '北投區': {
-                customMapUrl: 'https://www.google.com/maps/d/u/0/edit?hl=zh-TW&mid=1HvbwaaQxn7jhOwZDqv6aTjT_Q0_V7l0&ll=25.126450503840672%2C121.50398355665779&z=18',
-                sites: [
-                    { name: '臺北榮民總醫院失智治療及研究中心', phone: '0903-256-719', address: '臺北市北投區奇岩里16鄰三合街一段119號一樓', hours: '周二至五上午、周一至周五下午' },
-                    { name: '臺北市北投區林泉社區發展協會', phone: '(02)2895-2630', address: '臺北市北投區新民路46巷37號', hours: '周一至周五全日' },
-                    { name: '臺北市立關渡醫院委託臺北榮民總醫院經營', phone: '0938-909-771', address: '臺北市北投區關渡里知行路260巷28號1樓', hours: '周一至周五全日' }
-                ]
-            },
-            '士林區': {
-                sites: [
-                    { name: '臺北市立聯合醫院陽明院區神經內科', phone: '(02)2835-3456 #5178', address: '臺北市士林區忠誠路一段171巷10弄12號(蘭雅教會)', hours: '周二、三、五全日' },
-                    { name: '新康居家職能治療所(士林站)', phone: '0901-314-108', address: '臺北市士林區名山里至誠路二段120巷1號', hours: '周一至週五全日' },
-                    { name: '財團法人台北市中華基督教浸信會慈光堂', phone: '(02)2841-2290 #17', address: '臺北市士林區翠山里中社路一段43巷5號', hours: '周一、三、五全日' },
-                    { name: '財團法人臺北市華夏婦女文教基金會', phone: '02-2831-8025', address: '臺北市士林區岩山里至誠路一段62巷28號', hours: '周一、三、四全日' },
-                    { name: '歲悅股份有限公司附設臺北市私立歲悅居家長照機構(士林區)', phone: '02-6604-5432', address: '臺北市士林區社子街63巷21弄2號', hours: '周一至周五全日' },
-                    { name: '台灣基督長老教會馬偕醫療財團法人馬偕紀念醫院(士林區)', phone: '(02)2543-3535 #2770', address: '臺北市士林區福德里中正路335巷11號5樓(士林長老教會教育館)', hours: '周一、二、五全日' }
-                ]
-            },
-            '內湖區': {
-                sites: [
-                    { name: '財團法人台灣基督教恩惠福音會(湖光基督教會)', phone: '(02)2797-1000 #404', address: '臺北市內湖區港墘里內湖路一段608號', hours: '周一、三、四、五全日、週二下午' },
-                    { name: '中華民國天使之家全人關懷協會', phone: '(02)2790-9454', address: '臺北市內湖區湖興里025鄰成功路二段240-242號1樓', hours: '周二至周五全日' }
-                ]
-            },
-            '大同區': {
-                sites: [
-                    { name: '財團法人中華民國佛教慈濟慈善事業基金會(大同站)', phone: '(02)4051-0777 #6054', address: '臺北市大同區老師里14鄰延平北路四段237號7樓', hours: '周一、二、三、四全日' },
-                    { name: '社團法人寧祈全人健康生命關懷協會(大同站)', phone: '(02)2521-3282', address: '臺北市大同區延平里甘州街40號7樓（大稻埕教會）', hours: '周一至五全日' },
-                    { name: '歲悅股份有限公司附設臺北市私立歲悅居家長照機構(大同區)', phone: '(02)6604-5432 #22', address: '臺北市大同區光能里承德路三段24巷38弄17號1樓', hours: '周一至五全日' },
-                    { name: '臺北市立聯合醫院中興院區', phone: '(02)2552-3234 #6318', address: '臺北市大同區景星里延平北路三段4號3樓', hours: '周一至周五上午' }
-                ]
-            },
-            '中山區': {
-                sites: [
-                    { name: '天主教耕莘醫療財團法人永和耕莘醫院', phone: '(02)2778-5153 #101、108', address: '臺北市中山區朱崙里龍江路15號4樓', hours: '周一至周五全日' },
-                    { name: '臺北市中山老人住宅暨服務中心(健順養護中心受託經營)', phone: '(02)2542-0006 #123', address: '臺北市中山區中原里新生北路2段101巷2號', hours: '周一至周五全日' },
-                    { name: '台灣基督長老教會馬偕醫療財團法人馬偕紀念醫院(中山區)', phone: '(02)2543-3535 #2770', address: '臺北市中山區力行里遼寧街105巷37號1樓(永樂教會)', hours: '周一至周四全日' },
-                    { name: '社團法人中華欣智社區智能長照關懷協會(心智記憶據點)', phone: '(02)8295-8828', address: '臺北市中山區民族東路410巷23弄18號1樓', hours: '周一、二、五全日' },
-                    { name: '社團法人中華欣智社區智能長照關懷協會(中山星智據點)', phone: '(02)8295-8828', address: '臺北市中山區新生北路三段25巷26號', hours: '周三、四、五全日' }
-                ]
-            },
-            '松山區': {
-                sites: [
-                    { name: '財團法人佳醫健康基金會(松山站)', phone: '(02)2225-8688 #1352', address: '臺北市松山區復勢里寧安街3巷3號1樓', hours: '周一至周五全日' },
-                    { name: '社團法人台北市向日葵慈善協會', phone: '(02)8770-6501 #20', address: '臺北市松山區東勢里南京東路四段133巷7弄7號一樓', hours: '周二、三、五全日、週四上午' },
-                    { name: '台灣基督長老教會馬偕醫療財團法人馬偕紀念醫院(松山區)', phone: '(02)2543-3535 #2770', address: '臺北市松山區民有里敦化北路238巷9號1樓(敦化教會教育中心)', hours: '周二至周四全日' },
-                    { name: '國防醫學院三軍總醫院松山分院', phone: '(02)2764-2151 #671367', address: '臺北市松山區龍田里14鄰健康路131號', hours: '周一至周五全日' },
-                    { name: '社團法人寧祈全人健康生命關懷協會-聯合教會', phone: '(02)2521-3282', address: '臺北市松山區介壽里民生東路五段36巷4弄51號1樓（聯合教會）', hours: '周三至周五全日' }
-                ]
-            },
-            '萬華區': {
-                sites: [
-                    { name: '財團法人中華民國佛教慈濟慈善事業基金會(萬華站)', phone: '(02)4051-0777 #6183', address: '臺北市萬華區雙園里010鄰莒光路222號5樓', hours: '周一、二、三、四全日' },
-                    { name: '國立臺灣大學醫學院附設醫院北護分院', phone: '(02)2371-7101 #216258', address: '臺北市萬華區菜園里成都路98號(西門國民小學自強樓4樓)', hours: '周一至周五全日' },
-                    { name: '財團法人天主教失智老人社會福利基金會', phone: '(02)2332-0992 #110', address: '臺北市萬華區保德里德昌街119號1樓(東園次分區)', hours: '周一至周五全日' },
-                    { name: '臺北市立聯合醫院和平婦幼院區', phone: '(02)2388-9595 轉2638', address: '臺北市萬華區福音里桂林路64號3樓(S302教室)', hours: '周一至周五全日' },
-                    { name: '臺北市立聯合醫院和平婦幼院區2(莒光社宅)', phone: '(02)2302-7177 #14', address: '臺北市萬華區雙園里010鄰萬大路22號', hours: '周一至周五上午' }
-                ]
-            },
-            '中正區': {
-                sites: [
-                    { name: '財團法人台灣老人急重症基金會', phone: '(02)2522-4388', address: '臺北市中正區重慶南路三段27巷4號5樓', hours: '周二至周四全日' },
-                    { name: '財團法人臺北市松年長春社會福利基金會', phone: '(02)2500-0261', address: '臺北市中正區幸福里2鄰中山南路3號', hours: '周一至周五全日' },
-                    { name: '財團法人佳醫健康基金會(中正區)', phone: '(02)2225-8688 #1352', address: '臺北市中正區幸福里林森南路2號4樓', hours: '周一至周五全日' },
-                    { name: '大心居家職能治療所(中正區)', phone: '(02)7751-8057 #11', address: '臺北市中正區光復里博愛路105號2樓', hours: '周一至周五全日' },
-                    { name: '財團法人台灣省私立台北仁濟院附設仁濟醫院', phone: '02-2303-1111 分機5802', address: '臺北市中正區黎明里11鄰忠孝西路一段68號13樓', hours: '周二、四全日、周三上午' }
-                ]
-            },
-            '大安區': {
-                sites: [
-                    { name: '臺北市立聯合醫院仁愛院區', phone: '(02)2709-3600 #3715', address: '臺北市大安區群英里四維路198巷40號', hours: '周一、二、三、五全天' },
-                    { name: '起辰職能治療所-1站', phone: '(02)2706-0055', address: '臺北市大安區仁慈里信義路四段65號3樓', hours: '周二、三、四、五上午、周三下午' },
-                    { name: '社團法人寧祈全人健康生命關懷協會(大安站)', phone: '(02)2521-3282', address: '臺北市大安區敦安里仁愛路四段122巷54號(安和教會)', hours: '週一、三、四全日' },
-                    { name: '財團法人佳醫健康基金會(大安區)', phone: '(02)2225-8688 #1352', address: '臺北市大安區光明里杭州南路2段1號(金甌女中810教室)', hours: '周二、三、四全日' },
-                    { name: '起辰職能治療所-2站', phone: '(02)2706-0055', address: '臺北市大安區德安里四維路76巷12號5樓', hours: '周一至周五上午、周二下午' }
-                ]
-            },
-            '信義區': {
-                sites: [
-                    { name: '臺北市立聯合醫院松德院區(信義1站)', phone: '(02)2726-3141 #1003', address: '臺北市信義區松隆里松山路657號', hours: '周一至周五下午' },
-                    { name: '營佳營養諮詢中心', phone: '0900-756-540', address: '臺北市信義區景勤里吳興街170巷1弄2號1樓', hours: '周一至周五全日' },
-                    { name: '中華民國紅心字會受託經營管理臺北市信義老人服務中心', phone: '(02)8787-0300 #112', address: '臺北市信義區大道路116號5樓之3', hours: '周二、四、五全日' },
-                    { name: '沐晨職能治療所(信義區)', phone: '(02)2940-5818', address: '臺北市信義區莊敬路289巷25號', hours: '周一至周五全日' },
-                    { name: '歲悅股份有限公司附設臺北市私立歲悅居家長照機構(信義區)', phone: '(02)6604-5432', address: '臺北市信義區基隆路一段364巷6號1樓', hours: '周一至周五全日' }
-                ]
-            },
-            '南港區': {
-                sites: [
-                    { name: '臺北市立聯合醫院忠孝院區', phone: '(02)2786-1288 #8910', address: '臺北市南港區聯成里東新街108巷23號', hours: '周一至周五上午' },
-                    { name: '社團法人復生食物銀行全人關懷協會', phone: '(02)2782-2075', address: '臺北市南港區舊莊里南深路21巷16號1樓', hours: '周一、四全日、週五上午' },
-                    { name: '台北市後山埤文化發展協會', phone: '(02)2785-1737', address: '臺北市南港區聯成里東新街77巷29號', hours: '周一至周五全日' }
-                ]
-            },
-            '文山區': {
-                sites: [
-                    { name: '財團法人佳醫健康基金會(文山站)', phone: '(02)2225-8688 #1352', address: '臺北市文山區景美里羅斯福路六段336號(滬江高中信義樓102教室)', hours: '周二至周四全日' },
-                    { name: '沐晨職能治療所(文山區)', phone: '(02)2940-5818', address: '臺北市文山區順興里保儀路138巷28號1、2樓', hours: '周一至周五全日' }
-                ]
-            }
-        };
-
-        // 切換並標記特定行政區的失智社區服務據點與地圖
-        function filterDistrictSites(district) {
-            const container = document.getElementById('district-sites-container');
-            if (!container) return;
-
-            // 更新按鈕選中狀態
-            document.querySelectorAll('.district-btn').forEach(btn => {
-                if (btn.getAttribute('data-district') === district) {
-                    btn.className = 'district-btn bg-brand text-white border-2 border-brand font-bold p-3 rounded-xl text-center text-lg transition-all shadow-md scale-105';
-                } else {
-                    btn.className = 'district-btn bg-white border-2 border-slate-200 hover:border-brand hover:bg-sky-50 text-slate-800 font-bold p-3 rounded-xl text-center text-lg transition-all shadow-sm';
-                }
-            });
-
-            const data = taipeiDementiaSites[district];
-            if (!data) return;
-
-            const mapQuery = encodeURIComponent(`臺北市${district} 失智社區服務據點`);
-            const embedMapUrl = `https://maps.google.com/maps?q=${mapQuery}&t=&z=14&ie=UTF8&iwloc=&output=embed`;
-
-            let extraMapBtn = '';
-            if (data.customMapUrl) {
-                extraMapBtn = `
-                    <a href="${data.customMapUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white font-bold text-lg px-5 py-2.5 rounded-xl transition-colors shadow">
-                        🗺️ 開啟${district}專屬自訂地圖 ↗
-                    </a>
-                `;
-            }
-
-            let sitesHtml = data.sites.map((site, idx) => {
-                // 清理括號內輔助說明以利 Google Maps 精準定位地址
-                const cleanAddress = site.address.replace(/\(.*?\)|（.*?）/g, '');
-                const navUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(cleanAddress)}`;
-                const telClean = site.phone.replace(/[^0-9]/g, '').slice(0, 10);
-
-                return `
-                    <div class="bg-white border-2 border-sky-100 hover:border-brand p-5 rounded-2xl shadow-sm transition-all flex flex-col md:flex-row md:items-center justify-between gap-4">
-                        <div class="space-y-1.5">
-                            <div class="flex items-center gap-2 flex-wrap">
-                                <span class="bg-brand text-white text-sm font-bold px-3 py-0.5 rounded-full">${district} #${idx + 1}</span>
-                                <h5 class="text-xl md:text-2xl font-bold text-slate-900 m-0">${site.name}</h5>
-                            </div>
-                            <p class="text-lg text-slate-700 m-0">📍 <strong>地址：</strong>${site.address}</p>
-                            <p class="text-lg text-slate-700 m-0">📞 <strong>電話：</strong>${site.phone}</p>
-                            <p class="text-base text-slate-600 m-0">⏰ <strong>開辦時間：</strong>${site.hours}</p>
-                        </div>
-                        <div class="flex flex-wrap md:flex-col gap-2 shrink-0">
-                            <a href="${navUrl}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-1.5 bg-sky-600 hover:bg-sky-700 text-white font-bold text-lg px-4 py-2.5 rounded-xl shadow transition-colors">
-                                🧭 地圖導航
-                            </a>
-                            <a href="tel:${telClean}" class="inline-flex items-center justify-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-lg px-4 py-2.5 rounded-xl shadow transition-colors">
-                                📞 撥打電話
-                            </a>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-
-            container.innerHTML = `
-                <div class="bg-sky-50/70 border-2 border-sky-200 rounded-3xl p-5 md:p-6 space-y-5 fade-in">
-                    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-sky-200 pb-4">
-                        <div>
-                            <h4 class="text-2xl md:text-3xl font-black text-brand-dark m-0">📍 臺北市【${district}】失智社區服務據點（共 ${data.sites.length} 處）</h4>
-                            <p class="text-base text-slate-600 m-0 mt-1">資料依據：臺北市政府衛生局《115年度臺北市失智社區服務據點通訊錄》</p>
-                        </div>
-                        <div class="flex flex-wrap gap-2">
-                            ${extraMapBtn}
-                            <a href="https://www.google.com/maps/search/?api=1&query=${mapQuery}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 bg-brand hover:bg-brand-dark text-white font-bold text-lg px-5 py-2.5 rounded-xl transition-colors shadow">
-                                🔍 在 Google 地圖查看全區
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- 內嵌行政區地圖預覽 -->
-                    <div class="w-full h-72 md:h-80 rounded-2xl overflow-hidden border-2 border-sky-300 shadow-inner bg-white">
-                        <iframe width="100%" height="100%" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="${embedMapUrl}" title="臺北市${district}失智社區服務據點地圖"></iframe>
-                    </div>
-
-                    <!-- 該行政區據點詳細列表 -->
-                    <div class="space-y-3">
-                        ${sitesHtml}
-                    </div>
-                </div>
-            `;
+        function setVal(id, val) {
+            const el = document.getElementById(id);
+            if (el) el.value = val !== undefined && val !== null ? val : '';
         }
 
-        // 返回首頁
-        function goBack() {
-            document.getElementById('detail-view').classList.add('hidden');
-            const homeView = document.getElementById('home-view');
-            homeView.classList.remove('hidden');
-
-            homeView.classList.remove('fade-in');
-            void homeView.offsetWidth;
-            homeView.classList.add('fade-in');
-
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
         }
 
-        // 動態生成 A4 學習單（絕不含「失智」字眼）
-        function renderWorksheet() {
-            const select = document.getElementById('worksheet-select');
-            const printable = document.getElementById('printable-worksheet');
-            if (!select || !printable) return;
-
-            const val = select.value;
-            let html = `
-                <div class="text-center border-b-2 border-gray-800 pb-4 mb-6">
-                    <h2 class="text-3xl font-black text-gray-900 tracking-wider">健腦認知活動學習單</h2>
-                    <p class="text-lg text-gray-600 mt-1 font-medium">台北市立聯合醫院 仁愛院區 關心您</p>
-                </div>
-            `;
-
-            if (val === 'ws1') {
-                html += `
-                    <div class="space-y-6 text-gray-800 text-xl">
-                        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
-                            <div><strong>姓名：</strong>____________</div>
-                            <div><strong>日期：</strong>___年___月___日</div>
-                        </div>
-
-                        <div class="p-4 border-2 border-dashed border-gray-400 rounded-xl space-y-3">
-                            <p class="font-bold text-2xl text-indigo-900">一、時間與定向感練習：</p>
-                            <p>1. 今天是星期幾？【 &nbsp; 】</p>
-                            <p>2. 現在是什麼季節？（春 / 夏 / 秋 / 冬）【 &nbsp; 】</p>
-                            <p>3. 今天天氣怎麼樣？（晴天 / 陰天 / 下雨）【 &nbsp; 】</p>
-                        </div>
-
-                        <div class="p-4 border-2 border-dashed border-gray-400 rounded-xl space-y-3 text-center">
-                            <p class="font-bold text-2xl text-indigo-900 text-left">二、請在下方圓圈內畫出時鐘：</p>
-                            <p class="text-lg text-gray-600 text-left">（請標上數字 1 至 12，並畫出指定時間：<strong>10 點 10 分</strong> 的時針與分針）</p>
-                            <div class="w-64 h-64 border-4 border-gray-800 rounded-full mx-auto my-6 flex items-center justify-center">
-                                <span class="text-gray-300 font-bold">在此處畫上數字與指針</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } else if (val === 'ws2') {
-                html += `
-                    <div class="space-y-6 text-gray-800 text-xl">
-                        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
-                            <div><strong>姓名：</strong>____________</div>
-                            <div><strong>日期：</strong>___年___月___日</div>
-                        </div>
-
-                        <div class="p-4 border-2 border-dashed border-gray-400 rounded-xl space-y-4">
-                            <p class="font-bold text-2xl text-emerald-900">懷舊水果找找看與計算：</p>
-                            <p>請仔細算算看下方各種水果共有幾個，並在方格內寫出數字：</p>
-
-                            <div class="bg-amber-50 p-6 rounded-2xl text-4xl leading-loose tracking-widest text-center border border-amber-200">
-                                🍎 🍌 🍎 🍊 🍎 🍌 🍊 🍎 🍌<br>
-                                🍊 🍎 🍌 🍎 🍊 🍎 🍌 🍎 🍊
-                            </div>
-
-                            <div class="grid grid-cols-3 gap-4 text-center mt-4">
-                                <div class="bg-gray-50 p-4 rounded-xl border">
-                                    <span class="text-3xl">🍎 蘋果：</span>
-                                    <span class="text-2xl font-bold">【 &nbsp;&nbsp; 】個</span>
-                                </div>
-                                <div class="bg-gray-50 p-4 rounded-xl border">
-                                    <span class="text-3xl">🍌 香蕉：</span>
-                                    <span class="text-2xl font-bold">【 &nbsp;&nbsp; 】個</span>
-                                </div>
-                                <div class="bg-gray-50 p-4 rounded-xl border">
-                                    <span class="text-3xl">🍊 橘子：</span>
-                                    <span class="text-2xl font-bold">【 &nbsp;&nbsp; 】個</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } else if (val === 'ws3') {
-                html += `
-                    <div class="space-y-6 text-gray-800 text-xl">
-                        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
-                            <div><strong>姓名：</strong>____________</div>
-                            <div><strong>日期：</strong>___年___月___日</div>
-                        </div>
-
-                        <div class="p-4 border-2 border-dashed border-gray-400 rounded-xl space-y-4">
-                            <p class="font-bold text-2xl text-indigo-900">數字連連看（順序練習）：</p>
-                            <p>請用筆按照數字順序（1 → 2 → 3 → 4 → 5 → 6 → 7 → 8）依序連線：</p>
-
-                            <div class="relative w-full h-64 border border-gray-200 rounded-2xl bg-sky-50 my-4 flex justify-between p-8 items-center font-bold text-2xl text-brand-dark">
-                                <div class="space-y-12">
-                                    <div>① 順心</div>
-                                    <div>③ 平安</div>
-                                    <div>⑤ 健康</div>
-                                    <div>⑦ 快樂</div>
-                                </div>
-                                <div class="space-y-12 text-right">
-                                    <div>② 順心</div>
-                                    <div>④ 平安</div>
-                                    <div>⑥ 健康</div>
-                                    <div>⑧ 快樂</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } else if (val === 'ws4') {
-                html += `
-                    <div class="space-y-6 text-gray-800 text-xl">
-                        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
-                            <div><strong>姓名：</strong>____________</div>
-                            <div><strong>日期：</strong>___年___月___日</div>
-                        </div>
-
-                        <div class="p-4 border-2 border-dashed border-gray-400 rounded-xl space-y-4">
-                            <p class="font-bold text-2xl text-amber-900">生活買菜好算術：</p>
-                            <p>假裝我們一起去菜市場買菜：</p>
-                            <ul class="list-disc ml-6 space-y-2 bg-amber-50 p-4 rounded-xl">
-                                <li>高麗菜一顆：<strong>30 元</strong></li>
-                                <li>雞蛋一盒：<strong>60 元</strong></li>
-                                <li>豆腐一塊：<strong>10 元</strong></li>
-                            </ul>
-
-                            <div class="space-y-3 mt-4">
-                                <p>1. 如果買一顆高麗菜和一盒雞蛋，一共要多少錢？</p>
-                                <p class="ml-4 font-bold text-brand-dark">答：30 + 60 = 【 &nbsp;&nbsp;&nbsp;&nbsp; 】元</p>
-
-                                <p>2. 付給老闆 100 元鈔票，應該找回多少錢？</p>
-                                <p class="ml-4 font-bold text-brand-dark">答：100 - 【上一題答案】 = 【 &nbsp;&nbsp;&nbsp;&nbsp; 】元</p>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } else if (val === 'ws5') {
-                html += `
-                    <div class="space-y-6 text-gray-800 text-xl">
-                        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
-                            <div><strong>姓名：</strong>____________</div>
-                            <div><strong>日期：</strong>___年___月___日</div>
-                        </div>
-
-                        <div class="p-4 border-2 border-dashed border-gray-400 rounded-xl space-y-4">
-                            <p class="font-bold text-2xl text-red-900">傳統節慶與美食連連看：</p>
-                            <p>請用筆將左邊的傳統節慶，與右邊對應的習俗美食畫線連起來：</p>
-
-                            <div class="grid grid-cols-2 gap-8 my-6 p-6 bg-red-50 rounded-2xl border border-red-200 text-2xl font-bold leading-loose">
-                                <div class="space-y-6">
-                                    <div>🧧 1. 農曆春節 (過年)</div>
-                                    <div>🎋 2. 端午節</div>
-                                    <div>🥮 3. 中秋節</div>
-                                    <div>🥣 4. 冬至</div>
-                                </div>
-                                <div class="space-y-6 text-right">
-                                    <div>A. 吃月餅與柚子</div>
-                                    <div>B. 吃湯圓長一歲</div>
-                                    <div>C. 包粽子划龍舟</div>
-                                    <div>D. 吃年夜飯包紅包</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } else if (val === 'ws6') {
-                html += `
-                    <div class="space-y-6 text-gray-800 text-xl">
-                        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
-                            <div><strong>姓名：</strong>____________</div>
-                            <div><strong>日期：</strong>___年___月___日</div>
-                        </div>
-
-                        <div class="p-4 border-2 border-dashed border-gray-400 rounded-xl space-y-4">
-                            <p class="font-bold text-2xl text-blue-900">常用俗語與名言缺字填空：</p>
-                            <p>請根據您熟悉的記憶，在括號【 】中寫出正確的字：</p>
-
-                            <div class="space-y-4 bg-blue-50 p-6 rounded-2xl border border-blue-200 text-2xl leading-relaxed">
-                                <p>1. 種瓜得瓜，種豆得【 &nbsp;&nbsp;&nbsp;&nbsp; 】。</p>
-                                <p>2. 飲水思【 &nbsp;&nbsp;&nbsp;&nbsp; 】，莫忘感恩。</p>
-                                <p>3. 吃得苦中苦，方為人上【 &nbsp;&nbsp;&nbsp;&nbsp; 】。</p>
-                                <p>4. 失敗為【 &nbsp;&nbsp;&nbsp;&nbsp; 】之母。</p>
-                                <p>5. 歡喜做，甘願【 &nbsp;&nbsp;&nbsp;&nbsp; 】。</p>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } else if (val === 'ws7') {
-                html += `
-                    <div class="space-y-6 text-gray-800 text-xl">
-                        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
-                            <div><strong>姓名：</strong>____________</div>
-                            <div><strong>日期：</strong>___年___月___日</div>
-                        </div>
-
-                        <div class="p-4 border-2 border-dashed border-gray-400 rounded-xl space-y-4">
-                            <p class="font-bold text-2xl text-purple-900">生活物品分類大挑戰：</p>
-                            <p>請看下面的物品名稱，把它們分類寫到正確的框框裡：</p>
-
-                            <div class="bg-purple-50 p-4 rounded-xl border border-purple-200 text-center text-2xl font-bold tracking-widest mb-4">
-                                蘋果、高麗菜、香蕉、蘿蔔、菠菜、木瓜
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-6">
-                                <div class="bg-emerald-50 border-2 border-emerald-400 p-4 rounded-2xl min-h-[140px]">
-                                    <h4 class="font-bold text-emerald-900 text-2xl mb-2 border-b pb-1">🥬 蔬菜類：</h4>
-                                    <p class="text-gray-400 mt-4 text-base">（請寫在下方）</p>
-                                </div>
-                                <div class="bg-amber-50 border-2 border-amber-400 p-4 rounded-2xl min-h-[140px]">
-                                    <h4 class="font-bold text-amber-900 text-2xl mb-2 border-b pb-1">🍎 水果類：</h4>
-                                    <p class="text-gray-400 mt-4 text-base">（請寫在下方）</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } else if (val === 'ws8') {
-                html += `
-                    <div class="space-y-6 text-gray-800 text-xl">
-                        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
-                            <div><strong>姓名：</strong>____________</div>
-                            <div><strong>日期：</strong>___年___月___日</div>
-                        </div>
-
-                        <div class="p-4 border-2 border-dashed border-gray-400 rounded-xl space-y-4">
-                            <p class="font-bold text-2xl text-teal-900">溫馨短文閱讀與小隨堂回想：</p>
-                            
-                            <div class="bg-teal-50 p-6 rounded-2xl border border-teal-200 text-2xl leading-relaxed italic text-teal-950">
-                                「今天是個陽光明媚的好天氣。小明帶著阿公一起去家附近的公園散步，他們在公園裡看到美麗的紅玫瑰，還一起喝了一杯香濃的熱豆漿。」
-                            </div>
-
-                            <p class="font-bold text-xl text-gray-900 mt-4">請根據上面的短文內容回答問題：</p>
-                            <div class="space-y-3 pl-4">
-                                <p>1. 他們今天去哪裡散步？ 【 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 】</p>
-                                <p>2. 他們在公園裡看到什麼花？ 【 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 】</p>
-                                <p>3. 他們一起喝了什麼飲料？ 【 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 】</p>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } else if (val === 'ws9') {
-                html += `
-                    <div class="space-y-6 text-gray-800 text-xl">
-                        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
-                            <div><strong>姓名：</strong>____________</div>
-                            <div><strong>日期：</strong>___年___月___日</div>
-                        </div>
-
-                        <div class="p-4 border-2 border-dashed border-gray-400 rounded-xl space-y-4">
-                            <p class="font-bold text-2xl text-amber-900">台灣懷舊名產與地名連連看：</p>
-                            <p>請用筆將左邊的台灣知名名產，與右邊對應的著名產地畫線連起來：</p>
-
-                            <div class="grid grid-cols-2 gap-8 my-6 p-6 bg-amber-50 rounded-2xl border border-amber-200 text-2xl font-bold leading-loose">
-                                <div class="space-y-6">
-                                    <div>🥮 1. 太陽餅</div>
-                                    <div>🍍 2. 鳳梨酥</div>
-                                    <div>🐮 3. 牛舌餅</div>
-                                    <div>🍡 4. 手工麻糬</div>
-                                </div>
-                                <div class="space-y-6 text-right">
-                                    <div>A. 宜蘭</div>
-                                    <div>B. 台中</div>
-                                    <div>C. 花蓮</div>
-                                    <div>D. 台北</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } else if (val === 'ws10') {
-                html += `
-                    <div class="space-y-6 text-gray-800 text-xl">
-                        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
-                            <div><strong>姓名：</strong>____________</div>
-                            <div><strong>日期：</strong>___年___月___日</div>
-                        </div>
-
-                        <div class="p-4 border-2 border-dashed border-gray-400 rounded-xl space-y-4">
-                            <p class="font-bold text-2xl text-emerald-900">家常菜「番茄炒蛋」烹飪步驟排序：</p>
-                            <p>請看下面的炒菜步驟，在括號【 】中寫出正確的順序（1、2、3、4）：</p>
-
-                            <div class="space-y-4 bg-emerald-50 p-6 rounded-2xl border border-emerald-200 text-2xl leading-relaxed">
-                                <p>【 &nbsp;&nbsp; 】A. 將番茄切塊，雞蛋打散備用。</p>
-                                <p>【 &nbsp;&nbsp; 】B. 熱鍋下油，先將蛋液炒至七分熟盛起。</p>
-                                <p>【 &nbsp;&nbsp; 】C. 放入番茄翻炒出汁，加入少許鹽與糖。</p>
-                                <p>【 &nbsp;&nbsp; 】D. 倒入炒好的雞蛋一起翻炒均勻即可起鍋。</p>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } else if (val === 'ws11') {
-                html += `
-                    <div class="space-y-6 text-gray-800 text-xl">
-                        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
-                            <div><strong>姓名：</strong>____________</div>
-                            <div><strong>日期：</strong>___年___月___日</div>
-                        </div>
-
-                        <div class="p-4 border-2 border-dashed border-gray-400 rounded-xl space-y-4">
-                            <p class="font-bold text-2xl text-indigo-900">符號視覺搜尋大挑戰：</p>
-                            <p>請仔細計算下方方格中的符號各有幾個，並填入下方表格中：</p>
-
-                            <div class="bg-indigo-50 p-6 rounded-2xl text-4xl leading-loose tracking-widest text-center border border-indigo-200">
-                                ⭐️ ☀️ 🌙 🍀 ⭐️ 🌙 ☀️ 🍀<br>
-                                ☀️ 🍀 ⭐️ 🌙 ☀️ ⭐️ 🍀 🌙<br>
-                                🌙 ⭐️ 🍀 ☀️ ⭐️ ☀️ 🌙 🍀
-                            </div>
-
-                            <div class="grid grid-cols-2 gap-4 text-center mt-4">
-                                <div class="bg-gray-50 p-4 rounded-xl border">
-                                    <span class="text-3xl">⭐️ 星星：</span>
-                                    <span class="text-2xl font-bold">【 &nbsp;&nbsp; 】個</span>
-                                </div>
-                                <div class="bg-gray-50 p-4 rounded-xl border">
-                                    <span class="text-3xl">☀️ 太陽：</span>
-                                    <span class="text-2xl font-bold">【 &nbsp;&nbsp; 】個</span>
-                                </div>
-                                <div class="bg-gray-50 p-4 rounded-xl border">
-                                    <span class="text-3xl">🌙 月亮：</span>
-                                    <span class="text-2xl font-bold">【 &nbsp;&nbsp; 】個</span>
-                                </div>
-                                <div class="bg-gray-50 p-4 rounded-xl border">
-                                    <span class="text-3xl">🍀 幸運草：</span>
-                                    <span class="text-2xl font-bold">【 &nbsp;&nbsp; 】個</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } else if (val === 'ws12') {
-                html += `
-                    <div class="space-y-6 text-gray-800 text-xl">
-                        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
-                            <div><strong>姓名：</strong>____________</div>
-                            <div><strong>日期：</strong>___年___月___日</div>
-                        </div>
-
-                        <div class="p-4 border-2 border-dashed border-gray-400 rounded-xl space-y-4">
-                            <p class="font-bold text-2xl text-rose-900">四季天氣與生活穿搭常識：</p>
-                            <p>請選擇最合適的答案，填入括號【 】中：</p>
-
-                            <div class="space-y-4 bg-rose-50 p-6 rounded-2xl border border-rose-200 text-2xl leading-relaxed">
-                                <p>1. 寒冷的冬天出門，應該穿著什麼比較保暖？<br>【 &nbsp;&nbsp; 】 （A. 羽絨大衣與圍巾 &nbsp; B. 短袖短褲）</p>
-                                <p>2. 炎熱的夏天去戶外，防曬與補充水分應該攜帶？<br>【 &nbsp;&nbsp; 】 （A. 暖暖包 &nbsp; B. 遮陽帽與水壺）</p>
-                                <p>3. 下雨天出門時，應該準備什麼才不會被淋濕？<br>【 &nbsp;&nbsp; 】 （A. 雨傘或雨衣 &nbsp; B. 墨鏡）</p>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } else if (val === 'ws13') {
-                html += `
-                    <div class="space-y-6 text-gray-800 text-xl">
-                        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
-                            <div><strong>姓名：</strong>____________</div>
-                            <div><strong>日期：</strong>___年___月___日</div>
-                        </div>
-
-                        <div class="p-4 border-2 border-dashed border-gray-400 rounded-xl space-y-4">
-                            <p class="font-bold text-2xl text-cyan-900">數字規律填空（數感邏輯）：</p>
-                            <p>請觀察數字變化的規律，在括號【 】中填入正確的數字：</p>
-
-                            <div class="space-y-4 bg-cyan-50 p-6 rounded-2xl border border-cyan-200 text-2xl leading-relaxed">
-                                <p>1. 2 &nbsp;—&nbsp; 4 &nbsp;—&nbsp; 6 &nbsp;—&nbsp; 【 &nbsp;&nbsp;&nbsp;&nbsp; 】 &nbsp;—&nbsp; 10</p>
-                                <p>2. 5 &nbsp;—&nbsp; 10 &nbsp;—&nbsp; 15 &nbsp;—&nbsp; 20 &nbsp;—&nbsp; 【 &nbsp;&nbsp;&nbsp;&nbsp; 】</p>
-                                <p>3. 10 &nbsp;—&nbsp; 20 &nbsp;—&nbsp; 30 &nbsp;—&nbsp; 【 &nbsp;&nbsp;&nbsp;&nbsp; 】 &nbsp;—&nbsp; 50</p>
-                                <p>4. 9 &nbsp;—&nbsp; 8 &nbsp;—&nbsp; 7 &nbsp;—&nbsp; 【 &nbsp;&nbsp;&nbsp;&nbsp; 】 &nbsp;—&nbsp; 5</p>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            } else if (val === 'ws14') {
-                html += `
-                    <div class="space-y-6 text-gray-800 text-xl">
-                        <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
-                            <div><strong>姓名：</strong>____________</div>
-                            <div><strong>日期：</strong>___年___月___日</div>
-                        </div>
-
-                        <div class="p-4 border-2 border-dashed border-gray-400 rounded-xl space-y-4">
-                            <p class="font-bold text-2xl text-purple-900">懷舊童謠歌詞缺字回想：</p>
-                            <p>請回想您熟悉的童謠，在括號【 】中寫出正確的字：</p>
-
-                            <div class="space-y-4 bg-purple-50 p-6 rounded-2xl border border-purple-200 text-2xl leading-relaxed">
-                                <p>1. 一閃一閃亮晶晶，滿天都是小【 &nbsp;&nbsp;&nbsp;&nbsp; 】。</p>
-                                <p>2. 嗡嗡嗡，嗡嗡嗡，飛到西來飛到【 &nbsp;&nbsp;&nbsp;&nbsp; 】。</p>
-                                <p>3. 兩隻老虎，兩隻老虎，跑得【 &nbsp;&nbsp;&nbsp;&nbsp; 】。</p>
-                                <p>4. 桃花開，【 &nbsp;&nbsp;&nbsp;&nbsp; 】紅，大家齊歡喜。</p>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
-
-            printable.innerHTML = html;
+        function formatMultiline(str) {
+            if (!str) return '';
+            return escapeHtml(str).replace(/\r?\n/g, '<br>');
         }
 
-        // 下載 PDF 功能 (使用 html2pdf.js)
-        function downloadPDF(e) {
-            const element = document.getElementById('printable-worksheet');
-            if (!element) return;
-
-            const select = document.getElementById('worksheet-select');
-            let fileName = '健腦認知活動學習單.pdf';
-            if (select) {
-                const selectedText = select.options[select.selectedIndex].text;
-                fileName = selectedText.replace(/^[0-9.]+\s*/, '') + '.pdf';
-            }
-
-            const btn = e ? e.currentTarget : document.getElementById('pdf-btn');
-            const originalText = btn ? btn.innerHTML : '';
-            if (btn) {
-                btn.innerHTML = '⏳ 正在產生 PDF 檔案...';
-                btn.disabled = true;
-            }
-
-            const opt = {
-                margin:       [10, 10, 10, 10],
-                filename:     fileName,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-            };
-
-            if (typeof html2pdf !== 'undefined') {
-                html2pdf().set(opt).from(element).save().then(() => {
-                    if (btn) {
-                        btn.innerHTML = originalText;
-                        btn.disabled = false;
-                    }
-                }).catch(err => {
-                    console.error('PDF產生錯誤:', err);
-                    showModal('PDF產生提示', 'PDF產生失敗，請嘗試使用「直接列印此頁」按鈕。');
-                    if (btn) {
-                        btn.innerHTML = originalText;
-                        btn.disabled = false;
-                    }
-                });
-            } else {
-                showModal('套件載入提示', 'PDF 生成元件載入中，請稍候再試或使用「直接列印此頁」。');
-                if (btn) {
-                    btn.innerHTML = originalText;
-                    btn.disabled = false;
-                }
-            }
-        }
-
-        // 直接列印功能
-        function printCurrentWorksheet() {
-            const printContent = document.getElementById('printable-worksheet');
-            if (!printContent) return;
-
+        function initForm() {
+            // 載入自訂下拉選單設定
             try {
-                const printWindow = window.open('', '_blank');
-                if (printWindow) {
-                    printWindow.document.write(`
-                        <!DOCTYPE html>
-                        <html lang="zh-Hant-TW">
-                        <head>
-                            <meta charset="UTF-8">
-                            <title>健腦認知活動學習單</title>
-                            <script src="https://cdn.tailwindcss.com"><\/script>
-                            <style>
-                                body { font-family: "Noto Sans TC", sans-serif; padding: 20px; background: white; color: black; }
-                                @media print { body { padding: 0; } }
-                            </style>
-                        </head>
-                        <body>
-                            <div>${printContent.innerHTML}</div>
-                            <script>
-                                window.onload = function() {
-                                    setTimeout(function() {
-                                        window.print();
-                                        window.close();
-                                    }, 400);
-                                };
-                            <\/script>
-                        </body>
-                        </html>
-                    `);
-                    printWindow.document.close();
-                    return;
+                const savedOpts = localStorage.getItem(STORAGE_KEY_OPTIONS);
+                if (savedOpts) {
+                    const parsed = JSON.parse(savedOpts);
+                    customOptions = Object.assign({}, JSON.parse(JSON.stringify(DEFAULT_OPTIONS)), parsed);
                 }
             } catch (e) {
-                console.warn('開啟列印新視窗受阻，嘗試直接觸發列印:', e);
+                console.warn('讀取自訂選項失敗', e);
+            }
+            applyAllCustomOptions();
+            renderScenarioButtons();
+
+            // 載入暫存表單資料
+            const loaded = loadFromLocal();
+            if (!loaded) {
+                setVal('recordDate', getTodayROC());
+                recordItems = [{ title: '照顧負荷大', need: '', goal: '', plan: '' }];
+                renderRecordItems();
             }
 
+            // 綁定自動儲存監聽
+            FIELD_IDS.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener('input', saveToLocal);
+                    el.addEventListener('change', saveToLocal);
+                }
+            });
+        }
+
+        function saveToLocal() {
             try {
-                window.print();
-            } catch (err) {
-                console.error('列印觸發失敗:', err);
-                showModal('列印提示', '如果瀏覽器阻擋了列印視窗，請改為點擊「📥 下載 PDF 檔案」按鈕進行儲存與列印。');
+                const data = { fields: {}, recordItems: recordItems };
+                FIELD_IDS.forEach(id => {
+                    data.fields[id] = getVal(id);
+                });
+                localStorage.setItem(STORAGE_KEY_DATA, JSON.stringify(data));
+            } catch (e) {
+                console.warn('自動儲存失敗', e);
             }
         }
 
-        // 自訂提示彈窗
-        function showModal(title, message) {
-            document.getElementById('modal-title').innerText = title;
-            document.getElementById('modal-message').innerText = message;
-            document.getElementById('custom-modal').classList.remove('hidden');
+        function loadFromLocal() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY_DATA);
+                if (!raw) return false;
+                const data = JSON.parse(raw);
+                if (data.fields) {
+                    FIELD_IDS.forEach(id => {
+                        if (data.fields[id] !== undefined) {
+                            setVal(id, data.fields[id]);
+                        }
+                    });
+                }
+                if (Array.isArray(data.recordItems) && data.recordItems.length > 0) {
+                    recordItems = data.recordItems;
+                } else {
+                    recordItems = [{ title: '照顧負荷大', need: '', goal: '', plan: '' }];
+                }
+                renderRecordItems();
+                return true;
+            } catch (e) {
+                console.warn('讀取暫存失敗', e);
+                return false;
+            }
         }
 
-        function closeModal() {
-            document.getElementById('custom-modal').classList.add('hidden');
+        function clearForm() {
+            FIELD_IDS.forEach(id => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                if (el.tagName === 'SELECT') {
+                    el.selectedIndex = 0;
+                } else {
+                    el.value = '';
+                }
+            });
+            setVal('recordDate', getTodayROC());
+            recordItems = [{ title: '照顧負荷大', need: '', goal: '', plan: '' }];
+            renderRecordItems();
+            saveToLocal();
+            showToast('🗑️ 已清空表單並帶入今日日期');
         }
+
+        // 下拉選單複選累加與單選帶入
+        function appendPreset(selectId, targetId) {
+            const sel = document.getElementById(selectId);
+            const target = document.getElementById(targetId);
+            if (!sel || !target || !sel.value) return;
+            const picked = sel.value;
+            const current = target.value.trim();
+            if (!current) {
+                target.value = picked;
+            } else if (!current.split(/[、,，]/).map(s => s.trim()).includes(picked)) {
+                target.value = `${current}、${picked}`;
+            }
+            sel.selectedIndex = 0;
+            saveToLocal();
+        }
+
+        function applyPreset(selectId, targetId) {
+            const sel = document.getElementById(selectId);
+            const target = document.getElementById(targetId);
+            if (!sel || !target || !sel.value) return;
+            target.value = sel.value;
+            sel.selectedIndex = 0;
+            saveToLocal();
+        }
+
+        // ==========================================
+        // 多選累加情境組合與動態服務記錄
+        // ==========================================
+        function renderScenarioButtons() {
+            const grid = document.getElementById('scenarioButtonGrid');
+            if (!grid) return;
+            grid.innerHTML = '';
+            SCENARIO_PRESETS.forEach(sc => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'scenario-btn' + (activeScenarioKey === sc.key ? ' active' : '');
+                btn.innerHTML = `<span style="color:#f59e0b;">⚡</span><span>${escapeHtml(sc.label)}</span>`;
+                btn.onclick = () => openScenarioDrawer(sc.key);
+                grid.appendChild(btn);
+            });
+        }
+
+        function openScenarioDrawer(key) {
+            const drawer = document.getElementById('scenarioDrawer');
+            const titleEl = document.getElementById('drawerTitle');
+            const listEl = document.getElementById('drawerOptionsList');
+            if (!drawer || !titleEl || !listEl) return;
+
+            if (activeScenarioKey === key && drawer.classList.contains('open')) {
+                closeScenarioDrawer();
+                return;
+            }
+
+            const scenario = SCENARIO_PRESETS.find(s => s.key === key);
+            if (!scenario) return;
+
+            activeScenarioKey = key;
+            renderScenarioButtons();
+
+            titleEl.textContent = `【${scenario.label}】可選範例（點擊「＋ 累加套用」將自動遞增編號帶入下方）：`;
+            listEl.innerHTML = '';
+
+            scenario.presets.forEach((preset, idx) => {
+                const card = document.createElement('div');
+                card.className = 'preset-option-card';
+                card.innerHTML = `
+                    <div style="flex: 1; font-size: 0.85rem; line-height: 1.5;">
+                        <div style="font-weight: 700; color: #1e3a8a; margin-bottom: 0.25rem;">範例 ${idx + 1}：【${escapeHtml(preset.title)}】</div>
+                        <div><strong>評估：</strong>${escapeHtml(preset.need)}</div>
+                        <div><strong>目標：</strong>${escapeHtml(preset.goal)}</div>
+                        <div><strong>計劃：</strong>${escapeHtml(preset.plan)}</div>
+                    </div>
+                    <button type="button" class="btn btn-primary btn-sm" style="white-space: nowrap; flex-shrink: 0;">＋ 累加套用</button>
+                `;
+                card.querySelector('button').onclick = () => applyScenarioPreset(preset);
+                listEl.appendChild(card);
+            });
+
+            drawer.classList.add('open');
+        }
+
+        function closeScenarioDrawer() {
+            activeScenarioKey = null;
+            renderScenarioButtons();
+            const drawer = document.getElementById('scenarioDrawer');
+            if (drawer) drawer.classList.remove('open');
+        }
+
+        function applyScenarioPreset(preset) {
+            // 若目前只有一筆空白預設項目，直接覆蓋該筆
+            if (
+                recordItems.length === 1 &&
+                !recordItems[0].need.trim() &&
+                !recordItems[0].goal.trim() &&
+                !recordItems[0].plan.trim()
+            ) {
+                recordItems[0] = {
+                    title: preset.title,
+                    need: preset.need,
+                    goal: preset.goal,
+                    plan: preset.plan
+                };
+            } else {
+                // 若已有相同標題則合併內容，否則新增一組遞增項目
+                const existing = recordItems.find(item => item.title === preset.title);
+                if (existing) {
+                    if (!existing.need.includes(preset.need)) {
+                        existing.need = existing.need ? `${existing.need}\n${preset.need}` : preset.need;
+                    }
+                    if (!existing.goal.includes(preset.goal)) {
+                        existing.goal = existing.goal ? `${existing.goal}\n${preset.goal}` : preset.goal;
+                    }
+                    if (!existing.plan.includes(preset.plan)) {
+                        existing.plan = existing.plan ? `${existing.plan}\n${preset.plan}` : preset.plan;
+                    }
+                } else {
+                    recordItems.push({
+                        title: preset.title,
+                        need: preset.need,
+                        goal: preset.goal,
+                        plan: preset.plan
+                    });
+                }
+            }
+            renderRecordItems();
+            saveToLocal();
+            showToast(`✅ 已累加套用【${preset.title}】`);
+        }
+
+        function renderRecordItems() {
+            const needsBox = document.getElementById('needsContainer');
+            const goalsBox = document.getElementById('goalsContainer');
+            const plansBox = document.getElementById('plansContainer');
+            if (!needsBox || !goalsBox || !plansBox) return;
+
+            needsBox.innerHTML = '';
+            goalsBox.innerHTML = '';
+            plansBox.innerHTML = '';
+
+            const titleOptions = customOptions.needTitles || DEFAULT_OPTIONS.needTitles;
+
+            recordItems.forEach((item, index) => {
+                // 1. 照護需求評估區塊（可選標題與刪除項目）
+                const needDiv = document.createElement('div');
+                needDiv.className = 'need-block';
+                const optionsHtml = titleOptions.map(t =>
+                    `<option value="${escapeHtml(t)}" ${t === item.title ? 'selected' : ''}>${escapeHtml(t)}</option>`
+                ).join('');
+                const customOptionHtml = !titleOptions.includes(item.title)
+                    ? `<option value="${escapeHtml(item.title)}" selected>${escapeHtml(item.title)}</option>`
+                    : '';
+
+                needDiv.innerHTML = `
+                    <div class="need-block-header">
+                        <span style="font-weight: 700; color: #1e3a8a; white-space: nowrap;">【${index + 1}.】</span>
+                        <select style="flex: 1; font-weight: 600;" onchange="updateRecordItem(${index}, 'title', this.value)">
+                            ${customOptionHtml}${optionsHtml}
+                        </select>
+                        ${recordItems.length > 1 ? `<button type="button" class="btn btn-outline btn-sm" style="color: #dc2626;" onclick="removeRecordItem(${index})">刪除</button>` : ''}
+                    </div>
+                    <textarea rows="2" placeholder="請輸入照護需求評估內容..." oninput="updateRecordItem(${index}, 'need', this.value)">${escapeHtml(item.need)}</textarea>
+                `;
+                needsBox.appendChild(needDiv);
+
+                // 2. 照護目標區塊
+                const goalDiv = document.createElement('div');
+                goalDiv.className = 'need-block';
+                goalDiv.innerHTML = `
+                    <div style="font-weight: 700; color: #1e3a8a; margin-bottom: 0.4rem;">【${index + 1}.${escapeHtml(item.title)}】</div>
+                    <textarea rows="2" placeholder="請輸入具體照護目標..." oninput="updateRecordItem(${index}, 'goal', this.value)">${escapeHtml(item.goal)}</textarea>
+                `;
+                goalsBox.appendChild(goalDiv);
+
+                // 3. 服務計劃區塊
+                const planDiv = document.createElement('div');
+                planDiv.className = 'need-block';
+                planDiv.innerHTML = `
+                    <div style="font-weight: 700; color: #1e3a8a; margin-bottom: 0.4rem;">【${index + 1}.${escapeHtml(item.title)}】</div>
+                    <textarea rows="2" placeholder="請輸入執行服務計劃..." oninput="updateRecordItem(${index}, 'plan', this.value)">${escapeHtml(item.plan)}</textarea>
+                `;
+                plansBox.appendChild(planDiv);
+            });
+        }
+
+        function updateRecordItem(index, field, value) {
+            if (!recordItems[index]) return;
+            recordItems[index][field] = value;
+            if (field === 'title') {
+                renderRecordItems();
+            }
+            saveToLocal();
+        }
+
+        function addRecordItem() {
+            const titles = customOptions.needTitles || DEFAULT_OPTIONS.needTitles;
+            const nextTitle = titles[recordItems.length % titles.length] || '照顧資源需求';
+            recordItems.push({ title: nextTitle, need: '', goal: '', plan: '' });
+            renderRecordItems();
+            saveToLocal();
+        }
+
+        function removeRecordItem(index) {
+            if (recordItems.length <= 1) return;
+            recordItems.splice(index, 1);
+            renderRecordItems();
+            saveToLocal();
+        }
+
+        function clearAllRecordItems() {
+            recordItems = [{ title: '照顧負荷大', need: '', goal: '', plan: '' }];
+            renderRecordItems();
+            saveToLocal();
+            showToast('↺ 已重置服務記錄項目');
+        }
+
+        // ==========================================
+        // 自訂下拉選項管理
+        // ==========================================
+        function applyAllCustomOptions() {
+            const presetPrefixes = {
+                languagePreset: '+ 加入語言',
+                incomePreset: '+ 加入經濟來源',
+                identityPreset: '+ 勾選加入身分別',
+                assistiveDevicePreset: '+ 選擇輔具',
+                visionPreset: '-- 快速選擇 --',
+                hearingPreset: '-- 快速選擇 --',
+                historyPreset: '+ 加入常見病史',
+                medPreset: '-- 快速選擇 --',
+                bpsdBehaviorPreset: '+ 選擇行為型態',
+                highRiskIndicatorPreset: '+ 選擇高危指標'
+            };
+
+            Object.keys(customOptions).forEach(key => {
+                if (key === 'needTitles') return;
+                const selectEl = document.getElementById(key);
+                if (!selectEl) return;
+                const prevVal = selectEl.value;
+                selectEl.innerHTML = '';
+
+                if (presetPrefixes[key]) {
+                    const placeholderOpt = document.createElement('option');
+                    placeholderOpt.value = '';
+                    placeholderOpt.textContent = presetPrefixes[key];
+                    selectEl.appendChild(placeholderOpt);
+                }
+
+                (customOptions[key] || []).forEach(optText => {
+                    const opt = document.createElement('option');
+                    opt.value = optText;
+                    opt.textContent = optText;
+                    selectEl.appendChild(opt);
+                });
+
+                if (prevVal) selectEl.value = prevVal;
+            });
+        }
+
+        function openOptionManager() {
+            loadTargetOptions();
+            document.getElementById('optionModal').classList.add('active');
+        }
+
+        function closeOptionManager() {
+            document.getElementById('optionModal').classList.remove('active');
+        }
+
+        function loadTargetOptions() {
+            const target = document.getElementById('manageTargetSelect').value;
+            const list = customOptions[target] || DEFAULT_OPTIONS[target] || [];
+            document.getElementById('manageOptionsText').value = list.join('\n');
+        }
+
+        function saveTargetOptions() {
+            const target = document.getElementById('manageTargetSelect').value;
+            const raw = document.getElementById('manageOptionsText').value;
+            const list = raw.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+            if (list.length === 0) {
+                showToast('⚠️ 選項清單不可為空！');
+                return;
+            }
+            customOptions[target] = list;
+            localStorage.setItem(STORAGE_KEY_OPTIONS, JSON.stringify(customOptions));
+            applyAllCustomOptions();
+            renderRecordItems();
+            showToast('💾 已儲存自訂下拉選單設定');
+        }
+
+        function resetTargetOptions() {
+            const target = document.getElementById('manageTargetSelect').value;
+            customOptions[target] = [...(DEFAULT_OPTIONS[target] || [])];
+            localStorage.setItem(STORAGE_KEY_OPTIONS, JSON.stringify(customOptions));
+            loadTargetOptions();
+            applyAllCustomOptions();
+            renderRecordItems();
+            showToast('↺ 已恢復此欄位預設選項');
+        }
+
+        // ==========================================
+        // 文件組裝、預覽與 Word 匯出
+        // ==========================================
+        function buildDocumentHTML() {
+            const recordDate = getVal('recordDate');
+            const caseName = getVal('caseName');
+            const caseId = getVal('caseId');
+            const gender = getVal('gender');
+            const marital = getVal('maritalStatus') === '其他' && getVal('maritalOther')
+                ? `其他(${getVal('maritalOther')})`
+                : getVal('maritalStatus') + (getVal('maritalOther') ? `(${getVal('maritalOther')})` : '');
+            const age = getVal('age');
+            const language = getVal('language');
+            const education = getVal('education') === '其他' && getVal('educationOther')
+                ? `其他(${getVal('educationOther')})`
+                : getVal('education') + (getVal('educationOther') ? `(${getVal('educationOther')})` : '');
+
+            const occupationText = getVal('occupation');
+            const incomeSource = getVal('incomeSource');
+            const religion = getVal('religion') === '其他' && getVal('religionOther')
+                ? `其他(${getVal('religionOther')})`
+                : getVal('religion') + (getVal('religionOther') ? `(${getVal('religionOther')})` : '');
+
+            const floor = getVal('residenceFloor');
+            const elevator = getVal('residenceElevator');
+            const ownership = getVal('residenceOwnership');
+            const resNote = getVal('residence');
+            const residenceText = [
+                floor ? `${floor} 樓` : '',
+                elevator,
+                ownership,
+                resNote
+            ].filter(Boolean).join('，');
+
+            const currInt = getVal('currentInterest');
+            const pastInt = getVal('pastInterest');
+            const interestText = [
+                currInt ? `目前興趣：${currInt}` : '',
+                pastInt ? `舊時興趣：${pastInt}` : ''
+            ].filter(Boolean).join('；');
+
+            let identityText = getVal('identityType');
+            const disCat = getVal('disabilityCategory');
+            const disLvl = getVal('disabilityLevel');
+            if (disCat || disLvl) {
+                identityText += `（障別：${disCat || '未填'}，等級：${disLvl || '未填'}）`;
+            }
+
+            const familyStatus = getVal('familyStatus');
+            const assistiveDevice = getVal('assistiveDevice');
+            const visionText = getVal('vision');
+            const hearingText = getVal('hearing');
+
+            const primaryCaregiver = getVal('primaryCaregiver');
+            const cdrScore = getVal('cdrScore');
+            const mmseScore = getVal('mmseScore');
+            const medicalHistory = getVal('medicalHistory');
+            const medicationStatus = getVal('medicationStatus');
+            const alertness = getVal('alertness');
+            const expression = getVal('expression');
+            const adlScore = getVal('adlScore');
+            const iadlScore = getVal('iadlScore');
+            const burdenScore = getVal('burdenScore');
+            const bpsdBehavior = getVal('bpsdBehavior');
+            const highRiskIndicator = getVal('highRiskIndicator');
+            const medicalJourney = getVal('medicalJourney');
+
+            const needsHtml = recordItems.map((item, idx) => `
+                <div style="margin-bottom: 6pt;">
+                    <div style="font-weight: bold;">【${idx + 1}.${escapeHtml(item.title)}】</div>
+                    <div style="padding-left: 14pt;">${formatMultiline(item.need) || '（無）'}</div>
+                </div>
+            `).join('');
+
+            const goalsHtml = recordItems.map((item, idx) => `
+                <div style="margin-bottom: 6pt;">
+                    <div style="font-weight: bold;">【${idx + 1}.${escapeHtml(item.title)}】</div>
+                    <div style="padding-left: 14pt;">${formatMultiline(item.goal) || '（無）'}</div>
+                </div>
+            `).join('');
+
+            const plansHtml = recordItems.map((item, idx) => `
+                <div style="margin-bottom: 6pt;">
+                    <div style="font-weight: bold;">【${idx + 1}.${escapeHtml(item.title)}】</div>
+                    <div style="padding-left: 14pt;">${formatMultiline(item.plan) || '（無）'}</div>
+                </div>
+            `).join('');
+
+            const scoreLine = (adlScore || iadlScore || burdenScore)
+                ? `<div>● 評估量表 ： ADL：${adlScore ? escapeHtml(adlScore) + ' 分' : ''} &nbsp; IADL：${iadlScore ? escapeHtml(iadlScore) + ' 項' : ''} &nbsp; 照顧者負荷量表：${burdenScore ? escapeHtml(burdenScore) + ' 分' : ''}</div>`
+                : '';
+
+            return `
+                <div style="font-family: '標楷體', 'DFKai-SB', 'Microsoft JhengHei', serif; font-size: 11pt; line-height: 1.55; color: #000;">
+                    <div style="margin-bottom: 2pt;">${escapeHtml(recordDate)} &nbsp; ${escapeHtml(caseName)}</div>
+                    <div style="margin-bottom: 6pt;">個案編號 ： ${escapeHtml(caseId)}</div>
+                    <div style="border-bottom: 1px dashed #333; margin: 6pt 0 10pt 0;"></div>
+
+                    <div style="font-weight: bold; font-size: 12pt; margin-bottom: 6pt;">一、個案基本與臨床資料</div>
+                    <div>● 性別狀況 ： ${escapeHtml(gender)} &nbsp;&nbsp;&nbsp; ● 婚姻狀態 ： ${escapeHtml(marital)} &nbsp;&nbsp;&nbsp; ● 個案年齡 ： ${age ? escapeHtml(age) + ' 歲' : ''}</div>
+                    <div>● 使用語言 ： ${escapeHtml(language)}</div>
+                    <div>● 教育狀態 ： ${escapeHtml(education)}</div>
+                    <div>● 職業狀況 ： ${escapeHtml(occupationText)}</div>
+                    <div>● 經濟來源 ： ${escapeHtml(incomeSource)} &nbsp;&nbsp;&nbsp; ● 宗教信仰 ： ${escapeHtml(religion)}</div>
+                    <div>● 身分別 ： ${escapeHtml(identityText)}</div>
+                    <div>● 居住處 ： ${escapeHtml(residenceText)}</div>
+                    ${interestText ? `<div>● 興趣 ： ${escapeHtml(interestText)}</div>` : ''}
+                    <div>● 家庭狀況 ： ${formatMultiline(familyStatus)}</div>
+                    <div>● 輔具使用 ： ${escapeHtml(assistiveDevice)}</div>
+                    <div>● 視力 ： ${escapeHtml(visionText)} &nbsp;&nbsp;&nbsp; ● 聽力 ： ${escapeHtml(hearingText)}</div>
+                    <div>● 主要照顧者 ： ${escapeHtml(primaryCaregiver)}</div>
+                    <div>● 智能評估 ： CDR：${escapeHtml(cdrScore)} &nbsp;&nbsp; MMSE：${escapeHtml(mmseScore)}</div>
+                    <div>● 過去病史 ： ${escapeHtml(medicalHistory)}</div>
+                    <div>● 服藥狀況 ： ${escapeHtml(medicationStatus)}</div>
+                    <div>● 覺醒程度 ： ${escapeHtml(alertness)} &nbsp;&nbsp;&nbsp; ● 表達能力 ： ${escapeHtml(expression)}</div>
+                    ${scoreLine}
+                    <div>● 評估指標 ： 情緒及行為型態：${escapeHtml(bpsdBehavior)} &nbsp;&nbsp; 高危險評估指標：${escapeHtml(highRiskIndicator)}</div>
+                    <div style="margin-top: 2pt;">● 就醫原因及歷程 ： ${formatMultiline(medicalJourney)}</div>
+
+                    <div style="border-bottom: 1px dashed #333; margin: 12pt 0 10pt 0;"></div>
+
+                    <div style="font-weight: bold; font-size: 12pt; margin-bottom: 6pt;">二、服務記錄</div>
+                    <div style="font-weight: bold; margin: 6pt 0 4pt 0;">➤➤ 照護需求評估</div>
+                    ${needsHtml}
+
+                    <div style="font-weight: bold; margin: 8pt 0 4pt 0;">➤➤ 照護目標</div>
+                    ${goalsHtml}
+
+                    <div style="font-weight: bold; margin: 8pt 0 4pt 0;">➤➤ 服務計劃</div>
+                    ${plansHtml}
+                </div>
+            `;
+        }
+
+        function openPreview() {
+            document.getElementById('previewArea').innerHTML = buildDocumentHTML();
+            document.getElementById('previewModal').classList.add('active');
+        }
+
+        function closePreview() {
+            document.getElementById('previewModal').classList.remove('active');
+        }
+
+        function exportToWord() {
+            const content = buildDocumentHTML();
+            const caseId = getVal('caseId') || '個案';
+            const caseName = getVal('caseName') || '紀錄';
+            const dateStr = getVal('recordDate') || getTodayROC();
+            const fileName = `${dateStr}_${caseId}_${caseName}_服務紀錄.doc`;
+
+            const wordHtml = `
+                <html xmlns:o="urn:schemas-microsoft-com:office:office"
+                      xmlns:w="urn:schemas-microsoft-com:office:word"
+                      xmlns="http://www.w3.org/TR/REC-html40">
+                <head>
+                    <meta charset="utf-8">
+                    <title>個案服務紀錄</title>
+                    <style>
+                        @page Section1 {
+                            size: 21cm 29.7cm;
+                            margin: 1.8cm 1.8cm 1.8cm 1.8cm;
+                            mso-header-margin: 1.0cm;
+                            mso-footer-margin: 1.0cm;
+                        }
+                        div.Section1 { page: Section1; }
+                        body {
+                            font-family: "標楷體", "DFKai-SB", "Microsoft JhengHei", serif;
+                            font-size: 11pt;
+                            line-height: 1.5;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="Section1">${content}</div>
+                </body>
+                </html>
+            `;
+
+            const blob = new Blob(['\ufeff', wordHtml], { type: 'application/msword;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = fileName;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+            showToast(`📥 已匯出 Word 檔：${fileName}`);
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            if (!toast) return;
+            toast.textContent = msg;
+            toast.classList.add('show');
+            clearTimeout(window._toastTimer);
+            window._toastTimer = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // ==========================================
+        // Google 試算表 (複製貼上 / CSV) 智慧解析與帶入
+        // ==========================================
+        function openSheetImport() {
+            document.getElementById('sheetImportModal').classList.add('active');
+        }
+
+        function closeSheetImport() {
+            document.getElementById('sheetImportModal').classList.remove('active');
+        }
+
+        function handleCsvUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = e.target.result;
+                document.getElementById('sheetPasteArea').value = text;
+                parseSheetText(text);
+            };
+            reader.readAsText(file, 'UTF-8');
+        }
+
+        function parseDelimitedLine(line, delimiter) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                if (char === '"') {
+                    if (inQuotes && line[i + 1] === '"') {
+                        current += '"';
+                        i++;
+                    } else {
+                        inQuotes = !inQuotes;
+                    }
+                } else if (char === delimiter && !inQuotes) {
+                    result.push(current.trim());
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            result.push(current.trim());
+            return result;
+        }
+
+        function parseSheetText(rawText) {
+            const selectorBox = document.getElementById('sheetRowSelectorBox');
+            const rowSelect = document.getElementById('sheetRowSelect');
+            const colCountSpan = document.getElementById('parsedColCount');
+
+            if (!rawText || !rawText.trim()) {
+                parsedSheetHeaders = [];
+                parsedSheetRows = [];
+                selectorBox.style.display = 'none';
+                return;
+            }
+
+            const lines = rawText.trim().split(/\r?\n/).filter(l => l.trim() !== '');
+            if (lines.length < 2) {
+                parsedSheetHeaders = [];
+                parsedSheetRows = [];
+                selectorBox.style.display = 'none';
+                return;
+            }
+
+            const delimiter = lines[0].includes('\t') ? '\t' : ',';
+            parsedSheetHeaders = parseDelimitedLine(lines[0], delimiter);
+            parsedSheetRows = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                const cols = parseDelimitedLine(lines[i], delimiter);
+                if (cols.some(c => c !== '')) {
+                    parsedSheetRows.push(cols);
+                }
+            }
+
+            if (parsedSheetRows.length === 0) {
+                selectorBox.style.display = 'none';
+                return;
+            }
+
+            colCountSpan.textContent = parsedSheetHeaders.length;
+            rowSelect.innerHTML = '';
+            parsedSheetRows.forEach((row, idx) => {
+                const previewText = row.slice(0, 4).filter(Boolean).join(' | ') || `第 ${idx + 1} 筆資料`;
+                const opt = document.createElement('option');
+                opt.value = idx;
+                opt.textContent = `第 ${idx + 1} 筆：${previewText}`;
+                rowSelect.appendChild(opt);
+            });
+
+            selectorBox.style.display = 'block';
+        }
+
+        function setSelectOrOther(selectId, otherId, rawVal) {
+            const sel = document.getElementById(selectId);
+            if (!sel || !rawVal) return;
+            const val = rawVal.trim();
+            const options = Array.from(sel.options);
+            const exact = options.find(o => o.value === val || o.text === val);
+            if (exact) {
+                sel.value = exact.value;
+                return;
+            }
+            const partial = options.find(o => o.value && (val.includes(o.value) || o.value.includes(val)));
+            if (partial) {
+                sel.value = partial.value;
+            } else if (otherId) {
+                const otherOpt = options.find(o => o.value === '其他');
+                if (otherOpt) sel.value = '其他';
+                const otherInput = document.getElementById(otherId);
+                if (otherInput) otherInput.value = val;
+            }
+        }
+
+        function applySheetRowToForm() {
+            if (!parsedSheetHeaders.length || !parsedSheetRows.length) {
+                showToast('⚠️ 請先貼上包含標題列與資料列的試算表內容！');
+                return;
+            }
+
+            const rowIdx = parseInt(document.getElementById('sheetRowSelect').value, 10) || 0;
+            const row = parsedSheetRows[rowIdx];
+            if (!row) return;
+
+            const headerRules = [
+                { keywords: ['日期', '訪視日', '紀錄日'], target: 'recordDate', type: 'text' },
+                { keywords: ['個案編號', '案號', '編號'], target: 'caseId', type: 'text' },
+                { keywords: ['姓名', '個案姓名', '個案稱謂', '稱謂'], target: 'caseName', type: 'text' },
+                { keywords: ['性別'], target: 'gender', type: 'select' },
+                { keywords: ['婚姻'], target: 'maritalStatus', other: 'maritalOther', type: 'select' },
+                { keywords: ['年齡', '歲'], target: 'age', type: 'number' },
+                { keywords: ['語言'], target: 'language', type: 'text' },
+                { keywords: ['教育', '學歷'], target: 'education', other: 'educationOther', type: 'select' },
+                { keywords: ['職業'], target: 'occupation', type: 'text' },
+                { keywords: ['經濟'], target: 'incomeSource', type: 'text' },
+                { keywords: ['宗教'], target: 'religion', other: 'religionOther', type: 'select' },
+                { keywords: ['樓層'], target: 'residenceFloor', type: 'text' },
+                { keywords: ['電梯'], target: 'residenceElevator', type: 'select' },
+                { keywords: ['住宅', '所有權', '租屋'], target: 'residenceOwnership', type: 'select' },
+                { keywords: ['居住'], target: 'residence', type: 'text' },
+                { keywords: ['目前興趣'], target: 'currentInterest', type: 'text' },
+                { keywords: ['舊時興趣', '以前興趣', '興趣'], target: 'pastInterest', type: 'text' },
+                { keywords: ['身分別', '身份別', '福利身分'], target: 'identityType', type: 'text' },
+                { keywords: ['障別'], target: 'disabilityCategory', type: 'text' },
+                { keywords: ['等級', '障礙等級'], target: 'disabilityLevel', type: 'select' },
+                { keywords: ['家庭'], target: 'familyStatus', type: 'text' },
+                { keywords: ['輔具'], target: 'assistiveDevice', type: 'text' },
+                { keywords: ['視力'], target: 'vision', type: 'text' },
+                { keywords: ['聽力'], target: 'hearing', type: 'text' },
+                { keywords: ['主要照顧者', '照顧者'], target: 'primaryCaregiver', type: 'select' },
+                { keywords: ['cdr'], target: 'cdrScore', type: 'select' },
+                { keywords: ['mmse'], target: 'mmseScore', type: 'text' },
+                { keywords: ['病史', '疾病'], target: 'medicalHistory', type: 'text' },
+                { keywords: ['服藥', '用藥'], target: 'medicationStatus', type: 'text' },
+                { keywords: ['覺醒', '意識'], target: 'alertness', type: 'select' },
+                { keywords: ['表達'], target: 'expression', type: 'select' },
+                { keywords: ['情緒', '行為', 'bpsd'], target: 'bpsdBehavior', type: 'text' },
+                { keywords: ['高風險', '高危', '風險指標'], target: 'highRiskIndicator', type: 'text' },
+                { keywords: ['就醫', '歷程', '摘要', '轉介'], target: 'medicalJourney', type: 'text' }
+            ];
+
+            let matchedCount = 0;
+            parsedSheetHeaders.forEach((header, colIdx) => {
+                const cellVal = (row[colIdx] || '').trim();
+                if (!header || !cellVal) return;
+                const hLower = header.toLowerCase();
+
+                for (const rule of headerRules) {
+                    if (rule.keywords.some(kw => hLower.includes(kw))) {
+                        if (rule.type === 'select') {
+                            setSelectOrOther(rule.target, rule.other, cellVal);
+                        } else if (rule.type === 'number') {
+                            const numMatch = cellVal.match(/\d+/);
+                            if (numMatch) setVal(rule.target, numMatch[0]);
+                        } else {
+                            setVal(rule.target, cellVal);
+                        }
+                        matchedCount++;
+                        break;
+                    }
+                }
+            });
+
+            saveToLocal();
+            closeSheetImport();
+            showToast(`✅ 已成功從試算表帶入 ${matchedCount} 個欄位！`);
+        }
+
+        // 啟動初始化
+        window.addEventListener('DOMContentLoaded', initForm);
     </script>
 </body>
 </html>
